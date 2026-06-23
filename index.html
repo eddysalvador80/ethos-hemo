@@ -506,7 +506,7 @@ function validarValor(v,r){
 /* ENGINE_END */
 
 var REFS={
-  ssasurPBM:{c:'SSASUR. PBM preoperatorio (Ord. N°3430, nov 2024).',loc:1}, hhhaTransf:{c:'HHHA. Protocolo Transfusional PR-BS-0113 v10.',loc:1},
+  ssasurPBM:{c:'SSASUR. Manejo Preoperatorio de Cirugías con Alto Riesgo de Sangrado (Ord. N°3430, 13 dic 2024).',loc:1,url:'protocolos/Protocolo_PBM_SSASUR_Ord-3430.pdf'}, hhhaTransf:{c:'HHHA. Protocolo Transfusional PR-BS-0113 v10 (vigencia dic 2029).',loc:1,url:'protocolos/Protocolo_Transfusional_HHHA_PR-BS-0113_v10.pdf'},
   bsh2020:{c:'Pavord S, et al. UK guidelines on iron deficiency in pregnancy. Br J Haematol 2020;188(6):819–830.',doi:'10.1111/bjh.16221',acc:'pay'},
   figo2025:{c:'Ubom AE, et al. (FIGO). Iron deficiency anaemia in pregnancy. Int J Gynaecol Obstet 2025.',doi:'10.1002/ijgo.70529',acc:'pay'},
   cochraneFe:{c:'Nicholson L, et al. IV iron in pregnancy. Cochrane 2024;12:CD016136.',doi:'10.1002/14651858.CD016136',acc:'free'},
@@ -572,7 +572,7 @@ function srcMini(pairs){ return '<span class="small">('+pairs.map(function(p){ v
   var link=r.doi?'https://doi.org/'+r.doi:(r.url||(r.pmid?'https://pubmed.ncbi.nlm.nih.gov/'+r.pmid:'#'));
   return '<a class="srclink" href="'+link+'" target="_blank" rel="noopener">'+p[1]+' ↗</a>'; }).join(' · ')+')</span>'; }
 function refsHtml(keys){ return (keys||[]).map(function(k){ var r=REFS[k]; if(!r) return '';
-  if(r.loc) return '<a>'+r.c+'</a><span class="rbadge rb-loc">local</span>';
+  if(r.loc) return r.url ? '<a href="'+r.url+'" target="_blank" rel="noopener">'+r.c+'</a><span class="rbadge rb-loc">protocolo local · PDF ↗</span>' : '<a>'+r.c+'</a><span class="rbadge rb-loc">local</span>';
   var link=r.doi?'https://doi.org/'+r.doi:(r.url||(r.pmid?'https://pubmed.ncbi.nlm.nih.gov/'+r.pmid:'#'));
   return '<a href="'+link+'" target="_blank" rel="noopener">'+r.c+'</a>'+(r.acc==='free'?'<span class="rbadge rb-free">libre</span>':'<span class="rbadge rb-pay">suscripción</span>');
 }).join(' · '); }
