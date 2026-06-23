@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETHOS·HEMO Materna v2 — case-driven</title>
+<meta name="description" content="Apoyo a la decisión sobre sangre y coagulación en la embarazada. Offline, determinista, con bibliografía verificada.">
+<meta name="theme-color" content="#b5651d">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ETHOS·HEMO">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<script>if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<style>
+  :root{--bg:#faf6f0;--card:#fffdf9;--ink:#2c2622;--muted:#6f655c;--line:#e7ddd0;--accent:#b5651d;--accent-soft:#fbeede;--blue:#2f6f8f;--blue-soft:#e7f1f5;--green:#3c7a4e;--green-soft:#e8f3ea;--red:#b3301f;--red-soft:#f7e2dd;--amber:#9a6b12;--amber-soft:#fbf0d8;--radius:14px;--shadow:0 1px 3px rgba(60,40,20,.08),0 6px 18px rgba(60,40,20,.05);}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;padding:18px;max-width:760px;margin:0 auto}
+  h1{font-size:1.3rem;margin:0 0 2px} .sub{color:var(--muted);font-size:.86rem;margin:0 0 14px}
+  .prov{font-size:.7rem;color:var(--accent);background:var(--accent-soft);padding:1px 7px;border-radius:999px;margin-left:6px}
+  .disclaimer{background:var(--amber-soft);border:1px solid #ecdcb4;border-radius:var(--radius);padding:9px 13px;font-size:.77rem;color:#6b5318;margin-bottom:14px}
+  .back{display:inline-block;color:var(--accent);font-weight:600;font-size:.85rem;cursor:pointer;margin-bottom:10px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;cursor:pointer;box-shadow:var(--shadow)} .scard:hover{border-color:var(--accent)}
+  .scard.cr{border-left:4px solid var(--red)} .scard.an{border-left:4px solid var(--green)} .scard.soon{opacity:.55;cursor:default;border-left:4px solid var(--line)}
+  .scard .ic{font-size:1.4rem} .scard .nm{font-weight:700;margin:5px 0 2px} .scard .ds{font-size:.8rem;color:var(--muted)} .soonlbl{font-size:.62rem;background:#eee;color:#888;border-radius:999px;padding:1px 7px}
+  .secn{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px;font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:13px}
+  .grp-h{font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 9px}
+  .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px} .row2{grid-template-columns:1fr 1fr}
+  label{display:block;font-size:.76rem;font-weight:600;margin:7px 0 3px} .hint{font-weight:400;color:var(--muted);font-size:.7rem}
+  input[type=number],select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font-size:.95rem;background:#fff;color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px} .chip{padding:5px 11px;border:1px solid var(--line);border-radius:999px;font-size:.8rem;cursor:pointer;background:#fff;user-select:none} .chip.sel{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+  button.go{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:13px;font-size:1.02rem;font-weight:700;cursor:pointer;margin:4px 0 16px}
+  button.activar{background:var(--red)}
+  .sec{margin:18px 0 8px;font-family:Georgia,serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:8px}
+  .interp{background:var(--blue-soft);border:1px solid #cfe3ea;border-radius:var(--radius);padding:12px 15px;margin-bottom:14px;font-size:.88rem} .interp b{color:var(--blue)} .interp .d{margin:4px 0}
+  .interp.alarma{background:var(--red-soft);border-color:#e8b9b0} .interp.alarma b{color:var(--red)}
+  .plan{list-style:none;padding:0;margin:0} .plan li{padding:9px 12px;border-left:3px solid var(--line);background:#fff;border-radius:0 9px 9px 0;margin-bottom:7px;font-size:.9rem}
+  .plan li.p1{border-color:var(--red);background:var(--red-soft)} .plan li.p2{border-color:var(--amber);background:var(--amber-soft)} .plan li.p3{border-color:var(--green);background:var(--green-soft)}
+  .comp{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;background:var(--card)}
+  .comp-h{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:7px;flex-wrap:wrap}
+  .badge{font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:999px} .b-ind{background:var(--green-soft);color:var(--green)} .b-no{background:#eee;color:#777} .b-eval{background:var(--amber-soft);color:var(--amber)} .b-ci{background:var(--red-soft);color:var(--red)}
+  .frow{font-size:.86rem;margin:4px 0;display:flex;gap:7px} .frow .k{font-weight:700;color:var(--muted);min-width:80px;flex-shrink:0}
+  .frow.ev .k{color:var(--red)} .frow.ev{background:var(--red-soft);border-radius:8px;padding:5px 9px}
+  .dose{background:var(--blue-soft);color:var(--blue);font-weight:700;padding:1px 7px;border-radius:6px}
+  .caja{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 9px 9px 0;padding:9px 12px;margin-bottom:9px;font-size:.85rem} .caja b{color:var(--accent)}
+  .refs{font-size:.74rem;color:var(--muted);margin-top:3px} .refs a{color:var(--blue);text-decoration:none} .rbadge{font-size:.6rem;padding:1px 6px;border-radius:999px;margin-left:3px} .rb-free{background:var(--green-soft);color:var(--green)} .rb-pay{background:var(--amber-soft);color:var(--amber)} .rb-loc{background:var(--accent-soft);color:var(--accent)}
+  .trace{font-size:.7rem;color:var(--muted);font-family:monospace;margin-bottom:10px}
+  .takeaways{background:#fffdfa;border:1px dashed var(--line);border-radius:var(--radius);padding:11px 14px;font-size:.85rem} .takeaways li{margin:4px 0}
+  .timerbar{display:flex;align-items:center;justify-content:space-between;background:var(--red);color:#fff;border-radius:var(--radius);padding:12px 16px;margin-bottom:12px} .timerbar .t{font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums} .timerbar .lbl{font-size:.74rem;opacity:.9} .timerbar button{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.78rem}
+  .small{font-size:.78rem;color:var(--muted)} .hidden{display:none}
+  .vr-msg{font-size:.68rem;margin-top:3px;line-height:1.3;display:none;font-weight:600} .vr-error{color:var(--red)} .vr-warn{color:var(--amber)}
+  input.vr-bad{border-color:var(--red);background:#fdf2ef} input.vr-warn{border-color:var(--amber);background:#fdfaf0}
+  .vrbanner{border-radius:var(--radius);padding:11px 14px;margin-bottom:13px;font-size:.85rem} .vrbanner ul{margin:6px 0 0;padding-left:20px} .vrbanner li{margin:2px 0}
+  .vrbanner.err{background:var(--red-soft);border:1px solid #e8b9b0;color:#7d2417} .vrbanner.err b{color:var(--red)}
+  .vrbanner.warn{background:var(--amber-soft);border:1px solid #ecdcb4;color:#6b5318} .vrbanner.warn b{color:var(--amber)}
+  .accbar{display:flex;gap:8px;margin:0 0 11px;flex-wrap:wrap}
+  .acc-btn{background:var(--blue-soft);color:var(--blue);border:1px solid #cfe3ea;border-radius:9px;padding:8px 14px;font-size:.84rem;font-weight:700;cursor:pointer}
+  .acc-btn:hover{background:#d8eaf1}
+  .contbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:18px 0 4px;padding:11px 13px;background:var(--card);border:1px dashed var(--line);border-radius:var(--radius)}
+  .cont-lbl{font-size:.76rem;font-weight:700;color:var(--muted);width:100%;margin-bottom:2px}
+  .cont-btn{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:.8rem;cursor:pointer}
+  .cont-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+  /* --- cara Aprender (loop de hábito) --- */
+  .maintabs{display:flex;gap:8px;margin:0 0 14px;background:#f1e8db;border-radius:var(--radius);padding:4px}
+  .mtab{flex:1 1 0;min-width:0;border:none;background:transparent;border-radius:10px;padding:10px 6px;font-size:.92rem;font-weight:700;color:var(--muted);cursor:pointer}
+  .mtab.sel{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+  .aprhead{background:var(--accent-soft);border:1px solid #ecdcb4;border-radius:var(--radius);padding:11px 14px;margin-bottom:6px}
+  .streak{font-size:1.05rem;font-weight:800;color:var(--accent)} .apr-sub{font-size:.78rem;color:var(--muted);margin-top:2px}
+  .casocard{display:block} .casocard .nm{font-size:.95rem}
+  .vineta{background:var(--blue-soft);border:1px solid #cfe3ea;border-radius:var(--radius);padding:12px 15px;font-size:.9rem;margin-bottom:12px}
+  .preg{font-size:1rem;margin:0 0 10px} .opts{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .opt{text-align:left;background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:.92rem;cursor:pointer;color:var(--ink)}
+  .opt:hover:not(:disabled){border-color:var(--accent)} .opt:disabled{cursor:default}
+  .opt.ok{border-color:var(--green);background:var(--green-soft);font-weight:700} .opt.bad{border-color:var(--red);background:var(--red-soft)}
+  .fb{border-radius:10px;padding:9px 13px;font-weight:700;margin:10px 0} .fb-ok{background:var(--green-soft);color:var(--green)} .fb-bad{background:var(--red-soft);color:var(--red)}
+  .streak-up{color:var(--accent);font-weight:700;margin-top:8px}
+  .fase-tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .srclink{color:var(--blue);text-decoration:none;font-weight:600}
+  .glo-search{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-size:.95rem;background:#fff;color:var(--ink);margin-bottom:6px}
+  .glo-hint{font-size:.74rem;color:var(--muted);margin:0 0 12px}
+  .glo-group{margin-bottom:8px} .gl-item{padding:9px 2px;border-bottom:1px solid var(--line);font-size:.88rem;line-height:1.45} .gl-item b{color:var(--accent)}
+  .subtabs{display:flex;gap:6px;margin:0 0 12px} .subtab{flex:1 1 0;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 6px;font-size:.85rem;font-weight:700;cursor:pointer;color:var(--muted)} .subtab.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+  /* --- Móvil: evita que labels de distinto alto desalineen los inputs de una fila, y libera ancho --- */
+  @media (max-width:480px){
+    body{padding:12px}
+    .row>div,.row2>div{display:flex;flex-direction:column}
+    .row>div>input,.row>div>select,.row2>div>input,.row2>div>select{margin-top:auto}
+  }
+  @media (max-width:360px){ .row{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+  <h1>ETHOS·HEMO Materna <span class="prov">v2 · case-driven</span></h1>
+  <p class="sub">Sangre y coagulación en la embarazada — ingresa la paciente, recibe conducta con dosis computadas y fuente.</p>
+  <div class="disclaimer">Apoyo a la decisión, no reemplaza tu juicio ni al equipo. Offline, sin datos del paciente guardados. Default = protocolo local SSASUR/HHHA; discrepancias anotadas. Cada cifra con su fuente. ETHOS·HEMO es la autoridad obstétrica; para el adulto no obstétrico → ETHOS·TX.</div>
+
+  <div class="maintabs">
+    <button class="mtab sel" id="mtab-dec" onclick="showFace('dec')">🩺 Decisión</button>
+    <button class="mtab" id="mtab-apr" onclick="showFace('apr')">🎓 Aprender</button>
+    <button class="mtab" id="mtab-glo" onclick="showFace('glo')">📖 Referencia</button>
+  </div>
+
+  <!-- APRENDER (loop de hábito) -->
+  <div id="aprender" class="hidden">
+    <div id="apr-home"></div>
+    <div id="apr-caso" class="hidden"></div>
+  </div>
+
+  <!-- GLOSARIO de términos y siglas -->
+  <div id="glosario" class="hidden"></div>
+
+  <!-- HOME -->
+  <div id="home">
+    <div class="secn">Emergencia</div>
+    <div class="cards">
+      <div class="scard cr" onclick="openSc('cr')"><div class="ic">🔴</div><div class="nm">Código Rojo</div><div class="ds">Sangra ahora · dosis por peso</div></div>
+      <div class="scard cr" onclick="openSc('ec')"><div class="ic">⚡</div><div class="nm">Eclampsia / PE severa</div><div class="ds">MgSO₄ · crisis HTA · HELLP</div></div>
+    </div>
+    <div class="secn">Decisión en la visita</div>
+    <div class="cards">
+      <div class="scard an" onclick="openSc('an')"><div class="ic">🅰️</div><div class="nm">Anemia preop</div><div class="ds">¿optimizar o transfundir?</div></div>
+      <div class="scard an" onclick="openSc('ac')"><div class="ic">💉</div><div class="nm">Anticoagulación</div><div class="ds">¿neuraxial AHORA? reloj ASRA</div></div>
+      <div class="scard an" onclick="openSc('tr')"><div class="ic">🩸</div><div class="nm">Trombocitopenia</div><div class="ds">¿neuraxial? dx diferencial</div></div>
+      <div class="scard cr" onclick="openSc('ap')"><div class="ic">🤰</div><div class="nm">Anteparto</div><div class="ds">previa · DPPNI · acretismo</div></div>
+    </div>
+    <p class="small" style="margin-top:14px">Los <b>6 escenarios</b> están al nivel profundo: intake real del paciente + dosis/tiempos computados + salida rica con interpretación, plan, tarjetas multi-campo y capa docente, cada cifra con su fuente verificada.</p>
+  </div>
+
+  <!-- INTAKE compartido + escenarios -->
+  <div id="sc" class="hidden">
+    <span class="back" onclick="goHome()">← Inicio</span>
+    <div id="sc-title" class="sec" style="margin-top:0"></div>
+
+    <div class="card">
+      <div class="grp-h">Paciente</div>
+      <div class="row">
+        <div><label>Edad <span class="hint">años</span></label><input type="number" id="p_edad" placeholder="31"></div>
+        <div><label>Peso <span class="hint">kg</span></label><input type="number" id="p_peso" placeholder="72"></div>
+        <div><label>EG <span class="hint">sem</span></label><input type="number" id="p_eg" placeholder="30"></div>
+      </div>
+      <div class="row2"><div><label>Talla <span class="hint">cm · CrCl/IMC (opc.)</span></label><input type="number" id="p_talla" placeholder="162"></div>
+        <div><label>Creatinina <span class="hint">mg/dL · CrCl (opc.)</span></label><input type="number" step="0.1" id="p_creat" placeholder="1.0"></div></div>
+    </div>
+
+    <!-- Anemia extras -->
+    <div id="x-an" class="card hidden">
+      <div class="grp-h">Anemia — laboratorio y contexto</div>
+      <div class="row">
+        <div><label>Hb <span class="hint">g/dL</span></label><input type="number" step="0.1" id="a_hb" placeholder="8.9"></div>
+        <div><label>Ferritina <span class="hint">µg/L · &lt;30</span></label><input type="number" id="a_fer" placeholder="11"></div>
+        <div><label>TSAT <span class="hint">%</span></label><input type="number" id="a_tsat" placeholder="14"></div>
+      </div>
+      <div class="row"><div><label>PCR <span class="hint">mg/L</span></label><input type="number" step="0.1" id="a_pcr" placeholder="4"></div>
+        <div><label>B12/folato</label><select id="a_b12"><option value="norm">Normales</option><option value="bajo">Bajo(s)</option><option value="nd">No medidos</option></select></div>
+        <div><label>Síntomas hipoxia</label><select id="a_sint"><option value="no">No</option><option value="si">Sí</option></select></div></div>
+      <label>Cirugía</label><div class="chips" id="a-dif"><span class="chip" data-v="electiva" onclick="pick('a_dif','electiva',this,'a-dif')">Electiva (diferible)</span><span class="chip" data-v="no_diferible" onclick="pick('a_dif','no_diferible',this,'a-dif')">Urgente / no diferible</span></div>
+      <label>Días hasta la cirugía</label><input type="number" id="a_dias" placeholder="24">
+      <label>Comorbilidad</label><div class="chips" id="a-com"><span class="chip" data-v="cardiopatia" onclick="tog('a_com','cardiopatia',this)">Cardiopatía isquémica/ECV</span><span class="chip" data-v="jehova" onclick="tog('a_com','jehova',this)">Testigo de Jehová</span></div>
+      <button class="go" onclick="evAnemia()">Evaluar el caso →</button>
+    </div>
+
+    <!-- Código Rojo extras -->
+    <div id="x-cr" class="card hidden">
+      <div class="grp-h">Código Rojo — hemodinamia, pérdida, causa, labs</div>
+      <div class="row">
+        <div><label>FC <span class="hint">lpm</span></label><input type="number" id="c_fc" placeholder="128"></div>
+        <div><label>PAS <span class="hint">mmHg</span></label><input type="number" id="c_pas" placeholder="88"></div>
+        <div><label>Pérdida estimada <span class="hint">mL (pesaje)</span></label><input type="number" id="c_perdida" placeholder="2000"></div>
+      </div>
+      <div class="row">
+        <div><label>Min desde el parto <span class="hint">ventana TXA</span></label><input type="number" id="c_minparto" placeholder="40"></div>
+        <div><label>Fibrinógeno <span class="hint">mg/dL · meta &gt;200</span></label><input type="number" id="c_fib" placeholder="170"></div>
+        <div><label>Plaquetas <span class="hint">×10⁹/L</span></label><input type="number" id="c_plt" placeholder="92"></div>
+      </div>
+      <div class="row">
+        <div><label>Hb <span class="hint">g/dL</span></label><input type="number" step="0.1" id="c_hb" placeholder="8.1"></div>
+        <div><label>Ca iónico <span class="hint">mmol/L</span></label><input type="number" step="0.01" id="c_ca" placeholder="1.05"></div>
+        <div><label>Temp <span class="hint">°C</span></label><input type="number" step="0.1" id="c_temp" placeholder="35.6"></div>
+      </div>
+      <label>pH arterial <span class="hint">acidosis &lt;7,2 — 3.er vértice de la tríada letal (opc.)</span></label><input type="number" step="0.01" id="c_ph" placeholder="7.25">
+      <label>Causa (4 T)</label><div class="chips" id="c-causa"><span class="chip" data-v="tono" onclick="pick('c_causa','tono',this,'c-causa')">Tono (atonía)</span><span class="chip" data-v="trauma" onclick="pick('c_causa','trauma',this,'c-causa')">Trauma</span><span class="chip" data-v="tejido" onclick="pick('c_causa','tejido',this,'c-causa')">Tejido (retención)</span><span class="chip" data-v="trombina" onclick="pick('c_causa','trombina',this,'c-causa')">Trombina (coagulopatía)</span></div>
+      <label>Comorbilidad relevante</label><div class="chips" id="c-com"><span class="chip" data-v="asma" onclick="tog('c_com','asma',this)">Asma (⛔ carboprost)</span><span class="chip" data-v="hta" onclick="tog('c_com','hta',this)">HTA/preeclampsia (⛔ ergometrina)</span></div>
+      <label>Anticoagulación reciente <span class="hint">→ tarjeta de reversión</span></label><div class="chips" id="c-antico"><span class="chip" data-v="HBPM" onclick="pick('c_antico','HBPM',this,'c-antico')">HBPM &lt;24 h</span><span class="chip" data-v="HNF" onclick="pick('c_antico','HNF',this,'c-antico')">HNF IV</span><span class="chip" data-v="warfarina" onclick="pick('c_antico','warfarina',this,'c-antico')">Warfarina</span><span class="chip" data-v="DOAC" onclick="pick('c_antico','DOAC',this,'c-antico')">DOAC</span></div>
+      <button class="go activar" onclick="evCodigoRojo()">🔴 Evaluar Código Rojo →</button>
+    </div>
+
+    <!-- Eclampsia extras -->
+    <div id="x-ec" class="card hidden">
+      <div class="grp-h">Eclampsia / PE severa — situación, PA, labs, toxicidad</div>
+      <label>Situación clínica</label>
+      <select id="e_sit"><option value="">— elige —</option><option value="Preeclampsia severa SIN convulsión">Preeclampsia severa SIN convulsión</option><option value="CONVULSIONA ahora">CONVULSIONA ahora</option><option value="Postparto / recurrente">Postparto / recurrente</option></select>
+      <div class="row">
+        <div><label>PAS <span class="hint">mmHg · ≥160</span></label><input type="number" id="e_pas" placeholder="168"></div>
+        <div><label>PAD <span class="hint">mmHg · ≥110</span></label><input type="number" id="e_pad" placeholder="112"></div>
+        <div><label>FC <span class="hint">lpm</span></label><input type="number" id="e_fc" placeholder="92"></div>
+      </div>
+      <div class="row">
+        <div><label>Plaquetas <span class="hint">×10⁹/L · &lt;100</span></label><input type="number" id="e_plt" placeholder="88"></div>
+        <div><label>AST/ALT <span class="hint">UI/L · &gt;2×LSN</span></label><input type="number" id="e_ast" placeholder="95"></div>
+        <div><label>LDH <span class="hint">UI/L · ≥600</span></label><input type="number" id="e_ldh" placeholder="640"></div>
+      </div>
+      <div class="row">
+        <div><label>Diuresis <span class="hint">mL/kg/h · &lt;0,5</span></label><input type="number" step="0.1" id="e_diur" placeholder="0.6"></div>
+        <div><label>Reflejos OT</label><select id="e_refl"><option value="presentes">Presentes</option><option value="disminuidos">Disminuidos</option><option value="ausentes">Ausentes</option></select></div>
+        <div><label>FR <span class="hint">rpm · &lt;12</span></label><input type="number" id="e_fr" placeholder="16"></div>
+      </div>
+      <label>Síntomas premonitorios</label><div class="chips" id="e-sint"><span class="chip" data-v="cefalea" onclick="tog('e_sint','cefalea',this)">Cefalea</span><span class="chip" data-v="escotomas" onclick="tog('e_sint','escotomas',this)">Escotomas/visión borrosa</span><span class="chip" data-v="epigastralgia" onclick="tog('e_sint','epigastralgia',this)">Epigastralgia/HD</span><span class="chip" data-v="edema pulmonar" onclick="tog('e_sint','edema pulmonar',this)">Edema pulmonar</span></div>
+      <label>Comorbilidad</label><div class="chips" id="e-com"><span class="chip" data-v="asma" onclick="tog('e_com','asma',this)">Asma</span><span class="chip" data-v="bradicardia / bloqueo AV" onclick="tog('e_com','bradicardia / bloqueo AV',this)">Bradicardia/bloqueo AV</span><span class="chip" data-v="ICC descompensada" onclick="tog('e_com','ICC descompensada',this)">ICC descompensada</span></div>
+      <div class="row2">
+        <div><label>¿Ya recibe MgSO₄?</label><select id="e_mgya"><option value="no">No</option><option value="sí">Sí</option></select></div>
+        <div><label>Vía anestésica buscada</label><select id="e_via"><option value="neuraxial">Neuraxial</option><option value="general">General</option></select></div>
+      </div>
+      <button class="go activar" onclick="evEclampsia()">⚡ Evaluar Eclampsia →</button>
+    </div>
+
+    <!-- Anticoagulación extras -->
+    <div id="x-ac" class="card hidden">
+      <div class="grp-h">Anticoagulación — ¿neuraxial AHORA? (reloj ASRA 5.ª)</div>
+      <label>Anticoagulante / antiagregante</label>
+      <select id="k_far" onchange="acToggleDoac()"><option value="">— elige —</option><option value="ninguno">Ninguno</option><option value="AAS">AAS</option><option value="HBPM profiláctica">HBPM profiláctica (dosis baja)</option><option value="HBPM terapéutica">HBPM terapéutica (dosis alta)</option><option value="HNF SC profiláctica">HNF subcutánea profiláctica</option><option value="HNF IV">HNF IV</option><option value="warfarina">Warfarina</option><option value="DOAC">DOAC</option><option value="clopidogrel">Clopidogrel</option><option value="ticagrelor">Ticagrelor</option></select>
+      <div id="k-doac" class="row2 hidden">
+        <div><label>DOAC específico</label><select id="k_dt"><option value="rivaroxabán">Rivaroxabán</option><option value="apixabán">Apixabán</option><option value="dabigatrán">Dabigatrán</option><option value="edoxabán">Edoxabán</option></select></div>
+        <div><label>DOAC dosis</label><select id="k_dd"><option value="profiláctica (baja)">Profiláctica (baja)</option><option value="terapéutica (alta)">Terapéutica (alta)</option></select></div>
+      </div>
+      <div class="row2">
+        <div><label>Horas desde última dosis <span class="hint">fail-safe si no verificable</span></label><input type="number" step="0.5" id="k_horas" placeholder="14"></div>
+        <div><label>Indicación</label><select id="k_ind"><option value="">—</option><option value="TEV agudo">TEV agudo (&lt;1 mes)</option><option value="TEV previo/trombofilia">TEV previo/trombofilia</option><option value="válvula mecánica">Válvula mecánica</option><option value="FA">FA</option><option value="preeclampsia (AAS)">Preeclampsia (AAS)</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Plaquetas <span class="hint">×10⁹/L</span></label><input type="number" id="k_plt" placeholder="142"></div>
+        <div><label>INR <span class="hint">solo warfarina</span></label><input type="number" step="0.1" id="k_inr" placeholder="1.0"></div>
+        <div><label>TTPa ratio <span class="hint">solo HNF IV</span></label><input type="number" step="0.1" id="k_ttpa" placeholder="1.0"></div>
+      </div>
+      <div class="row2">
+        <div><label>Anti-Xa <span class="hint">UI/mL · objetivo ≤0,1</span></label><input type="number" step="0.01" id="k_axa" placeholder=""></div>
+        <div><label>Días de heparina <span class="hint">&gt;4–5 → gate TIH</span></label><input type="number" id="k_dias" placeholder=""></div>
+      </div>
+      <label>Coadyuvantes</label><div class="chips" id="k-coad"><span class="chip" data-v="AAS concomitante" onclick="tog('k_coad','AAS concomitante',this)">AAS concomitante</span><span class="chip" data-v="AINE" onclick="tog('k_coad','AINE',this)">AINE</span></div>
+      <label>Sangrado activo / urgencia vital</label>
+      <select id="k_sang"><option value="no">No</option><option value="sí">Sí</option></select>
+      <button class="go" onclick="evAnticoag()">💉 Evaluar vía neuraxial →</button>
+    </div>
+
+    <!-- Trombocitopenia extras -->
+    <div id="x-tr" class="card hidden">
+      <div class="grp-h">Trombocitopenia — recuento, tendencia, causa, labs</div>
+      <div class="row">
+        <div><label>Plaquetas <span class="hint">×10⁹/L · &lt;150</span></label><input type="number" id="t_plt" placeholder="62"></div>
+        <div><label>Plaquetas previas <span class="hint">×10⁹/L</span></label><input type="number" id="t_pltprev" placeholder="88"></div>
+        <div><label>Δt entre recuentos <span class="hint">h</span></label><input type="number" step="0.5" id="t_dt" placeholder="1"></div>
+      </div>
+      <div class="row2">
+        <div><label>Antigüedad del recuento <span class="hint">h · SOAP ≤6</span></label><input type="number" step="0.5" id="t_hdesde" placeholder="1"></div>
+        <div><label>Sospecha diagnóstica</label><select id="t_dx"><option value="indeterminado">Indeterminado</option><option value="gestacional">Gestacional</option><option value="preeclampsia_hellp">Preeclampsia/HELLP</option><option value="pti">PTI</option><option value="ptt_shu_ahus">PTT/SHU/aHUS</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>PAS <span class="hint">mmHg</span></label><input type="number" id="t_pas" placeholder="158"></div>
+        <div><label>PAD <span class="hint">mmHg</span></label><input type="number" id="t_pad" placeholder="104"></div>
+        <div><label>LDH <span class="hint">UI/L · ≥600</span></label><input type="number" id="t_ldh" placeholder="710"></div>
+      </div>
+      <div class="row">
+        <div><label>AST/ALT <span class="hint">UI/L</span></label><input type="number" id="t_ast" placeholder="142"></div>
+        <div><label>LSN transaminasa <span class="hint">UI/L</span></label><input type="number" id="t_lsn" placeholder="35"></div>
+        <div><label>Fibrinógeno <span class="hint">mg/dL</span></label><input type="number" id="t_fib" placeholder="240"></div>
+      </div>
+      <div class="row">
+        <div><label>INR <span class="hint">&gt;1,5 → CID</span></label><input type="number" step="0.1" id="t_inr" placeholder="1.1"></div>
+        <div><label>Esquistocitos</label><select id="t_esq"><option value="no">No</option><option value="sí">Sí</option></select></div>
+        <div><label>Hemólisis micro <span class="hint">hapto↓/bili↑</span></label><select id="t_hemo"><option value="no">No</option><option value="sí">Sí</option></select></div>
+      </div>
+      <label>Antiagregante / anticoagulante</label><div class="chips" id="t-far"><span class="chip sel" data-v="ninguno" onclick="pick('t_far','ninguno',this,'t-far')">Ninguno</span><span class="chip" data-v="AAS" onclick="pick('t_far','AAS',this,'t-far')">AAS</span><span class="chip" data-v="HBPM" onclick="pick('t_far','HBPM',this,'t-far')">HBPM</span></div>
+      <button class="go" onclick="evTrombo()">🩸 Evaluar trombocitopenia →</button>
+    </div>
+
+    <!-- Anteparto extras -->
+    <div id="x-ap" class="card hidden">
+      <div class="grp-h">Anteparto — tipo, gravedad, feto, labs (peso = pre-gestacional)</div>
+      <div class="row2">
+        <div><label>Tipo de hemorragia</label><select id="h_tipo"><option value="">— elige —</option><option value="previa">Placenta previa</option><option value="dppni">DPPNI / abruptio</option><option value="vasa">Vasa previa</option><option value="indeterminado">Indeterminado</option></select></div>
+        <div><label>Cesáreas previas</label><input type="number" id="h_ces" placeholder="1"></div>
+      </div>
+      <div class="row2">
+        <div><label>Relación con OCI <span class="hint">si previa</span></label><select id="h_oci"><option value="">—</option><option value="cubre">Cubre OCI (previa)</option><option value="baja">Borde &lt;20 mm (baja)</option><option value="lejos">Borde ≥20 mm</option></select></div>
+        <div><label>Dolor / tono (DDx)</label><select id="h_dolor"><option value="">—</option><option value="indoloro">Indoloro, útero blando (→previa)</option><option value="dolor">Dolor + hipertonía (→DPPNI)</option></select></div>
+      </div>
+      <div class="row2">
+        <div><label>Gravedad del sangrado</label><select id="h_grav"><option value="spotting">Spotting</option><option value="menor">Menor (&lt;50 mL)</option><option value="mayor">Mayor sin shock</option><option value="shock">Mayor con shock/inestable</option></select></div>
+        <div><label>Estado fetal</label><select id="h_fetal"><option value="tranquilizador">Tranquilizador</option><option value="no_tranq">No tranquilizador</option><option value="obito">Óbito</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>FC <span class="hint">lpm</span></label><input type="number" id="h_fc" placeholder="118"></div>
+        <div><label>PAS <span class="hint">mmHg</span></label><input type="number" id="h_pas" placeholder="92"></div>
+        <div><label>RhD</label><select id="h_rh"><option value="pos">RhD-positivo</option><option value="neg">RhD-negativo no sensib.</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Hb <span class="hint">g/dL</span></label><input type="number" step="0.1" id="h_hb" placeholder="9.2"></div>
+        <div><label>Plaquetas <span class="hint">×10⁹/L</span></label><input type="number" id="h_plt" placeholder="180"></div>
+        <div><label>Fibrinógeno <span class="hint">mg/dL</span></label><input type="number" id="h_fib" placeholder="280"></div>
+      </div>
+      <label>Comorbilidad / contexto</label><div class="chips" id="h-com"><span class="chip" data-v="hta" onclick="tog('h_com','hta',this)">HTA/preeclampsia</span><span class="chip" data-v="asma" onclick="tog('h_com','asma',this)">Asma</span><span class="chip" data-v="jehova" onclick="tog('h_com','jehova',this)">Testigo de Jehová</span></div>
+      <label>Invasión avanzada (PAS) <span class="hint">si eco/RMN lo sugieren</span></label><div class="chips" id="h-perc"><span class="chip" data-v="percreta" onclick="tog('h_perc','percreta',this)">Sospecha de percreta — vejiga/parametrios</span></div>
+      <button class="go activar" onclick="evAnteparto()">🤰 Evaluar Anteparto →</button>
+    </div>
+
+    <div id="out"></div>
+  </div>
+
+<script>
+/* ENGINE_START */
+function n(x){ var v=parseFloat(x); return isNaN(v)?null:v; }
+// ---- calc compartido ----
+function factorEG(eg){ if(eg==null) return null; if(eg<12) return 1.05; if(eg<20) return 1.10; if(eg<30) return 1.20; if(eg<36) return 1.40; return 1.43; }
+function volemia(peso,eg){ var f=factorEG(eg); return (peso&&f)?Math.round(peso*70*f):null; } // término ~100 mL/kg (peso×70×1.43); volumen plasmático +~50% (Soma-Pillay 2016)
+function indiceChoque(fc,pas){ if(fc==null||pas==null||pas<=0) return null; return Math.round((fc/pas)*100)/100; }
+function nivelOSI(v){ if(v==null) return null; if(v<0.9) return 'normal'; if(v<1.0) return 'alerta'; if(v<1.7) return 'transfusion'; return 'severo'; }
+function pctVolemia(perdida,vol){ if(perdida==null||!vol) return null; return Math.round(perdida/vol*100); }
+function claseShock(pct){ if(pct==null) return null; if(pct<15) return 'mínima'; if(pct<=25) return 'leve'; if(pct<=35) return 'moderada'; return 'severa'; } // clasificación obstétrica Código Rojo (Vélez-Álvarez 2009): I <15% · II 15–25% · III 26–35% · IV >35% (NO ATLS 15/30/40)
+function uGR(hbMeta,hb,peso){ if(hb==null||!peso) return null; return Math.max(1, Math.ceil((hbMeta-hb)*peso/70)); }
+function uCrio(peso){ return peso?Math.round(peso/10):null; }
+function gConcFib(fib,peso){ if(fib==null||!peso) return null; return Math.max(4, Math.ceil((200-fib)/100*peso*0.07)); } // dosis(g)=[meta−actual(g/L)]×peso×0,07 (ESAIC). El campo es mg/dL → ÷100 para pasar a g/L (1 g/L=100 mg/dL). Antes dividía /1000 = 10× bajo, tapado por el piso de 4 g
+function uPFC(peso){ return peso?Math.max(1,Math.ceil(12.5*peso/250)):null; }
+function uPlaq(meta,plt,peso){ if(plt==null||!peso) return null; if(plt>=meta) return 0; return Math.max(1,Math.ceil((meta-plt)*peso/2800)); }
+function ventanaTXA(minParto){ if(minParto==null) return null; return 180-minParto; }
+// ---- anemia ----
+function clasifFerro(fer,tsat,pcr){
+  if(fer==null) return {tipo:'sin_dato',txt:'Sin ferritina → no clasificable. Pídela ANTES de tratar.'};
+  if(pcr!=null&&pcr>5&&fer>=30&&fer<100) return {tipo:'incierta_pcr',txt:'PCR elevada + ferritina 30–100: reactante de fase aguda → desempata con TSAT.'};
+  if(fer<15) return {tipo:'agotada',txt:'Ferropenia ABSOLUTA con depósito AGOTADO (ferritina <15 µg/L).'};
+  if(fer<30) return {tipo:'absoluta',txt:'Ferropenia ABSOLUTA (ferritina <30 µg/L).'};
+  if(fer<100&&tsat!=null&&tsat<20) return {tipo:'funcional',txt:'Ferropenia FUNCIONAL (ferritina 30–100 + TSAT <20%).'};
+  if(fer>=100&&(tsat==null||tsat>=20)) return {tipo:'no_ferropenica',txt:'No ferropénica (ferritina >100): busca otra causa.'};
+  return {tipo:'indeterminada',txt:'Patrón indeterminado: correlaciona con TSAT/VCM/clínica.'};
+}
+function sevOMS(hb,eg){ if(hb==null) return null; var g=hb*10,t2=(eg!=null&&eg>=14&&eg<28); if(g<70) return 'grave'; if(g<=(t2?94:99)) return 'moderada'; if(g<=(t2?104:109)) return 'leve'; return 'sin anemia OMS'; }
+function umbralTx(com){ return (com&&com.indexOf('cardiopatia')>=0)?8.5:7; }
+function evaluarAnemia(P){
+  var hb=n(P.hb),peso=n(P.peso),eg=n(P.eg),dias=n(P.dias),fer=n(P.ferritina),tsat=n(P.tsat),pcr=n(P.pcr);
+  var com=P.comorbilidades||[],sint=P.sint==='si',dif=P.dif;
+  if(hb==null||peso==null) return {incompleto:true,msg:'Ingresa al menos Hb y peso.'};
+  var fp=clasifFerro(fer,tsat,pcr),umbral=umbralTx(com),vol=volemia(peso,eg);
+  var primerT=(eg!=null&&eg<14),nadir=(eg!=null&&eg>=28&&eg<=32),ferropenica=(fp.tipo==='absoluta'||fp.tipo==='agotada'||fp.tipo==='funcional');
+  var vSuf=(dif==='no_diferible')?false:((dias==null)||(dias>=14));
+  return {incompleto:false,modo:'anemia',
+    interp:{vol:vol,fp:fp,sev:sevOMS(hb,eg),umbral:umbral,vSuf:vSuf,nadir:nadir,primerT:primerT,jehova:com.indexOf('jehova')>=0,topeCbox:Math.round(20*peso),critHb:(hb<6)},
+    decision:dif==='no_diferible'?(hb<=umbral&&sint?'transfundir-minimo':'operar-con-hierro'):'optimizar'};
+}
+// ---- código rojo ----
+function evaluarCodigoRojo(P){
+  var peso=n(P.peso),eg=n(P.eg),fc=n(P.fc),pas=n(P.pas),perdida=n(P.perdida),minParto=n(P.minparto),fib=n(P.fib),plt=n(P.plt),hb=n(P.hb),ca=n(P.ca),temp=n(P.temp),ph=n(P.ph);
+  if(peso==null) return {incompleto:true,msg:'Ingresa al menos el peso (todas las dosis se calculan por peso).'};
+  var vol=volemia(peso,eg),osi=indiceChoque(fc,pas),pct=pctVolemia(perdida,vol);
+  var activarTM=(pct!=null&&pct>=30)||(nivelOSI(osi)==='transfusion'||nivelOSI(osi)==='severo')||(perdida!=null&&perdida>=1500);
+  var com=P.com||[],asma=com.indexOf('asma')>=0,hta=com.indexOf('hta')>=0;
+  return {incompleto:false,modo:'codigorojo',
+    interp:{vol:vol,osi:osi,osiNivel:nivelOSI(osi),pct:pct,shock:claseShock(pct),activarTM:activarTM,
+      txaVentana:ventanaTXA(minParto),hipofib:(fib!=null&&fib<200),triadaLetal:((temp!=null&&temp<36)||(ca!=null&&ca<1.1)||(ph!=null&&ph<7.2)),acidosis:(ph!=null&&ph<7.2),ph:ph, // tríada letal: hipotermia + hipocalcemia + acidosis (pH<7,2)
+      cristaloides:Math.round(30*peso),uGR:uGR(10,hb,peso),uCrio:uCrio(peso),gConc:gConcFib(fib,peso),uPFC:uPFC(peso),
+      plaq50:uPlaq(50,plt,peso),plaq75:uPlaq(75,plt,peso),caBaja:(ca!=null&&ca<1.1),asma:asma,hta:hta,causa:P.causa,antico:(P.antico||null)}};
+}
+// ---- calc compartido renal/antropométrico ----
+function imc(peso,talla){ if(!peso||!talla) return null; var m=talla/100; return Math.round(peso/(m*m)*10)/10; }
+function pesoIdeal(talla){ if(!talla) return null; return Math.round((45.5+2.3*((talla-152.4)/2.54))*10)/10; } // Devine mujer
+function pesoAjustado(peso,talla){ var pi=pesoIdeal(talla); if(pi==null||!peso) return peso||null; var b=imc(peso,talla); return (b!=null&&b>=30)?Math.round((pi+0.4*(peso-pi))*10)/10:peso; }
+function crcl(edad,pesoCG,creat){ if(edad==null||!pesoCG||!creat) return null; return Math.round(((140-edad)*pesoCG)/(72*creat)*0.85*10)/10; } // Cockcroft-Gault ×0.85 mujer — NO validado en embarazo
+function claseRenal(cc){ if(cc==null) return null; if(cc>=50) return 'normal'; if(cc>=30) return 'moderada'; return 'severa'; }
+// ---- eclampsia / PE severa ----
+function evaluarEclampsia(P){
+  var peso=n(P.peso),edad=n(P.edad),eg=n(P.eg),pas=n(P.pas),pad=n(P.pad),fc=n(P.fc),plaq=n(P.plaquetas),ast=n(P.ast),ldh=n(P.ldh),creat=n(P.creatinina),diur=n(P.diuresis),fr=n(P.fr);
+  var lsn=n(P.ast_lsn)||35,sit=P.situacion,refl=P.reflejos,mgya=P.magnesio_ya,via=P.via,com=P.comorbilidad||[],sint=P.sintomas||[];
+  if(!sit) return {incompleto:true,msg:'Elige la situación clínica (severa / convulsiona / postparto).'};
+  var cc=(edad!=null&&peso&&creat)?crcl(edad,peso,creat):null;
+  var crisis=(pas!=null&&pas>=160)||(pad!=null&&pad>=110);
+  var tox=(refl==='ausentes')||(fr!=null&&fr<12)||(diur!=null&&diur<0.5);
+  var hellp=(ldh!=null&&ldh>=600)&&(ast!=null&&ast>2*lsn)&&(plaq!=null&&plaq<100);
+  var gate=(plaq==null)?null:(plaq>=70?'razonable':(plaq>=50?'individualizar':'general'));
+  var prefHidra=(com.indexOf('asma')>=0||com.indexOf('bradicardia / bloqueo AV')>=0||com.indexOf('ICC descompensada')>=0);
+  var sev=[]; if(crisis)sev.push('PA severa ≥160/110'); if(plaq!=null&&plaq<100)sev.push('plaquetas <100k'); if(ast!=null&&ast>2*lsn)sev.push('AST/ALT >2×LSN'); if(creat!=null&&creat>1.1)sev.push('creatinina >1,1'); sint.forEach(function(s){sev.push(s);});
+  return {incompleto:false,modo:'eclampsia',interp:{
+    crcl:cc,crisis:crisis,tox:tox,hellp:hellp,gate:gate,prefHidra:prefHidra,
+    excluyeNifeOral:(sit==='CONVULSIONA ahora'),sev:sev,
+    interrumpir:((eg!=null&&eg>=34)||hellp||sint.indexOf('edema pulmonar')>=0),
+    reBolo:(sit==='CONVULSIONA ahora'&&mgya==='sí'),irMg:(cc!=null&&cc<30),via:via,sit:sit,
+    postparto:(sit==='Postparto / recurrente'),osi:indiceChoque(fc,pas)}};
+}
+// ---- anticoagulación / neuraxial ----
+function intervaloAnticoag(f,dt,dd){
+  switch(f){
+    case 'AAS': return {h:0,nota:'AAS sola NO difiere la neuraxial (ASRA)'};
+    case 'HBPM profiláctica': return {h:12,src:'asra5'};
+    case 'HBPM terapéutica': return {h:24,src:'asra5'};
+    case 'HNF IV': return {h:4,extra:'+ TTPa ratio normal',src:'asra5'};
+    case 'HNF SC profiláctica': return {h:12,src:'rcog37b'};
+    case 'warfarina': return {h:120,extra:'+ INR documentado en rango',src:'asra5'};
+    case 'DOAC':
+      if(dd==='terapéutica (alta)') return {h:72,src:'asra5',doac:true};
+      if(dt==='rivaroxabán'||dt==='edoxabán') return {h:24,src:'ASRA+ESAIC',doac:true};
+      if(dt==='apixabán') return {h:36,src:'ESAIC',doac:true};
+      if(dt==='dabigatrán') return {h:48,src:'ESAIC',doac:true,failsafeIR:true};
+      return {h:72,doac:true};
+    case 'clopidogrel': return {h:168,extra:'5–7 días',src:'asra5'};
+    case 'ticagrelor': return {h:120,extra:'5 días',src:'asra5'};
+    default: return {h:0};
+  }
+}
+function evaluarAnticoag(P){
+  var edad=n(P.edad),peso=n(P.peso),talla=n(P.talla),creat=n(P.creatinina),plaq=n(P.plaquetas),horas=n(P.horas),dias=n(P.dias_heparina),inr=n(P.inr),ttpa=n(P.ttpa),axa=n(P.anti_xa);
+  var f=P.farmaco,dt=P.doac_tipo,dd=P.doac_dosis,sangrado=P.sangrado,com=P.coadyuvantes||[],ind=P.indicacion;
+  if(!f) return {incompleto:true,msg:'Elige el anticoagulante / antiagregante.'};
+  if(f==='ninguno') return {incompleto:false,modo:'anticoag',interp:{sinFarmaco:true,badge:'NEURAXIAL OK'}};
+  var pesoCG=(peso&&talla)?pesoAjustado(peso,talla):peso;
+  var cc=(edad!=null&&pesoCG&&creat)?crcl(edad,pesoCG,creat):null,cr=claseRenal(cc);
+  var iv=intervaloAnticoag(f,dt,dd);
+  var delta=(horas!=null)?Math.max(0,iv.h-horas):null;
+  var esHBPM=f.indexOf('HBPM')>=0,esHNF=f.indexOf('HNF')>=0;
+  var revertir=(sangrado==='sí');
+  var failsafe=(horas==null&&f!=='AAS');
+  var docInr=(f==='warfarina'&&inr==null);           // INR no documentado
+  var docTtpa=(f==='HNF IV'&&ttpa==null);             // TTPa no documentado
+  // GATE POR VALOR (no solo presencia): un lab documentado pero FUERA de rango no autoriza, aunque el reloj se cumpla
+  var inrAlto=(f==='warfarina'&&inr!=null&&inr>=1.5);  // ASRA 5.ª verbatim: puncionar con INR <1,5 (rango normal local)
+  var ttpaAlto=(f==='HNF IV'&&ttpa!=null&&ttpa>1.2);   // TTPa ratio prolongado → heparina residual pese al intervalo
+  var axaAlto=(esHBPM&&axa!=null&&axa>0.1);            // anti-Xa detectable → efecto HBPM residual (ASRA: ≤0,1 = indetectable)
+  var axaOk=(esHBPM&&axa!=null&&axa<=0.1);
+  var labFueraRango=(inrAlto||ttpaAlto||axaAlto);
+  var cogatePlaq=(plaq!=null&&plaq<70);
+  var gateTIH=((esHNF||esHBPM)&&dias!=null&&dias>4); // ASRA 5.ª: contar plaquetas si HNF o HBPM >4 días (grade IC)
+  var dabigIR=(f==='DOAC'&&dt==='dabigatrán'&&cc!=null&&cc<50); // fail-safe, SIN reloj fijo de 120h
+  var badge;
+  if(revertir) badge='REVERTIR';
+  else if(f==='DOAC'&&n(P.eg)!=null&&n(P.eg)>0) badge='CONTRAINDICADO ANTEPARTO';
+  else if(failsafe||docInr||docTtpa||dabigIR) badge='CONTRAINDICADO / FAIL-SAFE';
+  else if(labFueraRango) badge='ESPERAR · LAB FUERA DE RANGO';
+  else if(delta!=null&&delta>0) badge='ESPERAR';
+  else if(iv.h===0) badge='NEURAXIAL OK';
+  else badge=(esHBPM&&cr&&cr!=='normal')?'OK CON SALVEDAD RENAL':'NEURAXIAL OK';
+  return {incompleto:false,modo:'anticoag',interp:{
+    farmaco:f,pesoCG:pesoCG,imc:imc(peso,talla),crcl:cc,claseRenal:cr,intervalo:iv,delta:delta,badge:badge,
+    revertir:revertir,failsafe:failsafe,docInr:docInr,docTtpa:docTtpa,dabigIR:dabigIR,
+    inrAlto:inrAlto,ttpaAlto:ttpaAlto,axa:axa,axaAlto:axaAlto,axaOk:axaOk,labFueraRango:labFueraRango,
+    doacSinEG:(f==='DOAC'&&n(P.eg)==null),
+    cogatePlaq:cogatePlaq,gateTIH:gateTIH,esHBPM:esHBPM,esHNF:esHNF,
+    combo:(com.length>0&&(esHBPM||f==='clopidogrel'||f==='ticagrelor')),doac:(f==='DOAC'),dt:dt,
+    valvula:(ind==='válvula mecánica')}};
+}
+// ---- trombocitopenia ----
+function tendenciaPlt(plt,prev,dt){
+  if(plt==null||prev==null||!dt) return {etq:'sin_dato',tasa:null,delta:null};
+  var d=plt-prev,tasa=Math.round(d/dt*10)/10;
+  var etq=(d>=0)?'estable':(tasa<=-10?'cayendo_rapido':'cayendo'); // -10 ×10⁹/L/h = descenso marcado (heurístico, etiquetado)
+  return {etq:etq,tasa:tasa,delta:d};
+}
+function vigenciaRecuento(hdesde,etq){ if(hdesde==null) return {vig:null,ventana:6}; var v=(etq==='cayendo_rapido')?2:6; return {vig:hdesde<=v,ventana:v}; }
+function bandaSOAP(plt){ if(plt==null) return null; if(plt>=70) return 'aceptable'; if(plt>=50) return 'individualizar'; return 'no_recomendado'; }
+function evaluarTrombo(P){
+  var plt=n(P.plaquetas),prev=n(P.plaquetas_previo),dt=n(P.dt),hdesde=n(P.horas_desde),ldh=n(P.ldh),ast=n(P.ast),lsn=n(P.lsn)||35,fib=n(P.fibrinogeno),inr=n(P.inr),ttpa=n(P.ttpa),pas=n(P.pas),pad=n(P.pad),eg=n(P.eg),peso=n(P.peso);
+  if(plt==null) return {incompleto:true,msg:'Ingresa el recuento de plaquetas.'};
+  var esq=P.esquistocitos==='sí',hemo=P.hemolisis_micro==='sí',dx=P.contexto_dx,far=P.farmacos||'ninguno';
+  var tend=tendenciaPlt(plt,prev,dt),vig=vigenciaRecuento(hdesde,tend.etq);
+  var crisis=(pas!=null&&pas>=160)||(pad!=null&&pad>=110);
+  var hellp=(ldh!=null&&ldh>=600)&&(ast!=null&&ast>2*lsn)&&(plt<100);
+  var maha=esq||hemo;
+  var cid=(fib!=null&&fib<200)||(inr!=null&&inr>1.5)||(ttpa!=null&&ttpa>1.5);
+  var esMicro=(dx==='ptt_shu_ahus')||(maha&&!crisis&&!hellp);
+  var banda=bandaSOAP(plt),sinOtros=(far==='ninguno'||!far)&&!cid;
+  var causa=esMicro?'microangiopatia':(hellp?'HELLP':(dx==='pti'?'PTI':((plt>=100&&plt<150&&!crisis&&!maha)?'gestacional':'indeterminado')));
+  var horasA70=(tend.tasa!=null&&tend.tasa<0&&plt>70)?Math.round((plt-70)/Math.abs(tend.tasa)*10)/10:null; // proyección: a esta tasa de caída, ¿en cuántas h cruza el umbral neuraxial de 70?
+  var tecnica;
+  if(esMicro||banda==='no_recomendado'||!sinOtros) tecnica='AG';
+  else if(banda==='individualizar'||tend.etq.indexOf('cayendo')>=0) tecnica='EVALUAR';
+  else if(banda==='aceptable') tecnica='NEURAXIAL';
+  else tecnica='EVALUAR';
+  return {incompleto:false,modo:'trombo',interp:{
+    tend:tend,vig:vig,crisis:crisis,hellp:hellp,maha:maha,cid:cid,esMicro:esMicro,banda:banda,sinOtros:sinOtros,causa:causa,tecnica:tecnica,
+    farmacos:far,plt:plt,interrumpir:((eg!=null&&eg>=34)||hellp),peso:peso,uCrio:uCrio(peso),uPFC:uPFC(peso),horasA70:horasA70}};
+}
+// ---- hemorragia anteparto ----
+function evaluarAnteparto(P){
+  var peso=n(P.peso),eg=n(P.eg),fc=n(P.fc),pas=n(P.pas),plt=n(P.plaquetas),fib=n(P.fibrinogeno),hb=n(P.hb),ces=n(P.cesareas_previas);
+  var tipo=P.tipo_aph,oci=P.relacion_oci,grav=P.gravedad,fetal=P.estado_fetal,dolor=P.dolor_tono,rh=P.rh,com=P.comorbilidad||[];
+  if(!tipo) return {incompleto:true,msg:'Elige el tipo de hemorragia anteparto.'};
+  var vol=volemia(peso,eg),osi=indiceChoque(fc,pas);
+  var inestable=(grav==='shock');
+  var fetalMal=(fetal==='no_tranq'||fetal==='obito');
+  var codigoRojo=(grav==='mayor'||grav==='shock')||(fetal==='no_tranq');
+  var acretismo=(ces!=null&&ces>=1&&oci==='cubre');
+  var acretismoIncierto=(tipo==='previa'&&ces!=null&&ces>=1&&(oci==null||oci===''));  // cesárea previa + previa pero OCI sin definir → no se puede descartar
+  var cid=(fib!=null&&fib<200);
+  var cesarea=inestable||(fetal==='no_tranq')||((tipo==='previa'||tipo==='vasa')&&(grav==='mayor'||grav==='shock'));
+  return {incompleto:false,modo:'anteparto',interp:{
+    vol:vol,osi:osi,osiNivel:nivelOSI(osi),cristaloides:peso?Math.round(30*peso):null,inestable:inestable,codigoRojo:codigoRojo,
+    acretismo:acretismo,acretismoIncierto:acretismoIncierto,cesPrevias:ces,percreta:((P.percreta||[]).indexOf('percreta')>=0),corticoides:(eg!=null&&eg>=24&&eg<34),mgNeuro:(eg!=null&&eg<32),antiD:(rh==='neg'),cid:cid,
+    planNeuraxial:(!inestable&&plt!=null&&plt>=70&&!cid),tipo:tipo,fetal:fetal,dolor:dolor,grav:grav,
+    jehova:com.indexOf('jehova')>=0,uCrio:uCrio(peso),hipofib:(fib!=null&&fib<200),cesarea:cesarea,eg:eg}};
+}
+// ---- validación de rango (VR): impide datos imposibles, avisa los implausibles ----
+// r = [min_abs, max_abs, min_típico, max_típico, unidad, pista_opcional]
+function validarValor(v,r){
+  if(v===''||v==null||!r) return 'ok';
+  var x=parseFloat(v); if(isNaN(x)) return 'error';
+  if(x<r[0]||x>r[1]) return 'error';          // imposible → bloquea
+  if(x<r[2]||x>r[3]) return 'warn';           // fuera de lo habitual → avisa
+  return 'ok';
+}
+/* ENGINE_END */
+
+var REFS={
+  ssasurPBM:{c:'SSASUR. PBM preoperatorio (Ord. N°3430, nov 2024).',loc:1}, hhhaTransf:{c:'HHHA. Protocolo Transfusional PR-BS-0113 v10.',loc:1},
+  bsh2020:{c:'Pavord S, et al. UK guidelines on iron deficiency in pregnancy. Br J Haematol 2020;188(6):819–830.',doi:'10.1111/bjh.16221',acc:'pay'},
+  figo2025:{c:'Ubom AE, et al. (FIGO). Iron deficiency anaemia in pregnancy. Int J Gynaecol Obstet 2025.',doi:'10.1002/ijgo.70529',acc:'pay'},
+  cochraneFe:{c:'Nicholson L, et al. IV iron in pregnancy. Cochrane 2024;12:CD016136.',doi:'10.1002/14651858.CD016136',acc:'free'},
+  aabb2023:{c:'Carson JL, et al. (AABB). RBC transfusion thresholds. JAMA 2023;330(19):1892–1902.',doi:'10.1001/jama.2023.12914',acc:'pay'},
+  williams2025:{c:'Williams CR, et al. Transfusion thresholds in PPH. Cochrane 2025;2:CD016168.',doi:'10.1002/14651858.CD016168',acc:'free'},
+  rcogGt47:{c:'RCOG. Blood Transfusion in Obstetrics (Green-top No. 47). 2015.',url:'https://www.rcog.org.uk/media/sdqcorsf/gtg-47.pdf',acc:'free'},
+  gt52:{c:'Mavrides E, et al. (RCOG). Prevention and Management of PPH (Green-top No. 52). 2016.',doi:'10.1111/1471-0528.14178',acc:'free'},
+  whotxa:{c:'WHO Recommendation on TXA for PPH. 2017.',pmid:'29630190',acc:'free'},
+  woman:{c:'WOMAN Trial. Lancet 2017;389:2105–2116.',doi:'10.1016/S0140-6736(17)30638-4',acc:'free'},
+  figoPPH:{c:'Escobar MF, et al. FIGO recommendations on PPH 2022.',doi:'10.1002/ijgo.14116',acc:'free'},
+  acog183:{c:'ACOG Practice Bulletin No. 183: Postpartum Hemorrhage. 2017.',doi:'10.1097/AOG.0000000000002351',acc:'pay'},
+  charbit:{c:'Charbit B, et al. Fibrinógeno predictor de HPP severa. J Thromb Haemost 2007;5(2):266–273.',doi:'10.1111/j.1538-7836.2007.02297.x',acc:'pay'},
+  obs2:{c:'Collins PW, et al. (OBS2). Br J Anaesth 2017;119(3):411–421.',doi:'10.1093/bja/aex181',acc:'pay'},
+  somapillay:{c:'Soma-Pillay P, et al. Physiological changes in pregnancy. Cardiovasc J Afr 2016;27(2):89–94.',doi:'10.5830/CVJA-2016-021',acc:'free'},
+  esaic:{c:'Kietaibl S, et al. (ESAIC). Severe perioperative bleeding. Eur J Anaesthesiol 2023.',doi:'10.1097/EJA.0000000000001803',acc:'pay'},
+  soap2021:{c:'Bauer ME, et al. (SOAP). Neuraxial in thrombocytopenia. Anesth Analg 2021;132(6):1531–1544.',doi:'10.1213/ANE.0000000000005355',acc:'free'},
+  codigorojo:{c:'Vélez-Álvarez G, et al. Código rojo. Rev Colomb Obstet Ginecol 2009.',doi:'10.18597/rcog.352',acc:'free'},
+  // ---- Eclampsia / preeclampsia (verificadas por workflow) ----
+  acog222:{c:'ACOG. Gestational Hypertension and Preeclampsia: Practice Bulletin No. 222. Obstet Gynecol 2020;135(6):e237–e260.',doi:'10.1097/AOG.0000000000003891',acc:'pay'},
+  magpie:{c:'Magpie Trial Collaborative Group. Magnesium sulphate en preeclampsia (Magpie). Lancet 2002;359:1877–90.',doi:'10.1016/S0140-6736(02)08778-0',acc:'pay'},
+  lambert2014:{c:'Lambert G, et al. Preeclampsia: an update. Acta Anaesthesiol Belg 2014;65(4):137–49.',pmid:'25622379',acc:'pay'},
+  acog767:{c:'ACOG Committee Opinion No. 767: Emergent Therapy for Acute-Onset Severe Hypertension. Obstet Gynecol 2019;133(2):e174–e180.',doi:'10.1097/AOG.0000000000003075',acc:'pay'},
+  minsalPerinatal:{c:'MINSAL Chile. Guía Perinatal 2024 (Síndrome Hipertensivo del Embarazo), edición vigente confirmada por el equipo HHHA.',loc:1},
+  // ---- Anticoagulación / neuraxial (verificadas por workflow) ----
+  asra5:{c:'Kopp SL, et al. (ASRA). Regional anesthesia in the patient receiving antithrombotic therapy, 5.ª ed. Reg Anesth Pain Med 2025.',doi:'10.1136/rapm-2024-105766',acc:'pay'},
+  soap2018:{c:'Leffert L, et al. (SOAP). Anesthetic management of pregnant women receiving thromboprophylaxis/anticoagulants. Anesth Analg 2018;126(3):928–944.',doi:'10.1213/ANE.0000000000002530',acc:'pay'},
+  esaic2022:{c:'Kietaibl S, et al. (ESAIC/ESRA). Regional anaesthesia in patients on antithrombotic drugs. Eur J Anaesthesiol 2022;39(2):100–132.',doi:'10.1097/EJA.0000000000001600',acc:'free'},
+  rcog37b:{c:'Thomson AJ, Greer IA (RCOG). Thrombosis and Embolism during Pregnancy and the Puerperium: Acute Management. Green-top No. 37b, 2015.',url:'https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/thrombosis-and-embolism-during-pregnancy-and-the-puerperium-acute-management-green-top-guideline-no-37b/',acc:'free'},
+  highlow:{c:'Bistervels IM, et al. (Highlow). LMWH intermedia vs baja, elegibilidad neuraxial periparto. J Thromb Haemost 2023;21(1):57–67.',doi:'10.1016/j.jtha.2022.11.004',acc:'pay'},
+  bshvalve:{c:'Lester W, et al. (BSH). Anticoagulación en gestantes con válvula mecánica. Br J Haematol 2023;202(3):465–478.',doi:'10.1111/bjh.18781',acc:'pay'},
+  esc2025:{c:'ESC. 2025 Guidelines for cardiovascular disease and pregnancy. Eur Heart J 2025;46(43):4462–4568.',doi:'10.1093/eurheartj/ehaf193',acc:'pay'},
+  wienhold:{c:'Wienhold J, et al. Reversal of DOACs in trauma (extrapolar con cautela). Curr Opin Anaesthesiol 2024;37(2):101–109.',doi:'10.1097/ACO.0000000000001349',acc:'pay'},
+  isthssc:{c:'Peterson W, et al. (ISTH SSC). Neuraxial anesthesia in adults with platelet/coagulation disorders. J Thromb Haemost 2025;23(6):2039–2049.',doi:'10.1016/j.jtha.2025.01.019',acc:'pay'},
+  // ---- Trombocitopenia (verificadas por workflow) ----
+  acog207:{c:'ACOG. Thrombocytopenia in Pregnancy: Practice Bulletin No. 207. Obstet Gynecol 2019;133(3):e181–e193.',doi:'10.1097/AOG.0000000000003100',acc:'pay'},
+  fogerty2024:{c:'Fogerty AE, Kuter DJ. How I treat thrombocytopenia in pregnancy. Blood 2024;143(9):747–756.',doi:'10.1182/blood.2023020726',acc:'pay'},
+  ash2019:{c:'Neunert C, et al. (ASH) 2019 guidelines for immune thrombocytopenia. Blood Adv 2019;3(23):3829–3866.',doi:'10.1182/bloodadvances.2019000966',acc:'free'},
+  sibai2011:{c:'Sibai BM (SMFM). Evaluation and management of severe preeclampsia/HELLP — timing of delivery. Am J Obstet Gynecol 2011;205(3):191–198.',doi:'10.1016/j.ajog.2011.07.017',acc:'pay'},
+  woudstra2010:{c:'Woudstra DM, et al. Corticosteroids for HELLP syndrome. Cochrane 2010;9:CD008148.',doi:'10.1002/14651858.CD008148.pub2',acc:'free'},
+  scully2023:{c:'Scully M, et al. (BSH). Diagnosis and management of TTP and thrombotic microangiopathies. Br J Haematol 2023;203(4):546–563.',doi:'10.1111/bjh.19026',acc:'pay'},
+  zheng2020:{c:'Zheng XL, et al. (ISTH). Treatment of TTP — good practice statements. J Thromb Haemost 2020;18(10):2496–2502.',doi:'10.1111/jth.15010',acc:'free'},
+  urra2024:{c:'Urra M, et al. Pregnancy-associated thrombotic microangiopathies. Kidney Int Rep 2024;9(8):2353–2371. (CoI: Alexion/AstraZeneca.)',doi:'10.1016/j.ekir.2024.05.016',acc:'free'},
+  bailey2019:{c:'Bailey LJ, et al. Neuraxial anesthesia in ITP con plaquetas <100 — sin hematoma reportado. Can J Anaesth 2019;66(11):1396–1414.',doi:'10.1007/s12630-019-01420-w',acc:'pay'},
+  // ---- Hemorragia anteparto (verificadas por workflow) ----
+  sogc402:{c:'Jain V, et al. (SOGC). Guideline No. 402: Diagnosis and Management of Placenta Previa. J Obstet Gynaecol Can 2020;42(7):906–917.',doi:'10.1016/j.jogc.2019.07.019',acc:'pay'},
+  smfmPAS:{c:'SMFM; Cahill AG, et al. Placenta Accreta Spectrum. Obstetric Care Consensus No. 7. Am J Obstet Gynecol 2018;219(6):B2–B16.',doi:'10.1016/j.ajog.2018.09.042',acc:'pay'},
+  rcog27a:{c:'Jauniaux E, et al. (RCOG). Placenta Praevia and Placenta Accreta. Green-top Guideline No. 27a. BJOG 2019;126:e1–e48.',doi:'10.1111/1471-0528.15306',acc:'pay'},
+  gtg63:{c:'Thomson AJ, Ramsay JE (RCOG). Antepartum Haemorrhage. Green-top Guideline No. 63, 2011 (no indexada; needs-human).',url:'https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/antepartum-haemorrhage-green-top-guideline-no-63/',acc:'free'},
+  brandtAnanth:{c:'Brandt JS, Ananth CV. Placental abruption: clinical features, diagnosis, management. Am J Obstet Gynecol 2023;228(5S):S1313–S1329.',doi:'10.1016/j.ajog.2022.06.059',acc:'free'},
+  merrill2021:{c:'Merrill J, et al. Anaesthesia for placenta accreta spectrum. Curr Opin Anaesthesiol 2021;34(3):260–268.',doi:'10.1097/ACO.0000000000000985',acc:'pay'},
+  acog713:{c:'ACOG Committee Opinion No. 713: Antenatal Corticosteroid Therapy for Fetal Maturation. Obstet Gynecol 2017;130(2):e102–e109.',doi:'10.1097/AOG.0000000000002237',acc:'pay'},
+  smfm52:{c:'SMFM Consult Series #52 (RCIU): rec. 20 corticoides si parto <33+6 (GRADE 1A) y rec. 21 MgSO₄ neuroprotección <32 sem (GRADE 1A). Am J Obstet Gynecol 2020;223(4):B2–B17.',doi:'10.1016/j.ajog.2020.05.010',acc:'pay'},
+  acog455:{c:'ACOG Committee Opinion No. 455: Magnesium Sulfate Before Anticipated Preterm Birth for Neuroprotection. Obstet Gynecol 2010;115(3):669–671.',doi:'10.1097/AOG.0b013e3181d4ffa5',acc:'pay'},
+  salvo:{c:'Khan KS, et al. (SALVO). Cell salvage en cesárea (señal de hemorragia fetomaterna RhD → anti-D estricta). PLoS Med 2017;14(12):e1002471.',doi:'10.1371/journal.pmed.1002471',acc:'free'},
+  // ---- cierre de needs-human (verificadas jun-2026) ----
+  ash2018hit:{c:'Cuker A, et al. (ASH). 2018 guidelines for management of VTE: heparin-induced thrombocytopenia. Blood Adv 2018;2(22):3360–3392. (score 4Ts; TIH inicia 5–10 días.)',doi:'10.1182/bloodadvances.2018024489',acc:'free'},
+  rouseBEAM:{c:'Rouse DJ, et al. (BEAM). MgSO₄ para prevención de parálisis cerebral (régimen 6 g carga + 2 g/h). N Engl J Med 2008;359(9):895–905.',doi:'10.1056/NEJMoa0801187',acc:'free'},
+  aabbPlt:{c:'Kaufman RM, et al. (AABB). Platelet transfusion: clinical practice guideline. Ann Intern Med 2015;162(3):205–213. (dosis: hasta 1 aféresis/equivalente; LP <50; cirugía mayor no neuraxial <50.)',doi:'10.7326/M14-1589',acc:'pay'}
+};
+// cita corta CLICABLE para las cajas docentes "Por qué (en ELLA)": (Autor año ↗)
+function srcMini(pairs){ return '<span class="small">('+pairs.map(function(p){ var r=REFS[p[0]]; if(!r) return p[1];
+  if(r.loc) return p[1];
+  var link=r.doi?'https://doi.org/'+r.doi:(r.url||(r.pmid?'https://pubmed.ncbi.nlm.nih.gov/'+r.pmid:'#'));
+  return '<a class="srclink" href="'+link+'" target="_blank" rel="noopener">'+p[1]+' ↗</a>'; }).join(' · ')+')</span>'; }
+function refsHtml(keys){ return (keys||[]).map(function(k){ var r=REFS[k]; if(!r) return '';
+  if(r.loc) return '<a>'+r.c+'</a><span class="rbadge rb-loc">local</span>';
+  var link=r.doi?'https://doi.org/'+r.doi:(r.url||(r.pmid?'https://pubmed.ncbi.nlm.nih.gov/'+r.pmid:'#'));
+  return '<a href="'+link+'" target="_blank" rel="noopener">'+r.c+'</a>'+(r.acc==='free'?'<span class="rbadge rb-free">libre</span>':'<span class="rbadge rb-pay">suscripción</span>');
+}).join(' · '); }
+
+/* ---- estado/intake ---- */
+var ST={a_dif:null,a_com:[],c_causa:null,c_com:[],c_antico:null,e_sint:[],e_com:[],k_coad:[],t_far:'ninguno',h_com:[],h_perc:[]};
+function pick(g,v,el,grp){ document.querySelectorAll('#'+grp+' .chip').forEach(function(c){c.classList.remove('sel');}); el.classList.add('sel'); ST[g]=v; }
+function tog(g,v,el){ el.classList.toggle('sel'); var s=ST[g]=ST[g]||[]; var i=s.indexOf(v); if(i<0)s.push(v); else s.splice(i,1); }
+function gv(id){ return document.getElementById(id).value; }
+function acToggleDoac(){ document.getElementById('k-doac').classList.toggle('hidden', gv('k_far')!=='DOAC'); }
+function goHome(){ crDetener(); document.getElementById('aprender').classList.add('hidden'); document.getElementById('glosario').classList.add('hidden'); document.getElementById('mtab-dec').classList.add('sel'); document.getElementById('mtab-apr').classList.remove('sel'); document.getElementById('mtab-glo').classList.remove('sel'); document.getElementById('home').classList.remove('hidden'); document.getElementById('sc').classList.add('hidden'); document.getElementById('out').innerHTML=''; window.scrollTo(0,0); }
+var SC_TITLES={an:'🅰️ Anemia preoperatoria — ¿optimizar o transfundir?',cr:'🔴 Código Rojo obstétrico — dosis por peso',ec:'⚡ Eclampsia / preeclampsia severa — MgSO₄, PA, HELLP',ac:'💉 Anticoagulación — ¿neuraxial AHORA? (reloj ASRA 5.ª)',tr:'🩸 Trombocitopenia — ¿neuraxial? dx diferencial',ap:'🤰 Hemorragia anteparto — previa / DPPNI / acretismo'};
+var CUR_SC=null;
+function openSc(s){ CUR_SC=s; document.getElementById('aprender').classList.add('hidden'); document.getElementById('glosario').classList.add('hidden'); document.getElementById('mtab-dec').classList.add('sel'); document.getElementById('mtab-apr').classList.remove('sel'); document.getElementById('mtab-glo').classList.remove('sel'); document.getElementById('home').classList.add('hidden'); document.getElementById('sc').classList.remove('hidden'); document.getElementById('out').innerHTML='';
+  ['an','cr','ec','ac','tr','ap'].forEach(function(k){ document.getElementById('x-'+k).classList.toggle('hidden', s!==k); });
+  document.getElementById('sc-title').innerHTML = SC_TITLES[s]||''; window.scrollTo(0,0); }
+function P_base(){ return {edad:gv('p_edad'),peso:gv('p_peso'),eg:gv('p_eg'),talla:gv('p_talla'),creatinina:gv('p_creat')}; }
+function trace(modo){ return '<div class="trace">'+new Date().toLocaleString('es-CL')+' · '+modo+' · caso efímero · sin datos guardados</div>'; }
+
+/* ---- VALIDACIÓN DE RANGO (VR): impide datos imposibles, avisa los implausibles ---- */
+// id: [min_abs, max_abs, min_típico, max_típico, unidad, pista_opcional]
+var VR={
+  p_edad:[11,60,15,50,'años'], p_peso:[30,250,40,150,'kg'], p_eg:[4,43,5,42,'sem'], p_talla:[120,210,140,195,'cm'], p_creat:[0.1,20,0.3,2,'mg/dL'],
+  a_hb:[2,20,5,15,'g/dL'], a_fer:[0,3000,3,300,'µg/L'], a_tsat:[0,100,5,60,'%'], a_pcr:[0,500,0,50,'mg/L'], a_dias:[0,300,0,120,'días'],
+  c_fc:[20,250,50,180,'lpm'], c_pas:[30,300,60,200,'mmHg'], c_perdida:[0,10000,0,5000,'mL'], c_minparto:[0,1440,0,360,'min'],
+  c_fib:[10,1200,150,700,'mg/dL','en mg/dL (basal embarazo 350–650); ¿lo pusiste en g/L?'], c_plt:[1,1000,10,450,'×10⁹/L','en miles: 92, no 92000'],
+  c_hb:[2,20,5,15,'g/dL'], c_ca:[0.3,2,0.8,1.4,'mmol/L','Ca IÓNICO en mmol/L, no mg/dL'], c_temp:[28,43,34,40,'°C'], c_ph:[6.6,7.9,7.0,7.55,'','¿es pH arterial? acidosis significativa <7,2'],
+  e_pas:[30,300,60,220,'mmHg'], e_pad:[20,200,40,140,'mmHg'], e_fc:[20,250,50,180,'lpm'], e_plt:[1,1000,10,450,'×10⁹/L','en miles, no en absoluto'],
+  e_ast:[1,5000,5,500,'UI/L'], e_ldh:[50,10000,100,2000,'UI/L'], e_diur:[0,10,0,3,'mL/kg/h'], e_fr:[4,60,8,40,'rpm'],
+  k_horas:[0,720,0,200,'h'], k_plt:[1,1000,10,450,'×10⁹/L','en miles, no en absoluto'], k_inr:[0.5,12,0.8,6,''], k_ttpa:[0.5,10,0.8,5,'ratio'], k_axa:[0,3,0,1.5,'UI/mL'], k_dias:[0,60,0,30,'días'],
+  t_plt:[1,1000,10,450,'×10⁹/L','en miles: 62, no 62000'], t_pltprev:[1,1000,10,450,'×10⁹/L','en miles'], t_dt:[0,200,0,72,'h'], t_hdesde:[0,200,0,72,'h'],
+  t_pas:[30,300,60,220,'mmHg'], t_pad:[20,200,40,140,'mmHg'], t_ldh:[50,10000,100,2000,'UI/L'], t_ast:[1,5000,5,500,'UI/L'], t_lsn:[10,100,20,60,'UI/L'], t_fib:[10,1200,150,700,'mg/dL','en mg/dL, no g/L'], t_inr:[0.5,12,0.8,6,''],
+  h_ces:[0,10,0,5,'cesáreas'], h_fc:[20,250,50,180,'lpm'], h_pas:[30,300,60,200,'mmHg'], h_hb:[2,20,5,15,'g/dL'], h_plt:[1,1000,10,450,'×10⁹/L','en miles'], h_fib:[10,1200,150,700,'mg/dL','en mg/dL, no g/L']
+};
+function labelVR(id){ var el=document.getElementById(id); if(!el) return id; var p=el.previousElementSibling;
+  if(p&&p.tagName==='LABEL') return p.textContent.replace(/\s+/g,' ').trim();
+  var lab=el.parentNode&&el.parentNode.querySelector('label'); return lab?lab.textContent.replace(/\s+/g,' ').trim():id; }
+function vrMsg(id){ var r=VR[id]; if(!r) return null; var v=document.getElementById(id).value,nivel=validarValor(v,r); if(nivel==='ok') return null;
+  var min=r[0],max=r[1],tmin=r[2],tmax=r[3],u=r[4]||'',hint=r[5];
+  if(nivel==='error'){ var x=parseFloat(v); var txt=isNaN(x)?'no es un número':'imposible (rango '+min+'–'+max+(u?' '+u:'')+')'; return {nivel:'error',msg:txt+(hint?' — '+hint:'')}; }
+  return {nivel:'warn',msg:'fuera de lo habitual ('+tmin+'–'+tmax+(u?' '+u:'')+')'+(hint?' — '+hint:'')}; }
+function mostrarVR(id){ var el=document.getElementById(id); if(!el) return; var m=vrMsg(id);
+  var box=document.getElementById(id+'_vr'); if(!box){ box=document.createElement('div'); box.id=id+'_vr'; box.className='vr-msg'; el.insertAdjacentElement('afterend',box); }
+  el.classList.remove('vr-bad','vr-warn');
+  if(!m){ box.style.display='none'; box.textContent=''; return; }
+  el.classList.add(m.nivel==='error'?'vr-bad':'vr-warn');
+  box.className='vr-msg '+(m.nivel==='error'?'vr-error':'vr-warn'); box.style.display='block'; box.textContent=(m.nivel==='error'?'⛔ ':'⚠️ ')+m.msg; }
+function recolectarVR(){ var errors=[],warns=[];
+  Object.keys(VR).forEach(function(id){ var el=document.getElementById(id); if(!el||el.offsetParent===null||el.value==='') return;
+    var m=vrMsg(id); if(!m) return; var o={label:labelVR(id),msg:m.msg}; if(m.nivel==='error') errors.push(o); else warns.push(o); });
+  return {errors:errors,warns:warns}; }
+function bannerVR(vr){ var h='';
+  if(vr.errors.length) h+='<div class="vrbanner err"><b>⛔ Datos imposibles — corrige antes de continuar:</b><ul>'+vr.errors.map(function(e){return '<li><b>'+e.label+'</b>: '+e.msg+'</li>';}).join('')+'</ul></div>';
+  if(vr.warns.length) h+='<div class="vrbanner warn"><b>⚠️ Revisa estos valores (fuera de rango habitual; se calculó igual):</b><ul>'+vr.warns.map(function(e){return '<li><b>'+e.label+'</b>: '+e.msg+'</li>';}).join('')+'</ul></div>';
+  return h; }
+document.addEventListener('input',function(e){ if(e.target&&e.target.id&&VR[e.target.id]) mostrarVR(e.target.id); });
+
+/* ---- ANEMIA render ---- */
+function evAnemia(){
+  var P=Object.assign(P_base(),{hb:gv('a_hb'),ferritina:gv('a_fer'),tsat:gv('a_tsat'),pcr:gv('a_pcr'),b12:gv('a_b12'),sint:gv('a_sint'),dif:ST.a_dif,dias:gv('a_dias'),comorbilidades:ST.a_com});
+  var r=evaluarAnemia(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,peso=n(P.peso),hb=n(P.hb),eg=n(P.eg),primerT=I.primerT;
+  var h=trace('Anemia preoperatoria');
+  h+='<div class="interp"><b>Interpretación</b>'
+    +'<div class="d">• Volemia gestacional ≈ <b>'+(I.vol||'—')+' mL</b>.</div>'
+    +'<div class="d">• Hierro: <b>'+I.fp.txt+'</b></div>'
+    +'<div class="d">• Severidad OMS: <b>'+(I.sev||'—')+'</b> · umbral transfusional local <b>Hb ≤'+I.umbral+'</b>.</div>'
+    +'<div class="d">• Ventana para optimizar: <b>'+(I.vSuf===true?'sí':I.vSuf===false?'no':'—')+'</b>.</div></div>';
+  // plan
+  var plan=[];
+  plan.push({p: n(P.ferritina)==null?2:3, t: n(P.ferritina)==null?'Clasifica primero: ferritina + TSAT (+PCR, B12/folato). No trates sin clasificar.':'Diagnóstico de hierro clasificado.'});
+  if(P.dif==='no_diferible'){
+    if(hb<=I.umbral&&P.sint==='si') plan.push({p:1,t:'Inaplazable + Hb '+hb+' ≤'+I.umbral+' sintomática → transfundir lo MÍNIMO (de a 1 U), cerrar ciclo PBM con hierro IV después.'});
+    else if(hb<=I.umbral) plan.push({p:1,t:'Inaplazable + Hb '+hb+' ≤'+I.umbral+' pero referida asintomática → operar con hierro IV peri-op y disparador transfusional preparado; reevalúa el síntoma bajo anestesia (la tolerancia cae).'});
+    else plan.push({p:2,t:'No diferible y Hb '+hb+' > umbral '+I.umbral+' → operar con hierro IV peri-op, minimizar pérdidas.'});
+    if(I.critHb) plan.push({p:1,t:'⚠ Hb CRÍTICA '+hb+' g/dL: reconsidera transfusión aunque la refiera asintomática — el margen fisiológico bajo anestesia es mínimo; no te ancles al "asintomática".'});
+  } else {
+    plan.push({p:2,t:'OPTIMIZAR, no transfundir: hay margen → corrige la causa con hierro.'});
+    if(primerT) plan.push({p:2,t:'1.er trimestre: hierro ORAL; si inminente y no alcanza → posponer/derivar a hematología.'});
+    else if((n(P.dias)==null||n(P.dias)>=21)&&!(hb<8)) plan.push({p:3,t:'2.º/3.er T con ≥3–4 sem y tolera oral → HIERRO ORAL (día por medio).'});
+    else plan.push({p:2,t:'2.º/3.er T, poco tiempo / intolerancia / Hb baja → HIERRO IV (carboximaltosa).'});
+  }
+  if(I.jehova) plan.push({p:2,t:'Testigo de Jehová → PBM máximo: hierro IV (2.º/3.er T), cell salvage, TXA periparto; EPO solo severa vía hematología.'});
+  plan.push({p:3,t:'Control: reticulocitos 1–2 sem; Hb+ferritina ~15 d (IV)/3–4 sem (oral); seguimiento POSPARTO (OMS <100 g/L).'});
+  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  // componentes
+  h+='<div class="sec">💉 Componentes / acciones</div>';
+  h+=compHtml({nm:'Hierro oral',ic:'💊',est:(P.dif!=='no_diferible'&&(n(P.dias)==null||n(P.dias)>=21))?'INDICAR':'EVALUAR',estT:(P.dif!=='no_diferible'&&(n(P.dias)==null||n(P.dias)>=21))?'INDICAR (1ª línea si hay tiempo)':'EVALUAR',
+    dosis:'Sulfato/fumarato ferroso aportando <span class="dose">40–80 mg de hierro elemental, día por medio</span>, en ayunas, lejos de calcio/IBP/té/café.',
+    reev:'Hb+ferritina a 2–3 sem (↑≥2 g/dL a 3–4 sem; reticulocitos antes).',
+    evitar:'Fraccionar en 3 tomas/día (↑hepcidina, ↓absorción); iniciar con &lt;3 sem para la cirugía; ignorar la intolerancia.',refs:['bsh2020','figo2025','ssasurPBM']});
+  h+=compHtml({nm:'Hierro IV (carboximaltosa)',ic:'🩸',est:(P.dif!=='no_diferible'&&!primerT)?'INDICAR':'EVALUAR',estT:primerT?'EVALUAR — evitar en 1.er T':((P.dif!=='no_diferible'&&!primerT)?'INDICAR — vía preferida 2.º/3.er T':'EVALUAR'),
+    dosis:'<span class="dose">Dosis única hasta 1000 mg</span> (cifra citada SSASUR), <b>tope 20 mg/kg = '+I.topeCbox+' mg</b> en '+peso+' kg. Tramos altos por tabla SSASUR (confirmar Ord. 3430). Sube Hb <b>2–3 g/dL en ~15 d</b>.',
+    reev:'Hb+ferritina ~15 d; reticulocitos a 7 d.',
+    evitar:'IV en 1.er trimestre; superar 20 mg/kg; transfundir a una ferropénica con 2–3 sem de margen.',
+    seg:'⚠ Vigila <b>hipofosfatemia</b> (efecto adverso de la carboximaltosa) si repites dosis; observa la infusión por hipersensibilidad; no readministres antes de evaluar respuesta.',refs:['ssasurPBM','figo2025','cochraneFe']});
+  var grEval=(P.dif==='no_diferible'&&(I.critHb||(hb<=I.umbral&&P.sint==='si')));
+  h+=compHtml({nm:'Transfusión de GR',ic:'🅾️',est:grEval?'EVALUAR':'NO INDICAR',estT:grEval?(I.critHb?'EVALUAR — Hb crítica <6, reconsidera pese a "asintomática"':'EVALUAR — solo grave sintomática sin tiempo'):'NO INDICAR de rutina',
+    dosis:'Sin fórmula por volemia. <span class="dose">1 U sube la Hb ~1 g/dL</span> → transfunde <b>de a 1 U y reevalúa</b>. Umbral HHHA <b>Hb ≤7</b> sintomática (cardiopatía → 8,5–10).',
+    reev:'Hb post; CIERRA el ciclo PBM con hierro IV (la transfusión no repone el depósito).',
+    evitar:'Transfundir "para llegar a 10" en ferropénica programada — el restrictivo reduce exposición sin aumentar mortalidad 30 d (RR 1,01); en HPP moderada 1–2 U mostraron señal de DAÑO (Williams 2025, RR 7,00). Olvidar el hierro post.',refs:['aabb2023','williams2025','hhhaTransf']});
+  // docente
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  if(I.nadir) h+='<div class="caja"><b>Nadir dilucional 28–32 sem.</b> El plasma sube ~50% y diluye la Hb. '+(r.decision==='optimizar'?'Aquí no es solo dilución: la ferritina prueba depósito vacío → trata el hierro.':'Pide ferritina antes de etiquetar ferropenia.')+'</div>';
+  if(n(P.pcr)!=null&&n(P.pcr)>5) h+='<div class="caja"><b>Ferritina poco fiable.</b> Reactante de fase aguda: con PCR alta puede ser "normal" pese a depósito vacío → usa TSAT &lt;20%.</div>';
+  h+='<div class="caja"><b>Aloinmunización en mujer fértil.</b> Transfundir hoy puede sensibilizarla y causar enfermedad hemolítica del feto/RN en embarazos futuros — argumento que ninguna app de transfusión general da, e inclina aún más a OPTIMIZAR.</div>';
+  if(primerT) h+='<div class="caja"><b>1.er trimestre + cirugía.</b> Evita IV en organogénesis; si inminente y el oral no alcanza: posponer si es seguro o derivar a hematología.</div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- CÓDIGO ROJO render ---- */
+var crT0=null,crTimer=null;
+function evCodigoRojo(){
+  var P=Object.assign(P_base(),{fc:gv('c_fc'),pas:gv('c_pas'),perdida:gv('c_perdida'),minparto:gv('c_minparto'),fib:gv('c_fib'),plt:gv('c_plt'),hb:gv('c_hb'),ca:gv('c_ca'),temp:gv('c_temp'),ph:gv('c_ph'),causa:ST.c_causa,com:ST.c_com,antico:ST.c_antico});
+  var r=evaluarCodigoRojo(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ crDetener(); o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp;
+  if(crT0===null){ crT0=Date.now(); crTick(); crTimer=setInterval(crTick,1000); }
+  var h='<div class="timerbar"><div><div class="lbl">Tiempo desde activación</div><div class="t" id="cr-clock">00:00</div></div><button onclick="crDetener()">⏸ Detener</button></div>';
+  h+=trace('CÓDIGO ROJO');
+  h+='<div class="interp alarma"><b>Interpretación</b>'
+    +'<div class="d">• Volemia gestacional ≈ <b>'+(I.vol||'—')+' mL</b>'+(I.pct!=null?' · pérdida ≈ <b>'+I.pct+'%</b> → shock <b>'+I.shock+'</b>':'')+'.</div>'
+    +(I.osi!=null?'<div class="d">• Índice de choque <b>'+I.osi+'</b> ('+(I.osiNivel==='transfusion'?'≥1,0 → transfusión urgente':I.osiNivel==='severo'?'≥1,7 → shock severo':I.osiNivel==='alerta'?'&gt;0,9 → alerta/UCI':'normal')+').</div>':'')
+    +'<div class="d">• '+(I.activarTM?'<b>ACTIVAR TRANSFUSIÓN MASIVA</b> (≥30% volemia / OSI alto / pérdida ≥1500 mL).':'Aún sin criterio firme de transfusión masiva — reevalúa con la tendencia.')+'</div></div>';
+  // plan
+  var plan=[];
+  plan.push({p:1,t:'AHORA (min 0): activar Código Rojo + roles · O₂ FiO₂ &gt;40% · 2 vías 14 G (330 mL/min) o 16 G · muestras (grupo, coagulación, FIBRINÓGENO, cruzar) · Foley 16 Fr.'});
+  plan.push({p:1,t:'AHORA: TXA 1 g IV en 10 min'+(I.txaVentana!=null?' — ventana: '+(I.txaVentana>0?'quedan '+I.txaVentana+' min de las 3 h':'FUERA de ventana (&gt;3 h, sin beneficio demostrado)'):' — hora del parto no ingresada: adminístralo igual si fue &lt;3 h y confirma la hora')+' · cristaloides '+I.cristaloides+' mL Ringer tibio.'});
+  plan.push({p:1,t:'AHORA: tratar la causa (4 T'+(I.causa?', aquí: '+I.causa.toUpperCase():'')+'). '+(I.causa==='tono'?'Atonía → uterotónicos escalonados.':'')});
+  plan.push({p:2,t:'MINUTOS: si persiste hipoperfusión → GR O-negativo sin cruzar'+(I.activarTM?' + activar TM 1:1:1':'')+'.'});
+  plan.push({p:2,t:'MINUTOS: corregir coagulopatía dirigida (fibrinógeno, plaquetas, Ca²⁺, temperatura, pH).'});
+  plan.push({p:3,t:'>60 min: escalar quirúrgico/mecánico (balón → B-Lynch/ligaduras → histerectomía si acretismo/rotura/previa central).'});
+  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  // componentes
+  h+='<div class="sec">💉 Componentes / dosis computadas</div>';
+  h+=compHtml({nm:'TXA',ic:'⏱️',est:'INDICAR',estT:'INDICAR · CÓDIGO ROJO',
+    dosis:'<span class="dose">1 g (100 mg/mL) IV a 1 mL/min en 10 min</span>, lo antes posible. '+(I.txaVentana!=null?'Ventana restante: '+(I.txaVentana>0?'<b>'+I.txaVentana+' min</b>':'<b>FUERA</b>'):'<b>Hora del parto no ingresada</b> — válido si &lt;3 h del parto; confírmala.'),
+    reev:'2.ª dosis 1 g si sigue a 30 min o reaparece &lt;24 h.',
+    evitar:'Administrar &gt;3 h del PARTO (sin beneficio); confundir la ventana con "desde el ingreso" — la referencia es la hora del parto.',refs:['whotxa','woman']});
+  if(I.causa==='tono'||I.causa==null) h+=compHtml({nm:'Uterotónicos (atonía)',ic:'💪',est:'INDICAR',estT:'INDICAR · escalonado',
+    dosis:'1) Oxitocina <span class="dose">5 UI IV lenta (bolo NUNCA &gt;5 UI) o 10 UI IM</span> + infusión 40 UI/500 mL a 125 mL/h. '
+      +'2) '+(I.hta?'<b>⛔ Ergometrina contraindicada (HTA/preeclampsia)</b>':'Ergometrina <span class="dose">0,5 mg IM</span> (ACOG 0,2 mg), c/2–4 h, máx 5')+'. '
+      +'3) '+(I.asma?'<b>⛔ Carboprost contraindicado (asma)</b>':'Carboprost <span class="dose">0,25 mg IM</span> c/15–90 min, máx 8 (=2 mg)')+'. '
+      +'4) Misoprostol 600–1000 µg SL.',
+    reev:'Tono uterino tras cada paso; si no cede → mecánico/quirúrgico.',
+    evitar:(I.hta?'Ergometrina (crisis HTA). ':'')+(I.asma?'Carboprost (broncoespasmo). ':'')+'Oxitocina en bolo IV rápido &gt;5 UI (hipotensión/arritmia).',refs:['gt52','acog183','figoPPH']});
+  if(I.causa==='tono'||I.causa==null) h+=compHtml({nm:'Atonía refractaria — cuándo escalar',ic:'⏫',est:'EVALUAR',estT:'ESCALAR sin demora si no cede',
+    dosis:'Si a los <b>15–20 min</b> de uterotónicos completos el sangrado sigue → <b>balón de Bakri</b> (relleno 300–500 mL) o compresión bimanual YA. Si el balón no cohíbe en <b>10–15 min</b> → laparotomía: <b>B-Lynch</b>/suturas de compresión → ligadura de uterinas/hipogástricas → <b>histerectomía de hemostasia</b> si falla la conservadora o hay acretismo/rotura. En paralelo: TXA si en ventana, fibrinógeno si &lt;200.',
+    reev:'Tono y sangrado tras CADA paso; no encadenes esperas largas.',
+    evitar:'Esperar a los "60 min" para plantear el balón. Repetir uterotónicos indefinidamente sin medida mecánica/quirúrgica. Olvidar que acretismo/rotura saltan directo a histerectomía.',refs:['gt52','figoPPH']});
+  h+=compHtml({nm:'Glóbulos rojos',ic:'🅾️',est:I.activarTM?'INDICAR':'EVALUAR',estT:I.activarTM?'INDICAR · O-neg sin cruzar':'EVALUAR',
+    dosis:'Para meta Hb 10 (contexto TM): <span class="dose">'+(I.uGR!=null?I.uGR+' U':'— (ingresa Hb)')+'</span>, luego seguir ratio. O-negativo sin cruzar si urge.',
+    reev:'Hb y hemodinamia; mantener Hb ≥10/Hto ≥30% en TM (HHHA).',
+    evitar:'Esperar el cruce completo si hay shock; transfusión masiva no balanceada (sin PFC/plaquetas).',refs:['hhhaTransf','aabb2023']});
+  h+=compHtml({nm:'Fibrinógeno',ic:'🧬',est:I.hipofib?'INDICAR':'EVALUAR',estT:I.hipofib?'INDICAR (fib &lt;200)':'EVALUAR',
+    dosis:'Crioprecipitado <span class="dose">'+(I.uCrio||'—')+' U</span> (1 U/10 kg) o concentrado <span class="dose">'+(I.gConc!=null?I.gConc+' g':'—')+'</span>. Meta &gt;200 mg/dL.',
+    reev:'Clauss/FIBTEM A5 a 30–60 min; objetivo &gt;200.',
+    evitar:'Usar PFC para subir el fibrinógeno (lo eleva poco); esperar TP/TTPa "normales" — el fibrinógeno cae primero (Charbit).',refs:['gt52','hhhaTransf','charbit','obs2']});
+  h+=compHtml({nm:'Plaquetas',ic:'🟡',est:(I.plaq75>0)?'EVALUAR':'NO INDICAR',estT:(I.plaq75>0)?'EVALUAR':'NO INDICAR por recuento',
+    dosis:'Meta &gt;50 (&gt;75 si sangrado activo; ≥70 si se plantea neuraxial, SOAP). '+(I.plaq50!=null?'Para &gt;75: <span class="dose">'+(I.plaq75>0?I.plaq75+' pool(s)':'no requiere')+'</span>.':''),
+    reev:'Recuento con la TM; no transfundir solo por número si &gt;75 sin sangrado.',
+    evitar:'Transfundir plaquetas con recuento &gt;75 sin sangrado activo.',refs:['hhhaTransf','soap2021']});
+  h+=compHtml({nm:'Calcio iónico',ic:'🦴',est:I.caBaja?'INDICAR':'EVALUAR',estT:I.caBaja?'INDICAR (Ca &lt;1,1)':'EVALUAR',
+    dosis:'<span class="dose">1 g gluconato cálcico</span> + 1 g por cada 4 U de GR/PFC. Meta Ca iónico &gt;1,1 (ESAIC &gt;0,9).',
+    reev:'Ca iónico seriado en la TM.',
+    evitar:'Ignorar el calcio en transfusión masiva — el citrato lo quela y falla la cascada pese a reponer factores.',refs:['esaic']});
+  if(I.antico){ var REV={
+    'HBPM':{t:'HBPM &lt;24 h',d:'Protamina <span class="dose">~1 mg por 1 mg de enoxaparina</span> (o 1 mg/100 UI anti-Xa) de la última dosis si &lt;8 h; mitad si 8–12 h. Reversión <b>PARCIAL</b> (neutraliza anti-IIa, no todo el anti-Xa).',e:'Creer que revierte por completo la HBPM (el anti-Xa residual persiste). Protamina en bolo rápido (hipotensión/anafilaxia).',r:['esaic','asra5']},
+    'HNF':{t:'HNF IV',d:'Protamina <span class="dose">~1 mg/100 U</span> de la HNF de las últimas 2–3 h (vida media corta → suspender suele bastar). Máx 50 mg, lento.',e:'Infusión rápida de protamina; sobredosificarla (en exceso es ella misma anticoagulante).',r:['esaic','asra5']},
+    'warfarina':{t:'Warfarina',d:'<span class="dose">CCP-4F 25–50 U/kg IV</span> + <span class="dose">vitamina K 10 mg IV</span> (preferible a PFC: reversión inmediata vs. horas). PFC 15 mL/kg solo si no hay CCP.',e:'Usar solo vitamina K (tarda horas) en hemorragia activa. Olvidar la vit K → rebote al ceder el CCP.',r:['bshvalve','asra5','hhhaTransf']},
+    'DOAC':{t:'DOAC',d:'Dabigatrán → <span class="dose">idarucizumab 5 g IV</span>. Anti-Xa (rivaroxabán/apixabán) → <span class="dose">andexanet alfa</span> o, si no hay, <span class="dose">CCP-4F 50 U/kg</span>. + TXA + control de daños.',e:'Esperar el nivel de fármaco para actuar en hemorragia vital. Asumir que el CCP revierte el dabigatrán (es el idarucizumab).',r:['wienhold','esaic','asra5']} }[I.antico];
+    if(REV) h+=compHtml({nm:'Reversión de anticoagulación — '+REV.t,ic:'⛑️',est:'INDICAR',estT:'REVERTIR · hemorragia vital',dosis:REV.d,reev:'Coagulación tras revertir; el objetivo es la hemostasia, no un número. Coordina con hematología.',evitar:REV.e,refs:REV.r});
+  }
+  // docente
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  if(I.hipofib) h+='<div class="caja"><b>Hipofibrinogenemia.</b> El basal del embarazo es 350–650 mg/dL: un "normal" de no-embarazada ya es BAJO y predice gravedad (2,63× por cada −1 g/L) — repón ya, no esperes TP/TTPa. '+srcMini([['charbit','Charbit 2007']])+'</div>';
+  if(I.triadaLetal){ var vx=[]; if(n(P.temp)!=null&&n(P.temp)<36)vx.push('hipotermia '+n(P.temp)+' °C'); if(I.caBaja)vx.push('hipocalcemia '+n(P.ca)+' mmol/L'); if(I.acidosis)vx.push('acidosis pH '+I.ph);
+    h+='<div class="caja"><b>Tríada letal'+(vx.length?' — presente: '+vx.join(' + '):'')+'.</b> Hipotermia + acidosis + hipocalcemia se potencian con la coagulopatía y la perpetúan: calienta a ≥36 °C, repón Ca²⁺, perfunde para corregir la acidosis (bicarbonato no de rutina). '+srcMini([['esaic','ESAIC']])+'</div>'; }
+  h+='<div class="caja"><b>El índice de choque delata antes que la PA.</b> La gestante tiene volemia +45–50% '+srcMini([['somapillay','Soma-Pillay']])+': mantiene la PA y luego se desploma; un OSI &gt;1,0 marca transfusión urgente aunque la PAS aún "tolere".</div>';
+  h+='<div class="caja"><b>Discrepancias ancladas.</b> Ratio TM <b>1:1:1</b> (HHHA; el 1:1:1 viene de trauma sin gestantes → la HPP es fibrinógeno-dependiente, pasa pronto a goal-directed). Fibrinógeno meta &gt;200 (HHHA/GTG-52; GTG-47 dice ≥1,5 g/L). Plaquetas neuraxial: HEMO usa <b>SOAP ≥70</b>; HHHA 50.000 para PL genérica.</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul><li>TXA en &lt;3 h del PARTO, 1 g/10 min.</li><li>Fibrinógeno cae primero — repón a meta &gt;200 sin esperar TP/TTPa.</li><li>Calcio: el citrato lo quela en la TM.</li><li>La comorbilidad reescribe la escalera (asma→no carboprost; HTA→no ergometrina).</li><li>El OSI delata el shock antes que la PA.</li></ul></div>';
+  o.innerHTML=out2(vr,h); crTick(); scrollOut();
+}
+function crTick(){ if(crT0===null) return; var s=Math.floor((Date.now()-crT0)/1000),el=document.getElementById('cr-clock'); if(el) el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function crDetener(){ if(crTimer){clearInterval(crTimer);crTimer=null;} crT0=null; }
+
+/* ---- ECLAMPSIA render ---- */
+function evEclampsia(){
+  var P=Object.assign(P_base(),{pas:gv('e_pas'),pad:gv('e_pad'),fc:gv('e_fc'),plaquetas:gv('e_plt'),ast:gv('e_ast'),ldh:gv('e_ldh'),diuresis:gv('e_diur'),reflejos:gv('e_refl'),fr:gv('e_fr'),situacion:gv('e_sit'),magnesio_ya:gv('e_mgya'),via:gv('e_via'),sintomas:ST.e_sint,comorbilidad:ST.e_com});
+  var r=evaluarEclampsia(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('ECLAMPSIA / PE severa');
+  h+='<div class="interp alarma"><b>Interpretación</b>'
+    +'<div class="d">• '+(I.crisis?'<b>CRISIS HIPERTENSIVA</b> (≥160/110) — tratar en 30–60 min':'PA no en rango de crisis ahora')+'.</div>'
+    +(I.hellp?'<div class="d">• <b>Criterios HELLP completos</b> (LDH≥600 + AST/ALT&gt;2×LSN + plaquetas&lt;100k) → decide la TENDENCIA, no el número aislado.</div>':'')
+    +(I.tox?'<div class="d">• <b>TOXICIDAD POR Mg</b> (arreflexia / FR&lt;12 / oliguria) → gluconato de calcio AHORA.</div>':'')
+    +'<div class="d">• Vía: '+(I.gate?'plaquetas → <b>'+(I.gate==='razonable'?'neuraxial razonable (≥70)':I.gate==='individualizar'?'individualizar (50–70)':'preferir general (&lt;50)')+'</b>':'(ingresa plaquetas)')+'.</div>'
+    +(I.crcl!=null?'<div class="d">• CrCl ≈ '+I.crcl+' mL/min'+(I.irMg?' <b>(&lt;30 → reducir mantenimiento de Mg y medir magnesemia)</b>':' (sin ajuste renal de Mg)')+'. <span class="small">CrCl no validado en embarazo.</span></div>':'')
+    +'</div>';
+  var plan=[];
+  if(I.sit==='CONVULSIONA ahora'){
+    plan.push({p:1,t:'AHORA: proteger vía aérea, decúbito lateral izquierdo, O₂; NO forzar la boca.'});
+    plan.push({p:1,t:'AHORA: MgSO₄ carga 4–6 g IV en 20–30 min (típ. 4 g) → infusión 1–2 g/h.'});
+    plan.push({p:1,t:'AHORA: gluconato de calcio 1 g IV PREPARADO (antídoto a la vista).'});
+    if(I.reBolo) plan.push({p:1,t:'Convulsiona PESE a infusión de Mg → re-bolo por convulsión recurrente (cifra sin número verificado — ver tarjeta).'});
+  } else if(I.sit==='Postparto / recurrente'){
+    plan.push({p:1,t:'AHORA: la ventana de eclampsia sigue ABIERTA postparto — tratar según haya o no convulsión.'});
+    plan.push({p:1,t:'AHORA: MgSO₄ carga 4–6 g IV en 20–30 min → 1–2 g/h; gluconato de Ca 1 g preparado.'});
+  } else {
+    plan.push({p:1,t:'AHORA: MgSO₄ profiláctico carga 4–6 g IV en 20–30 min (típ. 4 g) → 1–2 g/h; gluconato de Ca 1 g preparado.'});
+  }
+  if(I.crisis) plan.push({p:1,t:'AHORA: antihipertensivo de crisis ('+(I.prefHidra?'hidralazina/nifedipino — labetalol des-priorizado por comorbilidad':'labetalol 1ª línea')+'). Meta GRADUAL ~140–150 sistólica, NO normalizar.'});
+  plan.push({p:2,t:'Decisión de parto: '+(I.interrumpir?'INTERRUMPIR tras estabilizar (≥34 sem / HELLP / edema pulmonar).':'viabilidad–33+6 estable → diferir 24–48 h SOLO para corticoides (&gt;48 h sin beneficio).')});
+  plan.push({p:2,t:'Vía anestésica = gate por plaquetas (SOAP ≥70). Verifica recuento dentro de 6 h y vigila tendencia.'});
+  plan.push({p:3,t:'Continuo: PA, reflejos, FR, diuresis (toxicidad Mg); fluidos RESTRINGIDOS; repetir plaquetas/AST/LDH por tendencia.'});
+  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  h+='<div class="sec">💉 Componentes / dosis computadas</div>';
+  h+=compHtml({nm:'Sulfato de magnesio (MgSO₄)',ic:'💉',est:'INDICAR',estT:'INDICAR · anticonvulsivante de elección',
+    dosis:'<span class="dose">Carga 4–6 g IV en 20–30 min (típ. 4 g)</span> → mantenimiento <span class="dose">1–2 g/h</span> en infusión. NO se dosifica por peso (sin umbral de 70 kg).',
+    reev:'Reflejos, FR (&gt;12), diuresis (&gt;0,5 mL/kg/h) cada hora.'+(I.irMg?' CrCl&lt;30: reducir mantenimiento Y medir magnesemia.':''),
+    evitar:'NO usarlo como antihipertensivo (no baja la PA). NO suspenderlo porque la PA esté controlada. En anestesia general el Mg potencia el bloqueante neuromuscular. RE-BOLO ante convulsión recurrente: re-bolo IV lento <b>sin cifra dura</b> (ninguna fuente primaria fija la dosis; Cochrane: certeza muy baja) → según protocolo local + descartar otras causas y toxicidad. En CrCl&lt;30: reducir mantenimiento y medir magnesemia (cifra de reducción por protocolo institucional).',refs:['acog222','magpie']});
+  h+=compHtml({nm:'Gluconato de calcio (antídoto)',ic:'🧪',est:I.tox?'INDICAR':'EVALUAR',estT:I.tox?'ADMINISTRAR (toxicidad presente)':'PREPARAR (a la vista)',
+    dosis:'<span class="dose">1 g IV (10 mL de gluconato de calcio al 10%) lento</span> ante signos de toxicidad por Mg.',
+    reev:'Reaparición de reflejos, recuperación de FR; revisar velocidad de infusión de Mg y diuresis.',
+    evitar:'NO esperar al paro: se prepara ANTES desde que se inicia el Mg. NO confundir con cloruro de calcio (dosis distinta).',refs:['acog222']});
+  h+=compHtml({nm:'Antihipertensivo de crisis',ic:'📉',est:I.crisis?'INDICAR':'EVALUAR',estT:I.crisis?'INDICAR (crisis ≥160/110)':'EVALUAR (PA sub-crisis)',
+    dosis:(I.prefHidra?'<b>Hidralazina/nifedipino priorizados</b> (labetalol des-priorizado por comorbilidad). ':'<b>Labetalol 1ª línea.</b> ')+'Labetalol IV <span class="dose">20→40→80 mg c/10 min</span> · Hidralazina IV <span class="dose">5–10 mg, repetir c/20 min</span> · Nifedipino VO <span class="dose">10 mg c/20–30 min</span> (solo si deglución segura). Meta GRADUAL ~140–150 sistólica.',
+    reev:'PA c/10–15 min hasta meta gradual; vigilar hipotensión materna brusca (hidralazina) que hipoperfunde al feto.',
+    evitar:'Labetalol si asma/bradicardia/bloqueo AV/ICC. Nifedipino ORAL si convulsiona o deglución no segura. Normalizar la PA de golpe (la circulación uteroplacentaria NO autorregula). Confiar en el MgSO₄ para bajar la PA. Dosis ancladas a ACOG (verificado); la <b>Guía Perinatal MINSAL 2024</b> es la edición vigente local — alinear con ella.',refs:['acog222','acog767','minsalPerinatal']});
+  h+=compHtml({nm:'Decisión de parto / interrupción',ic:'👶',est:I.interrumpir?'INDICAR':'EVALUAR',estT:I.interrumpir?'INTERRUMPIR tras estabilizar':'DIFERIR 24–48 h (solo corticoides)',
+    dosis:'No es dosis: define el momento. ≥34 sem o HELLP → interrupción tras estabilizar. Viabilidad–33+6 estable → diferir 24–48 h SOLO para completar corticoides.',
+    reev:'Estado materno (PA, plaquetas, función hepática/renal) y fetal continuo; HELLP contraindica el expectante prolongado.',
+    evitar:'Manejo expectante prolongado con HELLP. Diferir &gt;48 h buscando madurez si hay criterios de interrupción inmediata.',refs:['soap2021','acog222']});
+  h+=compHtml({nm:'Vía anestésica',ic:'💉',est:(I.gate==='razonable')?'INDICAR':(I.gate==='general'?'CONTRAINDICADO':'EVALUAR'),estT:(I.gate==='razonable')?'NEURAXIAL razonable (≥70)':(I.gate==='individualizar'?'INDIVIDUALIZAR (50–70)':I.gate==='general'?'GENERAL (<50) + alerta vía aérea':'EVALUAR (ingresa plaquetas)'),
+    dosis:'Neuraxial = 1ª línea sin trombocitopenia (gate SOAP ≥70). Verificar recuento dentro de 6 h previas a punción/retiro de catéter.',
+    reev:'Repetir recuento dentro de 6 h; vigilar TENDENCIA descendente (HELLP) antes de puncionar.',
+    evitar:'Neuraxial con plaquetas &lt;50 o en caída activa. Subestimar la anestesia general: añade edema de vía aérea + alza tensional por intubación, peligrosos en PE.',refs:['soap2021','lambert2014']});
+  if(I.via==='general') h+=compHtml({nm:'General + MgSO₄ — bloqueo neuromuscular',ic:'⚠️',est:'EVALUAR',estT:'ALERTA · ajustar el relajante',
+    dosis:'El Mg <b>potencia los bloqueantes no despolarizantes</b>: reduce la dosis inicial de <b>rocuronio (~50%)</b> y titula con <b>TOF obligatorio</b> antes de extubar. Succinilcolina para RSI: efecto algo prolongado y las fasciculaciones pueden faltar. Ten <b>sugammadex</b> disponible. Atenúa la respuesta presora a la laringoscopia (la PE no tolera el pico tensional).',
+    reev:'TOF antes de extubar; no asumas reversión completa "por tiempo".',
+    evitar:'Dosis estándar de relajante "de memoria" bajo MgSO₄ (bloqueo prolongado / curarización residual). Extubar sin TOF. Intubar sin atenuar el alza tensional.',refs:['lambert2014','acog222']});
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  if(I.crisis) h+='<div class="caja"><b>Crisis HTA.</b> El ACV materno es la principal causa de muerte en preeclampsia y su riesgo se dispara sobre 160/110. Pero el flujo uteroplacentario NO autorregula → meta de descenso GRADUAL a ~140–150, no normalizar. '+srcMini([['acog222','ACOG PB 222']])+'</div>';
+  if(I.hellp) h+='<div class="caja"><b>HELLP / tendencia.</b> Lo que decide NO es el número aislado sino la TENDENCIA: el recuento cae por consumo, así que un 88.000 estable no es lo mismo que un 88.000 cayendo. Cruza con el escenario Trombocitopenia. '+srcMini([['soap2021','SOAP 2021']])+'</div>';
+  if(I.tox) h+='<div class="caja"><b>Toxicidad por Mg (renal-dependiente y secuencial).</b> La pérdida del reflejo rotuliano es el PRIMER signo, luego depresión respiratoria (FR&lt;12) y, si no se actúa, paro. Antídoto: gluconato de calcio 1 g IV, preparado de antemano. '+srcMini([['acog222','ACOG PB 222']])+'</div>';
+  if(I.via==='neuraxial') h+='<div class="caja"><b>Neuraxial = 1ª línea</b> sin trombocitopenia (SOAP: ≥70 razonable, 50–70 individualizar). Evita la anestesia general, que en PE añade edema de vía aérea y alza tensional por intubación. '+srcMini([['lambert2014','Lambert 2014']])+'</div>';
+  if(I.postparto) h+='<div class="caja"><b>Eclampsia postparto.</b> El parto NO cierra la ventana: una parte importante de las eclampsias ocurre tras el parto. Mantén profilaxis con Mg y vigilancia de PA/síntomas en el puerperio. '+srcMini([['acog222','ACOG PB 222']])+'</div>';
+  h+='<div class="caja"><b>Si concurre HPP (atonía):</b> ⛔ ergometrina EXCLUIDA en HTA/preeclampsia (vasoconstrictora → crisis HTA/ACV) → derivar a oxitocina (1ª línea) / carboprost (precaución si asma).'+srcMini([['gt52','GTG-52']])+'</div>';
+  h+='<div class="caja"><b>Anclaje local.</b> Default = Guía Perinatal MINSAL <b>2024</b> (edición vigente) alineada con ACOG PB 222 (verificada). Plaquetas neuraxial: decisión del equipo = <b>SOAP ≥70</b> (neuraxial obstétrico); HHHA 50.000 y AABB ≥50 son para PL/cirugía NO neuraxial (pregunta distinta).</div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- ANTICOAGULACIÓN render ---- */
+function badgeEst(b){ if(/NEURAXIAL OK/.test(b)) return 'INDICAR'; if(/CONTRA|REVERTIR/.test(b)) return 'CONTRAINDICADO'; return 'EVALUAR'; }
+var DOSIS_FARMACO={
+  'AAS':{dosis:'Intervalo 0 h: AAS sola NO difiere la neuraxial (ASRA es tajante). El riesgo aparece en COMBINACIÓN con HBPM/tienopiridina.',reev:'Sin reloj propio; vigilar coadyuvantes.',evitar:'Diferir la técnica "por la aspirina" sola — no está justificado.',refs:['asra5']},
+  'HBPM profiláctica':{dosis:'Intervalo <span class="dose">≥12 h</span> (ASRA 5.ª, grade IC). En IR (CrCl 30–49 <b>y</b> &lt;30): <b>media de la última dosis</b> (ASRA 5.ª verbatim, para evitar efecto exagerado/prolongado). anti-Xa ≤0,1 IU/mL = efecto indetectable. ESAIC: duplicar el intervalo o media dosis si &lt;30.',reev:'Tras ≥12 h; en IR, considerar medir anti-Xa (≤0,1) sobre todo en edad avanzada/obesidad.',evitar:'Puncionar con dosis completa en IR sin reducirla. Retirar catéter &lt;12 h de la dosis; reiniciar HBPM &lt;4 h tras retirar catéter.',refs:['asra5','soap2018','esaic2022']},
+  'HBPM terapéutica':{dosis:'Intervalo <span class="dose">≥24 h</span> (ASRA 5.ª, grade IC). "Dosis alta" de referencia: enoxaparina 1 mg/kg c/12 h. En IR (CrCl 30–49 <b>y</b> &lt;30): <b>media de la última dosis</b> (ASRA 5.ª verbatim). anti-Xa ≤0,1 = indetectable, considerar medirlo si &lt;24 h en IR/edad avanzada. ESAIC: duplicar el intervalo (48 h) o media dosis si &lt;30.',reev:'A las 24 h; en IR, media de la última dosis ± anti-Xa ≤0,1.',evitar:'Negociar el ≥24 h por un INR normal — el INR no mide la HBPM. El trabajo de parto espontáneo "rompe" el intervalo: planifica analgesia alternativa antes.',refs:['asra5','soap2018','rcog37b','highlow']},
+  'HNF IV':{dosis:'Intervalo <span class="dose">≥4–6 h Y TTPa (ratio) normal</span>. Reversión urgente: protamina ~1 mg/100 U de HNF de las últimas 2–3 h (parcial para HBPM).',reev:'Reloj + ratio TTPa; si HNF &gt;4–5 días, verificar plaquetas (gate TIH).',evitar:'Confiar solo en el reloj o solo en el TTPa: el ↑FVIII/fibrinógeno gestacional puede normalizar el TTPa pese a heparina residual.',refs:['asra5','rcog37b']},
+  'HNF SC profiláctica':{dosis:'Intervalo <span class="dose">≥12 h</span> (periparto, RCOG).',reev:'A las 12 h; si HNF/HBPM &gt;4 días, contar plaquetas antes de puncionar (ASRA 5.ª, grade IC — gate TIH).',evitar:'Omitir el recuento plaquetario si HNF/HBPM &gt;4 días (ASRA 5.ª, grade IC): riesgo de TIH, inicio típico 5–10 días (ASH 2018).',refs:['rcog37b','asra5','ash2018hit']},
+  'warfarina':{dosis:'Suspender ~5 días <span class="dose">Y INR en rango normal documentado</span>. Reversión urgente: CCP-4F 25–50 U/kg IV + vitamina K 10 mg IV (preferible a PFC; si no hay CCP: PFC 15 mL/kg, parcial).',reev:'Con INR del laboratorio en rango; no basta "pasaron 5 días".',evitar:'Usar "&lt;1,4" inventado ni "pasaron 5 días" a secas. Nota de trazabilidad: el verbatim ASRA 5.ª es "INR &lt;1,5"; el default "rango normal del laboratorio" es decisión del operador.',refs:['asra5','bshvalve']},
+  'DOAC':{dosis:'<b>Contraindicados anteparto</b> (datos fetales insuficientes). Conversión preconcepcional: dosis alta <span class="dose">≥72 h</span>; rivaroxabán/edoxabán baja ≥24 h (ASRA+ESAIC); apixabán ≥36 h (ESAIC); dabigatrán ≥48 h (ESAIC). <b>Dabigatrán + IR: idarucizumab / NO neuraxial, SIN reloj fijo.</b>',reev:'Con residual &lt;30 ng/mL o anti-Xa ≤0,1 UI/mL.',evitar:'Atribuir a ASRA lo que solo da ESAIC. Usar un reloj fijo de 120 h para dabigatrán+IR — esa cifra NO tiene fuente primaria (fail-safe en su lugar).',refs:['asra5','esaic2022','wienhold']},
+  'clopidogrel':{dosis:'Intervalo <span class="dose">≥5–7 días</span>.',reev:'Tras 5–7 días; el riesgo es la combinación con AAS/HBPM.',evitar:'Acortar el intervalo; leer el fármaco aislado si hay coadyuvantes.',refs:['asra5']},
+  'ticagrelor':{dosis:'Intervalo <span class="dose">≥5 días</span>.',reev:'Tras 5 días.',evitar:'Acortar el intervalo.',refs:['asra5']}
+};
+function evAnticoag(){
+  var P=Object.assign(P_base(),{farmaco:gv('k_far'),doac_tipo:gv('k_dt'),doac_dosis:gv('k_dd'),horas:gv('k_horas'),indicacion:gv('k_ind'),plaquetas:gv('k_plt'),inr:gv('k_inr'),ttpa:gv('k_ttpa'),anti_xa:gv('k_axa'),dias_heparina:gv('k_dias'),sangrado:gv('k_sang'),coadyuvantes:ST.k_coad});
+  var r=evaluarAnticoag(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('Anticoagulación / neuraxial');
+  if(I.sinFarmaco){ o.innerHTML=barraAcciones()+h+'<div class="interp"><b>Sin anticoagulante</b><div class="d">No hay reloj farmacológico que cumplir. Verifica plaquetas (SOAP ≥70 / HHHA 50) y coagulación basal antes de la técnica.</div></div>'+continuidadBar(); scrollOut(); return; }
+  var iv=I.intervalo,horas=n(P.horas),okVerde=(/NEURAXIAL OK/.test(I.badge));
+  h+='<div class="interp'+(okVerde&&!I.doacSinEG?'':' alarma')+'"><b>Interpretación — '+I.farmaco+'</b>'
+    +(I.doacSinEG?'<div class="d"><b>⚠ DOAC + EG no ingresada:</b> los DOAC están contraindicados anteparto. Si esta paciente está embarazada, el caso es CONVERTIR (no mantener) → ingresa la EG para el veredicto correcto.</div>':'')
+    +'<div class="d">• Intervalo requerido fármaco→punción: <b>'+(iv.h>0?'≥'+iv.h+' h':'no aplica (AAS)')+'</b>'+(iv.extra?' '+iv.extra:'')+(iv.src&&iv.src!=='asra5'?' <span class="small">('+iv.src+')</span>':'')+'.</div>'
+    +(horas!=null?'<div class="d">• Transcurridas <b>'+horas+' h</b> → '+(I.delta>0?'<b>faltan '+I.delta+' h</b>':'<b>intervalo cumplido</b>')+'.</div>':'<div class="d">• Horas desde la última dosis: <b>no verificable</b> → fail-safe.</div>')
+    +(I.crcl!=null?'<div class="d">• CrCl ≈ <b>'+I.crcl+' mL/min</b> ('+I.claseRenal+')'+(I.imc!=null&&I.imc>=30?' · peso de cálculo ajustado '+I.pesoCG+' kg (IMC '+I.imc+')':'')+'. <span class="small">CrCl no validado en embarazo.</span></div>':'')
+    +'<div class="d">• Co-gate plaquetas: '+(I.cogatePlaq?'<b>&lt;70 → el fármaco NO es el único obstáculo</b> (ver Trombocitopenia)':'OK (≥70 SOAP / ≥50 HHHA)')+'.</div>'
+    +(I.inrAlto?'<div class="d">• <b>INR '+n(P.inr)+' documentado pero ≥1,5</b> → fuera de rango (ASRA: INR &lt;1,5 / rango normal local). El tiempo transcurrido NO basta: no puncionar.</div>':'')
+    +(I.ttpaAlto?'<div class="d">• <b>TTPa ratio '+n(P.ttpa)+' prolongado (&gt;1,2)</b> → heparina residual pese al reloj: no puncionar.</div>':'')
+    +(I.axaAlto?'<div class="d">• <b>anti-Xa '+I.axa+' UI/mL detectable (&gt;0,1)</b> → efecto HBPM residual: no puncionar aunque el intervalo se haya cumplido.</div>':'')
+    +(I.axaOk?'<div class="d">• anti-Xa '+I.axa+' ≤0,1 UI/mL → efecto indetectable (confirma seguridad).</div>':'')
+    +'<div class="d" style="margin-top:6px;font-size:1.05rem">→ VEREDICTO: <b>'+I.badge+'</b></div></div>';
+  // técnica + fármaco
+  h+='<div class="sec">💉 Conducta</div>';
+  h+=compHtml({nm:'Técnica neuraxial',ic:'💉',est:badgeEst(I.badge),estT:I.badge,
+    dosis:'No dosifica fármaco: compara el reloj del fármaco con las horas transcurridas. '+(I.delta!=null?(I.delta>0?'<b>Faltan '+I.delta+' h.</b>':'<b>Intervalo cumplido.</b>'):'Hora no verificable → no puncionar.'),
+    reev:'Repetir cuando se cumpla el intervalo; verificar plaquetas dentro de 6 h previas a punción/retiro de catéter.',
+    evitar:'Puncionar "porque el INR/TTPa está normal" si no se cumplió el reloj del fármaco. Retirar catéter &lt;12 h de la dosis; reiniciar HBPM &lt;4 h tras retirar el catéter.',refs:['asra5','soap2018','isthssc']});
+  var df=DOSIS_FARMACO[I.farmaco]; if(df) h+=compHtml({nm:I.farmaco,ic:'💊',est:badgeEst(I.badge),estT:'dosis / reloj / reversión',dosis:df.dosis,reev:df.reev,evitar:df.evitar,refs:df.refs});
+  if(I.cogatePlaq) h+=compHtml({nm:'Co-gate de plaquetas',ic:'🟡',est:'CONTRAINDICADO',estT:'<70 → obstáculo adicional',
+    dosis:'El fármaco no es el único obstáculo: plaquetas &lt;70 (SOAP) abren su propia decisión. HHHA usa 50.000 para PL genérica.',
+    reev:'Recuento dentro de 6 h; ver escenario Trombocitopenia para el dx diferencial.',evitar:'Leer solo el reloj del anticoagulante e ignorar el recuento.',refs:['soap2021','hhhaTransf']});
+  if(I.valvula) h+=compHtml({nm:'Válvula mecánica',ic:'⚙️',est:'EVALUAR',estT:'EVALUAR · ningún régimen totalmente seguro',
+    dosis:'HBPM en válvula = MAYOR que la terapéutica: enoxaparina 2,5 mg/kg/día BID; anti-Xa PICO 1,0–1,4 UI/mL a las 3–4 h. Periparto: HBPM→HNF IV; detener AAS ≥3 días antes; neuraxial ≥24 h.',
+    reev:'Anti-Xa pico en rango; pregnancy heart team (cardiología/hematología).',evitar:'Tratar la dosis de válvula como una terapéutica normal: al ser mayor, el ≥24 h es aún más crítico.',refs:['bshvalve','esc2025']});
+  if(I.revertir) h+=compHtml({nm:'Reversión dirigida (urgencia vital)',ic:'⛑️',est:'INDICAR',estT:'REVERTIR · fuera neuraxial → AG',
+    dosis:'HNF IV: protamina ~1 mg/100 U (últimas 2–3 h). HBPM: protamina solo PARCIAL (anti-IIa, no anti-Xa completo). Warfarina: CCP-4F 25–50 U/kg + vit K 10 mg IV. Dabigatrán: idarucizumab. Anti-Xa (riva/apix): andexanet o CCP no específico.',
+    reev:'Tras reversión, reevaluar coagulación; AG con vía aérea protegida.',evitar:'Intentar neuraxial con anticoagulación activa: el hematoma es catastrófico e irreversible.',refs:['bshvalve','wienhold','asra5']});
+  // docente
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  if(I.crcl!=null&&I.crcl<50) h+='<div class="caja"><b>Insuficiencia renal.</b> La HBPM pica ~3–5 h y su vida media se prolonga hasta ~16 h en IR severa. ASRA 5.ª (verbatim): <b>reducir a la MITAD la última dosis</b> en CrCl 30–49 <b>y</b> &lt;30, para evitar efecto exagerado/prolongado; anti-Xa ≤0,1 IU/mL = indetectable (medirlo si &lt;intervalo, sobre todo en IR/edad avanzada/obesidad). ESAIC: duplicar el intervalo o media dosis si &lt;30. El ajuste propio de ASRA es reducir la dosis (+ anti-Xa), NO duplicar el tiempo. '+srcMini([['asra5','ASRA 5.ª'],['esaic2022','ESAIC']])+'</div>';
+  if(I.esHNF&&I.farmaco==='HNF IV') h+='<div class="caja"><b>TTPa engañoso.</b> El ↑FVIII y fibrinógeno gestacionales pueden normalizar el TTPa pese a heparina residual → se exigen reloj (≥4–6 h) Y laboratorio, no uno solo. '+srcMini([['asra5','ASRA'],['rcog37b','RCOG 37b']])+'</div>';
+  if(I.gateTIH) h+='<div class="caja"><b>Gate TIH/HIT.</b> ASRA 5.ª (grade IC): contar plaquetas si HNF o HBPM &gt;4 días antes de la punción/retiro de catéter. La TIH inicia típicamente 5–10 días tras la exposición; estima la probabilidad pretest con el score 4Ts (recomendación fuerte ASH 2018). '+srcMini([['asra5','ASRA 5.ª'],['ash2018hit','ASH 2018']])+'</div>';
+  if(I.combo) h+='<div class="caja"><b>El riesgo es la COMBINACIÓN.</b> AAS sola NO eleva el riesgo de hematoma (ASRA no difiere la técnica). Pero AAS/AINE + HBPM/tienopiridina sí lo eleva, aunque cada fármaco aislado sea "OK". No leas cada fármaco por separado.'+srcMini([['asra5','ASRA 5.ª']])+'</div>';
+  if(I.doac) h+='<div class="caja"><b>DOAC en embarazo.</b> Contraindicados anteparto; el caso típico es CONVERTIR a quien venía con DOAC preconcepcional. Piden más tiempo del que se cree (alta ≥72 h). Separar atribución: ASRA solo da rivaroxabán dosis baja ≥24 h; apixabán 36 h y dabigatrán 48 h son ESAIC. '+srcMini([['asra5','ASRA'],['esaic2022','ESAIC']])+'</div>';
+  if(I.revertir) h+='<div class="caja"><b>Urgencia vital.</b> Con anticoagulación activa el hematoma neuraxial es catastrófico e irreversible (basal ~1:10.000 a 1:200.000). Sin tiempo para el intervalo → AG con vía aérea protegida + reversión dirigida. La protamina solo revierte parcialmente la HBPM. '+srcMini([['isthssc','ISTH SSC'],['bshvalve','BSH']])+'</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul><li>El reloj manda: INR/TTPa normales NO autorizan si el fármaco no cumplió su intervalo.</li><li>HBPM baja 12 h / alta 24 h; HNF IV 4–6 h + TTPa; DOAC alta 72 h.</li><li>IR: el ajuste de ASRA es reducir dosis + anti-Xa, no duplicar el tiempo.</li><li>Plaquetas &lt;70 abren su propia decisión (co-gate).</li><li>Sin hora verificable → fail-safe (no puncionar).</li></ul></div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- TROMBOCITOPENIA render ---- */
+function evTrombo(){
+  var P=Object.assign(P_base(),{plaquetas:gv('t_plt'),plaquetas_previo:gv('t_pltprev'),dt:gv('t_dt'),horas_desde:gv('t_hdesde'),contexto_dx:gv('t_dx'),pas:gv('t_pas'),pad:gv('t_pad'),ldh:gv('t_ldh'),ast:gv('t_ast'),lsn:gv('t_lsn'),fibrinogeno:gv('t_fib'),inr:gv('t_inr'),esquistocitos:gv('t_esq'),hemolisis_micro:gv('t_hemo'),farmacos:ST.t_far});
+  var r=evaluarTrombo(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('Trombocitopenia');
+  var causaTxt={microangiopatia:'MICROANGIOPATÍA (PTT/SHU/aHUS)',HELLP:'HELLP',PTI:'PTI',gestacional:'Trombocitopenia gestacional',indeterminado:'Indeterminada'}[I.causa];
+  h+='<div class="interp'+(I.esMicro||I.hellp?' alarma':'')+'"><b>Interpretación — '+causaTxt+'</b>'
+    +'<div class="d">• Recuento <b>'+I.plt+' ×10⁹/L</b>'+(I.tend.delta!=null?' · tendencia <b>'+I.tend.etq.replace('_',' ')+'</b> ('+(I.tend.delta>0?'+':'')+I.tend.delta+' en Δt = '+I.tend.tasa+'/h)':'')+'.</div>'
+    +(I.vig.vig!=null?'<div class="d">• Recuento '+(I.vig.vig?'<b>vigente</b>':'<b>NO vigente — repetir antes de decidir</b>')+' (ventana '+I.vig.ventana+' h'+(I.vig.ventana===2?', acortada por caída rápida':'')+').</div>':'')
+    +(I.banda?'<div class="d">• Banda SOAP: <b>'+(I.banda==='aceptable'?'aceptable (≥70)':I.banda==='individualizar'?'individualizar (50–69)':'no recomendado (&lt;50)')+'</b>'+(I.sinOtros?'':' — coagulopatía/antiagregante presente → anula el "aceptable"')+'.</div>':'')
+    +(I.horasA70!=null?'<div class="d">• <b>Proyección de caída:</b> a esta tasa, las plaquetas cruzan 70 en ~<b>'+I.horasA70+' h</b> → si hay catéter, retíralo ANTES de ese límite.</div>':'')
+    +'<div class="d" style="margin-top:6px;font-size:1.04rem">→ TÉCNICA: <b>'+(I.tecnica==='NEURAXIAL'?'NEURAXIAL aceptable':I.tecnica==='AG'?'ANESTESIA GENERAL':'EVALUAR (la tendencia manda)')+'</b></div></div>';
+  // plan
+  var plan=[];
+  if(I.esMicro){ plan.push({p:1,t:'SAFETY GATE → MICROANGIOPATÍA: recambio plasmático (TPE) de URGENCIA sin esperar ADAMTS13; handoff a hematología. ⛔ NO transfundir plaquetas.'}); }
+  else if(I.causa==='HELLP'){ plan.push({p:1,t:'HELLP: el tratamiento es el PARTO. '+(I.interrumpir?'Interrumpir tras estabilizar.':'<34 sem estable → diferir 24–48 h solo para corticoides.')}); if(I.crisis) plan.push({p:1,t:'Crisis HTA → antihipertensivo + MgSO₄ profiláctico (anticonvulsivante, no para subir plaquetas).'}); }
+  else if(I.causa==='PTI'){ plan.push({p:2,t:'PTI: subir el recuento antes del parto/neuraxial con IgIV 1 g/kg y/o corticoide. Transfundir plaquetas solo si <10 + hemorragia vital.'}); }
+  else if(I.causa==='gestacional'){ plan.push({p:3,t:'Gestacional (100–149, asintomática): benigna, no requiere tratamiento; confirmar que no cae ni hay HTA/MAHA.'}); }
+  plan.push({p:2,t:'Vía anestésica sobre recuento VIGENTE (≤6 h, ≤2 h si cae rápido): '+(I.tecnica==='NEURAXIAL'?'neuraxial aceptable.':I.tecnica==='AG'?'anestesia general (preparar vía aérea).':'EVALUAR — en HELLP que cae, inclinar a AG.')});
+  if(I.cid) plan.push({p:2,t:'CID asociada (fibrinógeno <200 / INR/TTPa >1,5×): soporte con PFC/crioprecipitado y tratar la causa.'});
+  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  // componentes
+  h+='<div class="sec">💉 Componentes / dosis computadas</div>';
+  h+=compHtml({nm:'Técnica anestésica',ic:'🩺',est:I.tecnica==='NEURAXIAL'?'INDICAR':(I.tecnica==='AG'?'CONTRAINDICADO':'EVALUAR'),estT:I.tecnica==='NEURAXIAL'?'NEURAXIAL aceptable (≥70)':I.tecnica==='AG'?'GENERAL (preparar vía aérea)':'EVALUAR (la tendencia manda)',
+    dosis:'Decisión sobre recuento VIGENTE. Bandas SOAP: ≥70 aceptable · 50–69 individualizar · &lt;50 no recomendado (IC95% riesgo 0,19% / 2,6% / 9%).',
+    reev:'Reconfirmar recuento ≤6 h ANTES de insertar Y de retirar el catéter; en HELLP que cae, repetir pre-inducción.',
+    evitar:'Confiar en un recuento "aceptable por estar &gt;50" cuando en HELLP cae: el valor del pabellón puede ser &lt;50. Asumir neuraxial seguro con antiagregante/anticoagulante o CID aunque las plaquetas alcancen.',refs:['soap2021','acog207','bailey2019']});
+  if(I.horasA70!=null) h+=compHtml({nm:'Ventana de retiro del catéter',ic:'⏱️',est:'EVALUAR',estT:'VIGILAR · plaquetas en descenso',
+    dosis:'A la tasa actual, el recuento cruza el umbral neuraxial de 70 en ~<b>'+I.horasA70+' h</b>. Si hay catéter epidural in situ, <b>retíralo antes de ese límite</b> con recuento vigente: el hematoma es más frecuente en el RETIRO que en la inserción.',
+    reev:'Recuento ≤6 h (≤2 h si cae rápido) antes de retirar; recalcula la tasa con cada control.',
+    evitar:'Dejar el catéter "para después" mientras las plaquetas caen. Retirar sin recuento vigente o programar el retiro a una hora fija ignorando la tendencia.',refs:['soap2021']});
+  if(I.esMicro) h+=compHtml({nm:'Recambio plasmático (TPE)',ic:'🚨',est:'INDICAR',estT:'INDICAR URGENTE · handoff hematología',
+    dosis:'Iniciar TPE de urgencia SIN esperar ADAMTS13. PTT confirmada por ADAMTS13 &lt;10%. Añadir corticoides (fuerte); rituximab/caplacizumab (condicional).',
+    reev:'No esperar el ADAMTS13 para iniciar. Si postparto persiste LDH muy alta + IR predominante → reconsiderar aHUS (eculizumab).',
+    evitar:'Esperar el ADAMTS13 para iniciar. Transfundir plaquetas en PTT (alimenta la microangiopatía). Confundir microangiopatía con trombocitopenia benigna.',refs:['scully2023','zheng2020','urra2024']});
+  if(I.causa==='PTI') h+=compHtml({nm:'IgIV / corticoide (PTI)',ic:'💉',est:'INDICAR',estT:'INDICAR · subir recuento',
+    dosis:'<span class="dose">IgIV 1 g/kg</span> (ascenso rápido) y/o corticoide: <span class="dose">prednisona 1 mg/kg/día</span> o <span class="dose">dexametasona 40 mg/día ×4</span> (ASH 2019). Transfundir plaquetas solo si &lt;10 + hemorragia vital.',
+    reev:'Recuento seriado para confirmar el ascenso antes del procedimiento.',
+    evitar:'Confundir PTI con gestacional benigna y NO tratar la que SÍ responde a fármacos. Usar corticoide en HELLP esperando "subir plaquetas" para diferir el parto.',refs:['ash2019','fogerty2024','acog207']});
+  h+=compHtml({nm:'Transfusión de plaquetas',ic:'🟡',est:(I.esMicro)?'CONTRAINDICADO':'EVALUAR',estT:I.esMicro?'CONTRAINDICADO (microangiopatía)':'NO de rutina · solo cirugía/sangrado',
+    dosis:'<span class="dose">Hasta 1 aféresis o equivalente</span> (AABB: dosis mayores no son más eficaces). Meta &gt;50 (cirugía mayor) o &gt;75 (sangrado activo). PTI: solo &lt;10 + hemorragia vital.',
+    reev:'Recuento post-transfusión para confirmar la respuesta (la magnitud depende de dosis/peso, sangrado, sepsis, esplenomegalia, CID, aloinmunización).',
+    evitar:'Transfundir en PTT/SHU/aHUS (microangiopatía). Transfundir solo "para habilitar" neuraxial. No afirmar un incremento fijo "+30–50 por pool" (sin fuente primaria; verifícalo con el recuento post-transfusión).',refs:['acog207','hhhaTransf','gt52','aabbPlt']});
+  if(I.causa==='HELLP') h+=compHtml({nm:'Timing del parto (HELLP)',ic:'⏱️',est:'INDICAR',estT:I.interrumpir?'PARTO INMEDIATO':'DIFERIR 24–48 h (solo corticoides)',
+    dosis:'≥34 sem o complicación grave (eclampsia/EAP/CID/IR/abruptio/EFNT) → parto inmediato. Viabilidad–33+6 estable → diferir 24–48 h SOLO para corticoides (&gt;48 h sin beneficio).',
+    reev:'Estabilidad materno-fetal continua; HELLP contraindica el expectante prolongado.',
+    evitar:'Manejo expectante prolongado en HELLP. Diferir el parto por un número de plaquetas mejorado con corticoide (el corticoide en HELLP no mejora desenlaces).',refs:['sibai2011','woudstra2010']});
+  // docente
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  if(I.hellp&&I.tend.etq.indexOf('cayendo')>=0) h+='<div class="caja"><b>Tendencia HELLP.</b> Un 62 ×10⁹/L que CAE no es un 62 estable: en HELLP las plaquetas se consumen activamente, el valor del pabellón puede ser &lt;50. La decisión se toma sobre la TRAYECTORIA, no el punto. '+srcMini([['fogerty2024','Fogerty-Kuter 2024'],['soap2021','SOAP 2021']])+'</div>';
+  if(I.maha) h+='<div class="caja"><b>No es "plaquetas bajas", es MICROANGIOPATÍA.</b> Hay esquistocitos/hemólisis → MAHA. Con HTA y resolución esperada con el parto = HELLP. Normotensa y NO resuelve con el parto → PTT/aHUS: recambio plasmático urgente, ⛔ NO plaquetas. '+srcMini([['scully2023','Scully 2023'],['zheng2020','Zheng 2020'],['urra2024','Urra 2024']])+'</div>';
+  if(I.vig.vig===false) h+='<div class="caja"><b>Recuento no vigente.</b> SOAP exige recuento ≤6 h antes de punción y de retiro de catéter; si cae rápido, ≤2 h → repetir AHORA. '+srcMini([['soap2021','SOAP 2021']])+'</div>';
+  if(!I.sinOtros) h+='<div class="caja"><b>Coagulopatía / antiagregante asociado.</b> Un AAS/HBPM o una CID anulan el "neuraxial aceptable" aunque las plaquetas alcancen: SOAP exige "sin otra coagulopatía ni antiagregantes". '+srcMini([['soap2021','SOAP 2021']])+'</div>';
+  if(I.causa==='PTI') h+='<div class="caja"><b>PTI = la trombocitopenia que SÍ se trata.</b> A diferencia de la gestacional, responde a fármacos (IgIV/corticoide) para subir el recuento antes del parto. '+srcMini([['ash2019','ASH 2019'],['fogerty2024','Fogerty 2024']])+'</div>';
+  h+='<div class="caja"><b>Discrepancia de umbral (decisión del equipo).</b> Default = <b>SOAP ≥70</b> para neuraxial obstétrico. HHHA 50 y AABB ≥50 son para PL diagnóstica / cirugía mayor NO neuraxial — pregunta DISTINTA. No mezclar los umbrales entre contextos.</div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- ANTEPARTO render ---- */
+function evAnteparto(){
+  var P=Object.assign(P_base(),{cesareas_previas:gv('h_ces'),tipo_aph:gv('h_tipo'),relacion_oci:gv('h_oci'),gravedad:gv('h_grav'),estado_fetal:gv('h_fetal'),dolor_tono:gv('h_dolor'),rh:gv('h_rh'),fc:gv('h_fc'),pas:gv('h_pas'),hb:gv('h_hb'),plaquetas:gv('h_plt'),fibrinogeno:gv('h_fib'),comorbilidad:ST.h_com,percreta:ST.h_perc});
+  var r=evaluarAnteparto(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('Hemorragia anteparto');
+  var tipoTxt={previa:'Placenta previa',dppni:'DPPNI / abruptio',vasa:'Vasa previa',indeterminado:'Sangrado no filiado'}[I.tipo];
+  h+='<div class="interp'+(I.codigoRojo?' alarma':'')+'"><b>Interpretación — '+tipoTxt+'</b>'
+    +'<div class="d">• Volemia gestacional ≈ <b>'+(I.vol||'—')+' mL</b>'+(I.osi!=null?' · OSI <b>'+I.osi+'</b> ('+(I.osiNivel==='transfusion'||I.osiNivel==='severo'?'alto → transfusión probable':I.osiNivel==='alerta'?'&gt;0,9 alerta':'normal')+')':'')+'.</div>'
+    +(I.acretismo?'<div class="d">• <b>🚩 BANDERA DE ACRETISMO (PAS)</b>: cesárea previa + previa que cubre OCI → centro nivel III/IV, equipo multidisciplinario, NO manipular placenta.</div>':'')
+    +(I.acretismoIncierto?'<div class="d">• <b>⚠ Falta definir la relación con OCI</b>: hay '+(I.cesPrevias||1)+' cesárea(s) + placenta previa → NO se puede descartar acretismo. Selecciona "Relación con OCI"; hasta entonces, trátalo como POSIBLE acretismo.</div>':'')
+    +'<div class="d">• '+(I.codigoRojo?'<b>ACTIVAR CÓDIGO ROJO</b> (sangrado mayor / estado fetal no tranquilizador).':'Sin criterio de Código Rojo ahora — vigilar.')+'</div>'
+    +'<div class="d" style="margin-top:6px;font-size:1.02rem">→ '+(I.cesarea?'<b>CESÁREA</b> '+(I.inestable||I.fetal==='no_tranq'?'de URGENCIA':'')+(I.acretismo?' con capacidad de acretismo':''):'Manejo según rama (ver plan)')+'</div></div>';
+  // plan por rama
+  var plan=[];
+  plan.push({p:1,t:'Feto vivo → NO uterotónicos hasta nacer; sí MgSO₄/corticoides según EG. Default HHHA/SSASUR.'});
+  if(I.tipo==='previa'){
+    if(I.cesarea) plan.push({p:1,t:'Previa + sangrado mayor/inestable o estado fetal no tranquilizador → CESÁREA DE URGENCIA'+(I.acretismo?' en centro con capacidad de acretismo; ofrecer cell salvage y radiología intervencionista.':'.')});
+    else plan.push({p:2,t:'Previa estable → manejo expectante + corticoides + cesárea programada (36+0–36+6 con factores de riesgo; 37+0–37+6 sin ellos).'});
+    if(I.acretismoIncierto) plan.push({p:2,t:'⚠ Cesárea previa + previa con OCI sin definir → completa "Relación con OCI"; mientras tanto prepara como POSIBLE acretismo (centro nivel III/IV, no manipular placenta, cell salvage disponible).'});
+  } else if(I.tipo==='dppni'){
+    if(I.fetal==='no_tranq') plan.push({p:1,t:'DPPNI con compromiso fetal → cesárea inmediata.'});
+    else if(I.fetal==='obito') plan.push({p:2,t:'DPPNI + óbito + madre estable → priorizar vía vaginal si rápida, vigilando CID. GATE: cesárea si inestable / CID no controlada / sin progreso rápido. "Óbito" ≠ "siempre vaginal".'});
+    else plan.push({p:2,t:'DPPNI: diagnóstico CLÍNICO (dolor + hipertonía); la eco normal NO lo descarta. Vigilar CID precoz (el fibrinógeno cae primero).'});
+  } else if(I.tipo==='vasa'){
+    plan.push({p:1,t:'Vasa previa = hemorragia FETAL: bradicardia fetal desproporcionada a la pérdida materna → CESÁREA DE EMERGENCIA.'});
+  }
+  if(I.percreta) plan.push({p:1,t:'⚠ Percreta con invasión vesical: urología en pabellón + cistoscopia preop, preparar conversión a general, balón de oclusión si disponible; cesárea-histerectomía con placenta in situ (NO separarla de la vejiga).'});
+  if(I.codigoRojo) plan.push({p:1,t:'Código Rojo: O₂, 2 vías 14 G, muestras + cruzar 4 U, cristaloides '+(I.cristaloides||'30×peso')+' mL tibios, metas PAS 80–90 / OSI<0,9 / diuresis 1–2 mL/kg/h. O-negativo si inestable.'});
+  if(I.corticoides) plan.push({p:2,t:'Corticoides de maduración (EG 24+0–33+6).'});
+  if(I.mgNeuro) plan.push({p:2,t:'MgSO₄ neuroprotección fetal (EG <32 sem + parto inminente).'});
+  if(I.antiD) plan.push({p:2,t:'Anti-D si RhD-negativa no sensibilizada + Kleihauer.'});
+  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  // componentes
+  h+='<div class="sec">💉 Componentes / dosis computadas</div>';
+  h+=compHtml({nm:'Plan anestésico (cesárea)',ic:'💉',est:I.planNeuraxial?'INDICAR':'CONTRAINDICADO',estT:I.planNeuraxial?'NEURAXIAL posible (estable, plaq ≥70, sin CID)':'GENERAL (inestable / plaq &lt;70 / CID)',
+    dosis:'Neuraxial si estable + plaquetas ≥70 + sin CID/coagulopatía + sin HBPM en ventana. General si inestable/shock, CID o plaquetas &lt;70. En PAS programado, neuraxial puede ser técnica primaria con preparación para hemorragia masiva.',
+    reev:'Recuento ≤6 h del procedimiento; estado hemodinámico y de coagulación en tiempo real.',
+    evitar:'Neuraxial con CID establecida o plaquetas &lt;70 → general. En general, anticipar edema de vía aérea y alza tensional por intubación si hay preeclampsia.',refs:['soap2021','merrill2021','lambert2014']});
+  if(I.corticoides) h+=compHtml({nm:'Corticoides (maduración fetal)',ic:'🫁',est:'INDICAR',estT:'INDICAR · EG 24+0–33+6',
+    dosis:'<span class="dose">Betametasona 12 mg IM c/24 h ×2</span>; alternativa (Chile/SSASUR) <span class="dose">dexametasona 6 mg IM c/12 h ×4</span> (régimen estándar verificado). <b>Ventana 24+0–33+6</b> (curso único; 34+0–36+6 es rescate tardío de betametasona en quien NO recibió curso previo, otro grupo).',
+    reev:'Completar el curso (24 h) si el parto no es inmediato.',
+    evitar:'Usar tocolisis para "ganar tiempo" de corticoides en APH mayor. Dar el grupo de rescate tardío (34+0–36+6) como si fuera el curso estándar.',refs:['acog713','smfm52']});
+  if(I.mgNeuro) h+=compHtml({nm:'MgSO₄ neuroprotección fetal',ic:'🧠',est:'INDICAR',estT:'INDICAR · EG <32 sem + parto inminente',
+    dosis:'El régimen VARÍA por protocolo (ACOG CO 455 remite "a uno de los ensayos grandes"): BEAM <span class="dose">6 g carga + 2 g/h</span> o ACTOMgSO₄ <span class="dose">4 g carga + 1 g/h</span> — usa el de tu protocolo (MINSAL 2024). <b>Umbral &lt;32 sem</b> (SMFM #52 rec. 21, GRADE 1A).',
+    reev:'Reflejos, FR, diuresis (toxicidad por Mg).',
+    evitar:'Usar MgSO₄ como antihipertensivo (no lo es). Fusionar/confundir con el régimen de preeclampsia. Mostrar una dosis huérfana: ACOG CO 455 NO fija una cifra única — cita el ensayo del régimen que uses.',refs:['rouseBEAM','acog455','smfm52']});
+  if(I.acretismo) h+=compHtml({nm:'Acretismo (PAS) — preparación',ic:'⚠️',est:'INDICAR',estT:'INDICAR · centro nivel III/IV',
+    dosis:'Cesárea-histerectomía con placenta in situ (NO extraerla). Cell salvage OFRECIDO (no solo a Testigo de Jehová), radiología intervencionista/balón aórtico si disponible. Parto pretérmino programado 34+0–35+6 en estables.',
+    reev:'Equipo multidisciplinario; UCI post-evento; vigilancia de re-sangrado/CID diferida.',
+    evitar:'Manipular/extraer la placenta (hemorragia masiva). Manejar fuera de un centro con capacidad de acretismo.',refs:['smfmPAS','rcog27a','merrill2021']});
+  if(I.percreta) h+=compHtml({nm:'Percreta con invasión vesical — preparación',ic:'🚨',est:'INDICAR',estT:'INDICAR · equipo experto + urología',
+    dosis:'Cistoscopia preoperatoria · <b>urología en pabellón</b> · stents ureterales si procede · preparar <b>conversión a general</b> durante la hemorragia masiva · balón de oclusión aórtica/hipogástrica si está disponible. Cesárea-histerectomía con placenta <b>in situ</b>; parto programado 34+0–35+6 en estables.',
+    reev:'Pérdidas, diuresis y lesión vesical en tiempo real; UCI post-evento; vigilar fístula vesicouterina diferida.',
+    evitar:'Intentar separar la placenta de la vejiga. Operar sin urología ni banco de sangre activado. Subestimarla: la percreta vesical duplica el sangrado y la morbilidad urinaria mayor llega al ~35%.',refs:['smfmPAS','rcog27a','merrill2021']});
+  if(I.hipofib||I.codigoRojo) h+=compHtml({nm:'Fibrinógeno / coagulación',ic:'🧬',est:I.hipofib?'INDICAR':'EVALUAR',estT:I.hipofib?'INDICAR (fib &lt;200)':'VIGILAR (cae primero en DPPNI)',
+    dosis:'Crioprecipitado <span class="dose">'+(I.uCrio||'—')+' U</span> (1 U/10 kg) o concentrado de fibrinógeno. Meta &gt;200 mg/dL. En transfusión masiva: 1:1:1 como PUENTE hasta viscoelastometría/Clauss.',
+    reev:'Fibrinógeno Clauss a 30 min; en DPPNI/APH medir ANTES que TP/TTPa.',
+    evitar:'Leer un fibrinógeno "normal" que en el embarazo (basal 350–650) ya es bajo. Usar PFC para subir el fibrinógeno. Mantener el 1:1:1 fijo como objetivo (es puente).',refs:['gt52','charbit','hhhaTransf']});
+  if(I.tipo==='dppni') h+=compHtml({nm:'CID consumptiva del DPPNI'+(I.fetal==='obito'?' (con óbito)':''),ic:'🧬',est:I.hipofib?'INDICAR':'VIGILAR',estT:I.hipofib?'TRATAR · fibrinógeno bajo':'VIGILAR de cerca',
+    dosis:'El DPPNI'+(I.fetal==='obito'?' con óbito':'')+' es el prototipo de CID consumptiva: el <b>fibrinógeno cae PRIMERO</b> (puede estar &lt;150 con Hto y PA aún "tolerando"). Secuencia dirigida: <b>1) fibrinógeno</b> a meta &gt;200 (crioprecipitado '+(I.uCrio||'—')+' U o concentrado) → <b>2) PFC</b> si TP/TTPa &gt;1,5× con fibrinógeno ya repuesto → <b>3) plaquetas</b> meta &gt;50. TXA 1 g.',
+    reev:'Fibrinógeno Clauss/FIBTEM cada 30–60 min; el número guía, no el 1:1:1 fijo.',
+    evitar:'Esperar TP/TTPa para actuar (el fibrinógeno ya cayó). Subir el fibrinógeno solo con PFC. Subestimar la CID por una PA "estable".',refs:['brandtAnanth','charbit','gt52']});
+  if(I.antiD) h+=compHtml({nm:'Inmunoglobulina anti-D',ic:'🛡️',est:'INDICAR',estT:'INDICAR · RhD-negativa no sensibilizada',
+    dosis:'<span class="dose">300 µg = 1500 UI IM dentro de ≤72 h</span> (presentación local Chile, confirmada por el equipo; equivale al estándar RCOG 500 UI + Kleihauer). Dosis adicional si FMH &gt;4 mL.',
+    reev:'Kleihauer guía la dosis adicional (FMH grande es frecuente en DPPNI/APH mayor).',
+    evitar:'Omitirla: previene aloinmunización y enfermedad hemolítica en futuros embarazos. Pasar la ventana de 72 h.',refs:['gtg63']});
+  // docente
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  if(I.tipo==='dppni') h+='<div class="caja"><b>DPPNI = diagnóstico CLÍNICO.</b> Dolor + hipertonía/útero leñoso mandan; la eco normal NO lo descarta (sensibilidad baja). Asimetría: la eco SÍ es buena para previa. Vigilar CID precoz (fibrinógeno cae primero). '+srcMini([['brandtAnanth','Brandt-Ananth 2023']])+'</div>';
+  if(I.acretismo) h+='<div class="caja"><b>Bandera roja de acretismo.</b> El factor principal es la cesárea previa con previa que cubre el OCI. Centro nivel III/IV, NO manipular la placenta, histerectomía-cesárea con placenta in situ; ofrecer cell salvage. '+srcMini([['smfmPAS','SMFM PAS'],['rcog27a','RCOG GTG-27a']])+'</div>';
+  h+='<div class="caja"><b>Volemia +50% y el OSI.</b> La volemia se calcula con peso PRE-gestacional (el actual con feto/edema la sobreestima). La gestante joven compensa y luego se desploma; el OSI la delata antes que la PA.'+srcMini([['somapillay','Soma-Pillay 2016']])+'</div>';
+  h+='<div class="caja"><b>Correcciones de seguridad ancladas.</b> Corticoides = ventana <b>24+0–33+6</b> (el 34+ es rescate tardío, otro grupo; ACOG CO 713 / SMFM #52). MgSO₄ neuroprotección = <b>&lt;32 sem</b> (el &lt;30 dejaba sin cobertura 1A a los 30–31 sem; SMFM #52 / ACOG CO 455).</div>';
+  if(I.jehova) h+='<div class="caja"><b>Plan sin sangre (Testigo de Jehová).</b> La negativa de un adulto con capacidad es válida; documentar qué rechaza. Optimizar Hb antenatal (hierro IV/EPO), TXA, cell salvage (aceptable para muchos), normotermia.</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul><li>Feto vivo → no uterotónicos hasta nacer.</li><li>DPPNI es clínico; la eco no lo descarta.</li><li>Cesárea previa + previa que cubre OCI = sospecha de acretismo.</li><li>Corticoides 24+0–33+6; MgSO₄ neuroprotección &lt;32 sem.</li><li>El fibrinógeno cae primero — mídelo antes que TP/TTPa.</li></ul></div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+function compHtml(c){ var bcl=c.est==='INDICAR'?'b-ind':c.est==='NO INDICAR'?'b-no':c.est==='CONTRAINDICADO'?'b-ci':'b-eval';
+  return '<div class="comp"><div class="comp-h">'+c.ic+' '+c.nm+' <span class="badge '+bcl+'">'+c.estT+'</span></div>'
+    +'<div class="frow"><span class="k">Dosis</span><span>'+c.dosis+'</span></div>'
+    +'<div class="frow"><span class="k">Reevaluar</span><span>'+c.reev+'</span></div>'
+    +'<div class="frow ev"><span class="k">⛔ Evitar</span><span>'+c.evitar+'</span></div>'
+    +(c.seg?'<div class="frow"><span class="k">Seguridad</span><span>'+c.seg+'</span></div>':'')
+    +'<div class="refs">'+refsHtml(c.refs)+'</div></div>'; }
+function scrollOut(){ var o=document.getElementById('out'); window.scrollTo(0,o.offsetTop-10); }
+/* ---- Continuidad de paciente + handoff (copiar plan) ---- */
+function out2(vr,h){ return bannerVR(vr)+barraAcciones()+h+continuidadBar(); }
+var SC_NOMBRE={cr:'🔴 Código Rojo',ec:'⚡ Eclampsia',an:'🅰️ Anemia',ac:'💉 Anticoag',tr:'🩸 Trombocitopenia',ap:'🤰 Anteparto'};
+// labs comunes que se arrastran al cambiar de escenario (la paciente base edad/peso/EG/talla/creat ya es compartida)
+var LAB_MAP={ hb:{an:'a_hb',cr:'c_hb',ap:'h_hb'}, plt:{cr:'c_plt',ec:'e_plt',tr:'t_plt',ac:'k_plt',ap:'h_plt'},
+  fib:{cr:'c_fib',tr:'t_fib',ap:'h_fib'}, pas:{cr:'c_pas',ec:'e_pas',tr:'t_pas',ap:'h_pas'}, pad:{ec:'e_pad',tr:'t_pad'},
+  fc:{cr:'c_fc',ec:'e_fc',ap:'h_fc'}, ldh:{ec:'e_ldh',tr:'t_ldh'}, ast:{ec:'e_ast',tr:'t_ast'}, inr:{ac:'k_inr',tr:'t_inr'} };
+function continuarEn(origen,destino){
+  Object.keys(LAB_MAP).forEach(function(lab){ var m=LAB_MAP[lab]; if(m[origen]&&m[destino]){ var src=document.getElementById(m[origen]),dst=document.getElementById(m[destino]); if(src&&dst&&src.value!==''&&dst.value==='') dst.value=src.value; } });
+  openSc(destino); }
+function continuidadBar(){ var origen=CUR_SC; if(!origen) return '';
+  var btns=Object.keys(SC_NOMBRE).filter(function(k){return k!==origen;}).map(function(k){return '<button class="cont-btn" onclick="continuarEn(\''+origen+'\',\''+k+'\')">'+SC_NOMBRE[k]+'</button>';}).join('');
+  return '<div class="contbar"><span class="cont-lbl">↪ Seguir con esta MISMA paciente en otro escenario (arrastra los datos compartidos):</span>'+btns+'</div>'; }
+function barraAcciones(){ return '<div class="accbar"><button class="acc-btn" onclick="copiarResumen(this)">🔖 Copiar resumen para el equipo</button></div>'; }
+function fallbackCopy(t){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.focus(); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+function copiarResumen(btn){ var t=textoResumen(); if(!t) return;
+  var done=function(){ if(btn){ if(!btn.getAttribute('data-o')) btn.setAttribute('data-o',btn.textContent); btn.textContent='✓ Copiado al portapapeles'; setTimeout(function(){btn.textContent=btn.getAttribute('data-o');},2000); } };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done,function(){fallbackCopy(t);done();}); }
+  else { fallbackCopy(t); done(); } }
+function textoResumen(){ var o=document.getElementById('out'); if(!o||!o.innerHTML) return '';
+  var L=[],tr=o.querySelector('.trace'); if(tr) L.push(tr.textContent.replace(/\s+/g,' ').trim());
+  var ip=o.querySelector('.interp'); if(ip){ L.push(''); L.push('INTERPRETACIÓN:'); ip.querySelectorAll('.d').forEach(function(d){ L.push('  '+d.textContent.replace(/\s+/g,' ').trim()); }); }
+  var pl=o.querySelector('.plan'); if(pl){ L.push(''); L.push('PLAN:'); pl.querySelectorAll('li').forEach(function(li,i){ L.push('  '+(i+1)+'. '+li.textContent.replace(/\s+/g,' ').trim()); }); }
+  var comps=o.querySelectorAll('.comp'); if(comps.length){ L.push(''); L.push('CONDUCTA / DOSIS:'); comps.forEach(function(c){ var hd=c.querySelector('.comp-h'); if(hd) L.push('  • '+hd.textContent.replace(/\s+/g,' ').trim()); c.querySelectorAll('.frow').forEach(function(f){ L.push('      '+f.textContent.replace(/\s+/g,' ').trim()); }); }); }
+  L.push(''); L.push('— ETHOS·HEMO Materna · apoyo a la decisión, no reemplaza el juicio clínico ni al equipo.');
+  return L.join('\n'); }
+
+/* ===== Cara APRENDER (loop de hábito: recuerdo activo + caso del día + racha) ===== */
+var SC_ICON={cr:'🔴',ec:'⚡',an:'🅰️',ac:'💉',tr:'🩸',ap:'🤰'};
+var CASOS=[
+  {sc:'cr',titulo:'TXA en HPP — la ventana correcta',objetivo:'En HPP, reconocer el ácido tranexámico como prioridad inmediata y cómo se mide su ventana de 3 h.',vineta:'Multípara, 72 kg, 39 sem, cesárea hace 35 min. Atonía, 2000 mL acumulados, FC 128, PAS 84 (índice de choque 1,5).',
+   pregunta:'¿Cuál es la prioridad farmacológica que NO debe demorarse?',opciones:['Ergometrina 0,5 mg IM','Ácido tranexámico 1 g IV en 10 min','Esperar el fibrinógeno para decidir','Bolo de oxitocina 10 UI IV rápido'],correcta:1,
+   explica:'El TXA reduce la mortalidad por sangrado en HPP si se administra <strong>&lt;3 h del PARTO</strong> (WOMAN): 1 g IV en 10 min, lo antes posible — aquí quedan ~145 min de ventana. Corre en paralelo con uterotónicos y resucitación, sin esperar el laboratorio.',
+   perla:'La ventana de 3 h se cuenta desde el PARTO, no desde el ingreso a pabellón.',error:'Demorar el TXA esperando exámenes; o el bolo de oxitocina IV rápido &gt;5 UI (hipotensión/arritmia).',refs:['woman','whotxa']},
+  {sc:'cr',titulo:'La comorbilidad reescribe los uterotónicos',objetivo:'Cómo la comorbilidad (HTA, asma) cambia la escalera de uterotónicos en la atonía.',vineta:'Atonía postparto en preeclámptica (PA 165/110) y asmática. El residente prepara la escalera de uterotónicos.',
+   pregunta:'¿Qué DOS fármacos están contraindicados aquí?',opciones:['Oxitocina y misoprostol','Ergometrina y carboprost','Oxitocina y carboprost','Ninguno, todos son seguros'],correcta:1,
+   explica:'La <strong>ergometrina</strong> es vasoconstrictora → en HTA/preeclampsia puede desencadenar crisis hipertensiva/ACV. El <strong>carboprost</strong> (PGF2α) es broncoconstrictor → contraindicado en asma. La comorbilidad reescribe la escalera: aquí queda oxitocina (1ª línea) + misoprostol.',
+   perla:'Ante atonía, lee SIEMPRE las comorbilidades antes de elegir el uterotónico; la escalera estándar no es universal.',error:'Aplicar oxitocina→ergometrina→carboprost de memoria sin mirar HTA ni asma.',refs:['gt52','acog183']},
+  {sc:'ec',titulo:'MgSO₄ no baja la presión',objetivo:'Separar el rol anticonvulsivante del MgSO₄ del control de la presión arterial.',vineta:'Preeclampsia severa, PA 168/112, en infusión de MgSO₄. A los 20 min la PA sigue en 165/110 y alguien sugiere "subir el magnesio para bajarla".',
+   pregunta:'¿Qué corresponde?',opciones:['Aumentar la infusión de MgSO₄','Añadir antihipertensivo de crisis (labetalol/hidralazina/nifedipino), meta gradual','Suspender el MgSO₄ porque "no funciona"','Esperar 30 min más'],correcta:1,
+   explica:'El MgSO₄ es <strong>anticonvulsivante, no antihipertensivo</strong>: no baja la PA. La crisis ≥160/110 exige antihipertensivo con meta GRADUAL ~140–150 sistólica (no normalizar: la circulación uteroplacentaria no autorregula). El ACV es la principal causa de muerte en preeclampsia.',
+   perla:'Mg para las convulsiones, antihipertensivo para la PA: dos fármacos para dos problemas.',error:'Confiar en el MgSO₄ para controlar la presión, o normalizar la PA de golpe.',refs:['acog222','acog767']},
+  {sc:'ec',titulo:'Toxicidad por magnesio',objetivo:'Reconocer la secuencia de toxicidad por magnesio y actuar con su antídoto.',vineta:'Eclampsia en infusión de MgSO₄. Enfermería avisa: reflejo rotuliano ausente, FR 10/min.',
+   pregunta:'¿Conducta inmediata?',opciones:['Aumentar la velocidad del Mg','Gluconato de calcio 1 g IV + suspender/ajustar el Mg','Naloxona','Observar y repetir en 1 h'],correcta:1,
+   explica:'Son signos de <strong>toxicidad por magnesio</strong> (secuencia: arreflexia → depresión respiratoria FR&lt;12 → paro). Antídoto: gluconato de calcio 1 g IV (10 mL al 10%) lento, que debe estar PREPARADO desde que se inicia el Mg. Revisa velocidad de infusión y diuresis (toxicidad renal-dependiente).',
+   perla:'La pérdida del reflejo rotuliano es el PRIMER signo; el antídoto se prepara antes, no cuando llega el paro.',error:'Esperar al paro respiratorio; confundir gluconato con cloruro de calcio (dosis distinta).',refs:['acog222']},
+  {sc:'ac',titulo:'El reloj manda, no el INR/TTPa',objetivo:'Por qué el intervalo del anticoagulante manda sobre un INR/TTPa "normal".',vineta:'Gestante en HBPM terapéutica, última dosis hace 26 h. INR 1,0 y TTPa normal. Piden epidural.',
+   pregunta:'¿Autoriza la neuraxial?',opciones:['Sí: el INR/TTPa están normales','Sí: pasaron >24 h sin más','Manda el intervalo (≥24 h); el INR/TTPa NO miden la HBPM — si hay duda, anti-Xa ≤0,1','No, nunca con HBPM'],correcta:2,
+   explica:'El reloj manda: HBPM terapéutica exige ≥24 h (ASRA 5.ª). El INR y el TTPa <strong>no reflejan la HBPM</strong>, así que "están normales" no autoriza por sí solo. Aquí 26 h ≥ 24 h → razonable; con IR o duda, el anti-Xa ≤0,1 UI/mL confirma efecto indetectable.',
+   perla:'Un INR/TTPa normal nunca "salva" un intervalo no cumplido: cada anticoagulante tiene su propio reloj.',error:'Puncionar "porque la coagulación está normal" sin verificar el intervalo del fármaco.',refs:['asra5','soap2018']},
+  {sc:'ac',titulo:'AAS sola vs. la combinación',objetivo:'Cuándo la AAS importa para la neuraxial: en combinación, no sola.',vineta:'Gestante en AAS 100 mg por preeclampsia, sin otro anticoagulante. Se plantea diferir la neuraxial "por la aspirina".',
+   pregunta:'¿Qué es correcto?',opciones:['Diferir 5 días por la AAS','La AAS sola NO difiere la neuraxial; el riesgo aparece en COMBINACIÓN con HBPM/tienopiridina','Transfundir plaquetas antes','Contraindicar toda neuraxial'],correcta:1,
+   explica:'ASRA es tajante: la <strong>AAS sola NO eleva el riesgo</strong> de hematoma y no justifica diferir la técnica. El riesgo aparece al COMBINARla con HBPM o tienopiridinas. No leas cada fármaco aislado: el peligro es la suma.',
+   perla:'AAS sola = sin reloj propio; AAS + HBPM = sí. La combinación es la que manda.',error:'Diferir la analgesia de parto "por la aspirina" sola — injustificado y deja a la paciente sin neuraxial.',refs:['asra5']},
+  {sc:'tr',titulo:'No es "plaquetas bajas", es microangiopatía',objetivo:'Distinguir una microangiopatía (PTT/SHU) de una trombocitopenia benigna y su manejo opuesto.',vineta:'Puérpera normotensa, plaquetas 28, esquistocitos en frotis, LDH muy alta; no mejora tras el parto.',
+   pregunta:'¿Conducta clave?',opciones:['Transfundir plaquetas para subir el recuento','Recambio plasmático (TPE) urgente; NO transfundir plaquetas','Corticoide y alta','Esperar el ADAMTS13 para decidir'],correcta:1,
+   explica:'Es una <strong>microangiopatía (PTT/SHU)</strong>: MAHA + plaquetopenia, normotensa y que NO resuelve con el parto (a diferencia del HELLP). Tratamiento: recambio plasmático URGENTE, sin esperar el ADAMTS13. Transfundir plaquetas ALIMENTA la microangiopatía → contraindicado salvo hemorragia vital.',
+   perla:'"Plaquetas bajas + esquistocitos + normotensa que no resuelve con el parto" = piensa PTT, no HELLP.',error:'Transfundir plaquetas en PTT/SHU, o esperar el ADAMTS13 para iniciar el TPE.',refs:['scully2023','zheng2020']},
+  {sc:'an',titulo:'Optimizar vs. transfundir',objetivo:'Decidir entre optimizar con hierro y transfundir en la anemia preoperatoria.',vineta:'Embarazada 28 sem, Hb 8,9, ferritina 11, asintomática, cirugía electiva en 3–4 semanas.',
+   pregunta:'¿Qué corresponde?',opciones:['Transfundir para llegar a Hb 10 antes de operar','Optimizar con hierro (hay tiempo y depósito vacío), NO transfundir','Posponer indefinidamente','EPO de entrada'],correcta:1,
+   explica:'Hay margen (3–4 sem) y la ferritina 11 prueba <strong>depósito agotado</strong> → ferropenia absoluta tratable. La estrategia restrictiva no aumenta mortalidad a 30 d; transfundir además expone a <strong>aloinmunización</strong> en mujer fértil (enfermedad hemolítica fetal en embarazos futuros). Hierro (oral si tolera, IV si poco tiempo), no transfusión.',
+   perla:'La transfusión NO repone el depósito de hierro; aunque transfundas, cierra el ciclo con hierro IV.',error:'Transfundir "para llegar a 10" a una ferropénica programada con semanas de margen.',refs:['aabb2023','williams2025']},
+  {sc:'ap',titulo:'DPPNI es un diagnóstico clínico',objetivo:'Por qué el DPPNI es un diagnóstico clínico aunque la ecografía sea normal.',vineta:'34 sem, dolor abdominal intenso con útero leñoso y sangrado oscuro. La ecografía es "normal".',
+   pregunta:'¿Qué afirmación es correcta?',opciones:['La eco normal descarta el DPPNI','El DPPNI es CLÍNICO; la eco normal NO lo descarta','Hay que esperar otra eco','Con seguridad es placenta previa'],correcta:1,
+   explica:'El DPPNI (abruptio) es un diagnóstico <strong>clínico</strong>: dolor + hipertonía mandan; la sensibilidad de la eco es baja, así que una eco normal NO lo descarta (la eco SÍ sirve para previa). Vigila CID precoz — el fibrinógeno cae primero.',
+   perla:'Dolor + útero leñoso = abruptio hasta demostrar lo contrario, aunque la eco sea normal.',error:'Descartar el DPPNI "porque la eco salió bien" y perder tiempo.',refs:['brandtAnanth']},
+  {sc:'ap',titulo:'Bandera de acretismo',objetivo:'Identificar la bandera de acretismo y qué cambia en la preparación del caso.',vineta:'Gestante con 2 cesáreas previas y placenta previa que CUBRE el OCI.',
+   pregunta:'¿Qué bandera levanta y qué implica?',opciones:['Ninguna en especial','Sospecha de acretismo (PAS): centro nivel III/IV, equipo multidisciplinario, NO manipular la placenta','Solo cesárea de rutina','Indicación de parto vaginal'],correcta:1,
+   explica:'Cesárea previa + previa que cubre el OCI es el factor principal de <strong>acretismo (PAS)</strong>. Implica planificar: centro nivel III/IV, equipo multidisciplinario, cesárea-histerectomía con placenta IN SITU (no extraerla), cell salvage ofrecido. Es la mortalidad materna más predecible y la que más se beneficia de preparación.',
+   perla:'Cesárea previa + previa anterior que cubre OCI = piensa acretismo y prepara el equipo ANTES.',error:'Manipular/extraer la placenta (hemorragia masiva) o manejarlo fuera de un centro con capacidad.',refs:['smfmPAS','rcog27a']}
+];
+function showFace(f){
+  ['dec','apr','glo'].forEach(function(x){ document.getElementById('mtab-'+x).classList.toggle('sel',f===x); });
+  document.getElementById('home').classList.toggle('hidden',f!=='dec');
+  document.getElementById('sc').classList.add('hidden');
+  document.getElementById('aprender').classList.toggle('hidden',f!=='apr');
+  document.getElementById('glosario').classList.toggle('hidden',f!=='glo');
+  crDetener(); if(f==='apr') renderAprHome(); if(f==='glo') renderReferencia(); window.scrollTo(0,0);
+}
+function diaStr(d){ d=d||new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function leerRacha(){ try{ var s=JSON.parse(localStorage.getItem('ethos_hemo_streak')||'{}'); return {last:s.last||null,n:s.n||0}; }catch(e){ return {last:null,n:0}; } }
+function registrarRacha(){ try{ var s=leerRacha(),hoy=diaStr(); if(s.last===hoy) return s;
+  var ayer=diaStr(new Date(Date.now()-86400000)); s.n=(s.last===ayer)?(s.n+1):1; s.last=hoy;
+  localStorage.setItem('ethos_hemo_streak',JSON.stringify(s)); return s; }catch(e){ return {last:null,n:0}; } }
+function casoDelDiaIdx(){ return Math.floor(Date.now()/86400000)%CASOS.length; }
+function renderAprHome(){
+  var st=leerRacha(),cdi=casoDelDiaIdx(),cd=CASOS[cdi];
+  var h='<div class="aprhead"><div class="streak">🔥 Racha: '+st.n+' día'+(st.n===1?'':'s')+'</div><div class="apr-sub">Un caso al día mantiene el filo: <b>primero la lección, luego compruebas</b> lo aprendido. Solo se guarda tu racha (localmente), nunca datos de pacientes.</div></div>';
+  h+='<div class="secn">Caso del día</div>';
+  h+='<div class="scard cr casocard" onclick="abrirCaso('+cdi+',true)"><div class="ic">'+SC_ICON[cd.sc]+'</div><div class="nm">'+cd.titulo+'</div><div class="ds">'+SC_NOMBRE[cd.sc]+' · toca para practicar</div></div>';
+  h+='<div class="secn">Practica por tema</div><div class="cards">';
+  CASOS.forEach(function(c,i){ h+='<div class="scard casocard" onclick="abrirCaso('+i+',false)"><div class="ic">'+SC_ICON[c.sc]+'</div><div class="nm">'+c.titulo+'</div><div class="ds">'+SC_NOMBRE[c.sc]+'</div></div>'; });
+  h+='</div>';
+  document.getElementById('apr-home').innerHTML=h;
+  document.getElementById('apr-home').classList.remove('hidden');
+  document.getElementById('apr-caso').classList.add('hidden');
+}
+var CASO_CUR=null;
+// Paso 1: ENSEÑAR primero (objetivo + caso + la idea + perla + error + fuentes)
+function abrirCaso(i,delDia){ CASO_CUR={i:i,delDia:delDia,resuelto:false};
+  renderLeccion();
+  document.getElementById('apr-home').classList.add('hidden');
+  document.getElementById('apr-caso').classList.remove('hidden'); window.scrollTo(0,0);
+}
+function renderLeccion(){ var c=CASOS[CASO_CUR.i],h='<span class="back" onclick="renderAprHome()">← Aprender</span>';
+  h+='<div class="sec" style="margin-top:0">'+SC_ICON[c.sc]+' '+c.titulo+'</div>';
+  h+='<div class="fase-tag">📖 Paso 1 — Aprende</div>';
+  if(c.objetivo) h+='<div class="caja"><b>🎯 Qué vas a aprender:</b> '+c.objetivo+'</div>';
+  h+='<div class="vineta"><b>El caso:</b> '+c.vineta+'</div>';
+  h+='<div class="caja"><b>La idea (el porqué):</b> '+c.explica+'</div>';
+  if(c.perla) h+='<div class="caja"><b>💎 Perla:</b> '+c.perla+'</div>';
+  if(c.error) h+='<div class="caja"><b>⚠️ Error frecuente:</b> '+c.error+'</div>';
+  h+='<div class="refs">'+refsHtml(c.refs)+'</div>';
+  h+='<button class="go" style="margin-top:14px" onclick="mostrarPregunta()">Ya lo leí — comprobar lo aprendido →</button>';
+  document.getElementById('apr-caso').innerHTML=h; window.scrollTo(0,0);
+}
+// Paso 2: COMPROBAR (recuerdo activo, recién después de estudiar)
+function mostrarPregunta(){ var c=CASOS[CASO_CUR.i]; CASO_CUR.resuelto=false;
+  var h='<span class="back" onclick="renderLeccion()">← Volver a la lección</span>';
+  h+='<div class="sec" style="margin-top:0">'+SC_ICON[c.sc]+' '+c.titulo+'</div>';
+  h+='<div class="fase-tag">✅ Paso 2 — Comprueba lo aprendido</div>';
+  h+='<div class="preg">'+c.pregunta+'</div>';
+  h+='<div class="opts" id="caso-opts">'+c.opciones.map(function(o,j){return '<button class="opt" onclick="responder('+j+')">'+o+'</button>';}).join('')+'</div>';
+  h+='<div id="caso-fb"></div>';
+  document.getElementById('apr-caso').innerHTML=h; window.scrollTo(0,0);
+}
+function responder(j){ if(!CASO_CUR||CASO_CUR.resuelto) return; CASO_CUR.resuelto=true; var c=CASOS[CASO_CUR.i];
+  document.querySelectorAll('#caso-opts .opt').forEach(function(b,k){ b.disabled=true; if(k===c.correcta) b.classList.add('ok'); else if(k===j) b.classList.add('bad'); });
+  var ok=(j===c.correcta),fb='<div class="fb '+(ok?'fb-ok':'fb-bad')+'">'+(ok?'✓ Correcto — lo aprendiste.':'✗ Aún no: la correcta está en verde. Vuelve a la lección y reléela.')+'</div>';
+  fb+='<div class="caja"><b>Para quedarte con esto:</b> '+(c.perla||c.explica)+'</div>';
+  if(CASO_CUR.delDia){ var s=registrarRacha(); fb+='<div class="streak-up">🔥 Racha: '+s.n+' día'+(s.n===1?'':'s')+'.</div>'; }
+  fb+='<div class="accbar" style="margin-top:14px"><button class="acc-btn" onclick="renderLeccion()">↺ Releer la lección</button><button class="acc-btn" onclick="abrirCaso('+((CASO_CUR.i+1)%CASOS.length)+',false)">Siguiente caso →</button></div>';
+  var box=document.getElementById('caso-fb'); box.innerHTML=fb; box.scrollIntoView();
+}
+
+/* ===== GLOSARIO de términos y siglas ===== */
+var GLOSARIO=[
+ {c:'Hemorragia y transfusión',e:[
+   ['HPP','Hemorragia posparto: ≥500 mL (parto vaginal) o ≥1000 mL (cesárea), o con repercusión hemodinámica.'],
+   ['TXA','Ácido tranexámico: antifibrinolítico. 1 g IV en 10 min; beneficio si <3 h del PARTO (WOMAN).'],
+   ['TM','Transfusión masiva (protocolo): reposición rápida y balanceada de hemocomponentes.'],
+   ['4 T','Causas de HPP: Tono (atonía), Trauma, Tejido (retención), Trombina (coagulopatía).'],
+   ['OSI','Índice de choque obstétrico = FC/PAS. >0,9–1,0 alerta; ≥1,7 severo. Delata el shock antes que la PA.'],
+   ['GR','Glóbulos rojos (concentrado eritrocitario). 1 U sube la Hb ~1 g/dL.'],
+   ['PFC','Plasma fresco congelado. Sube poco el fibrinógeno: no es el agente de elección para ello.'],
+   ['Crioprecipitado','Concentrado rico en fibrinógeno y FVIII/XIII. Dosis 1 U/10 kg.'],
+   ['CID','Coagulación intravascular diseminada: consumo de factores y plaquetas; el fibrinógeno cae primero.'],
+   ['O-neg','Sangre O Rh-negativo, sin pruebas cruzadas, para la urgencia vital.'],
+   ['Tríada letal','Hipotermia + acidosis + coagulopatía (e hipocalcemia) que se potencian entre sí.'],
+   ['Bakri','Balón intrauterino de taponamiento (relleno 300–500 mL).'],
+   ['B-Lynch','Sutura uterina de compresión (cirugía conservadora de la HPP).'],
+   ['FIBTEM / A5','Parámetro viscoelástico (ROTEM) que estima el fibrinógeno funcional a pie de cama.'],
+   ['Goal-directed','Reposición guiada por metas de laboratorio/viscoelastometría, no por ratios fijos.'],
+   ['Atonía','Falta de contracción uterina tras el parto; causa más frecuente de HPP.']
+ ]},
+ {c:'Anticoagulación y neuraxial',e:[
+   ['Neuraxial','Anestesia/analgesia espinal o epidural.'],
+   ['HBPM','Heparina de bajo peso molecular (p.ej. enoxaparina). Intervalo a punción: profiláctica ≥12 h, terapéutica ≥24 h.'],
+   ['HNF','Heparina no fraccionada. IV: ≥4–6 h + TTPa normal.'],
+   ['DOAC (ACOD)','Anticoagulante oral directo: rivaroxabán, apixabán, dabigatrán, edoxabán. Contraindicados anteparto.'],
+   ['AAS','Ácido acetilsalicílico (aspirina). Sola NO difiere la neuraxial; el riesgo es en combinación.'],
+   ['anti-Xa','Actividad anti-factor Xa; mide el efecto de la HBPM. ≤0,1 UI/mL = efecto indetectable.'],
+   ['INR','Razón internacional normalizada; mide la warfarina. Punción con INR <1,5.'],
+   ['TTPa','Tiempo de tromboplastina parcial activada; "ratio" = paciente/control. Puede normalizarse pese a heparina residual.'],
+   ['TIH / HIT','Trombocitopenia inducida por heparina (inmune). Inicio típico 5–10 días; estimar con score 4Ts.'],
+   ['4Ts','Score de probabilidad pretest de TIH (Trombocitopenia, Tiempo, Trombosis, oTras causas).'],
+   ['TEV','Tromboembolismo venoso (TVP/TEP).'],
+   ['CCP-4F','Concentrado de complejo protrombínico de 4 factores; revierte warfarina (+vit K) y anti-Xa.'],
+   ['Idarucizumab','Antídoto específico del dabigatrán (5 g IV).'],
+   ['Andexanet alfa','Antídoto de los anti-Xa (rivaroxabán/apixabán).'],
+   ['Protamina','Revierte la HNF (completa) y la HBPM (solo parcial: anti-IIa).'],
+   ['CrCl','Aclaramiento de creatinina (Cockcroft-Gault). No validado en embarazo.'],
+   ['IR','Insuficiencia renal (prolonga el efecto de la HBPM).']
+ ]},
+ {c:'Preeclampsia y eclampsia',e:[
+   ['PE','Preeclampsia.'],
+   ['HELLP','Hemólisis + Enzimas hepáticas elevadas (Liver) + Plaquetas bajas (Low Platelets).'],
+   ['MgSO₄','Sulfato de magnesio: anticonvulsivante de elección. NO baja la presión arterial.'],
+   ['LDH','Lactato deshidrogenasa (hemólisis/daño tisular); ≥600 en criterios HELLP.'],
+   ['AST/ALT','Transaminasas hepáticas; >2× LSN en criterios HELLP.'],
+   ['LSN','Límite superior de la normalidad (del laboratorio).'],
+   ['FR','Frecuencia respiratoria. <12/min = signo de toxicidad por magnesio.'],
+   ['ROT','Reflejos osteotendinosos; su pérdida es el 1.er signo de toxicidad por Mg.'],
+   ['ACV','Accidente cerebrovascular: principal causa de muerte en preeclampsia (riesgo sobre 160/110).'],
+   ['Gluconato de calcio','Antídoto de la toxicidad por Mg: 1 g IV (10 mL al 10%) lento.'],
+   ['TOF','Tren de cuatro: monitor del bloqueo neuromuscular (obligatorio si hay Mg).'],
+   ['BNM','Bloqueante neuromuscular; el magnesio lo potencia (reducir dosis).'],
+   ['RSI','Inducción de secuencia rápida.']
+ ]},
+ {c:'Trombocitopenia',e:[
+   ['PTI','Púrpura trombocitopénica inmune: la que SÍ se trata (IgIV/corticoide).'],
+   ['PTT','Púrpura trombocitopénica trombótica: déficit de ADAMTS13. Recambio plasmático urgente.'],
+   ['SHU / aHUS','Síndrome hemolítico urémico; aHUS = atípico (mediado por complemento).'],
+   ['MAHA','Anemia hemolítica microangiopática (esquistocitos + hemólisis).'],
+   ['ADAMTS13','Proteasa que escinde el factor von Willebrand; actividad <10% confirma PTT.'],
+   ['TPE','Recambio plasmático terapéutico (plasmaféresis); urgente en microangiopatía, sin esperar ADAMTS13.'],
+   ['IgIV','Inmunoglobulina intravenosa (1 g/kg) para subir el recuento en PTI.'],
+   ['Esquistocitos','Eritrocitos fragmentados; marcador de microangiopatía (MAHA).'],
+   ['Microangiopatía','Daño de pequeños vasos con MAHA + plaquetopenia (PTT/SHU). ⛔ no transfundir plaquetas.'],
+   ['SOAP','Society for Obstetric Anesthesia and Perinatology. Umbral plaquetas neuraxial ≥70.']
+ ]},
+ {c:'Anteparto y placenta',e:[
+   ['DPPNI','Desprendimiento prematuro de placenta normoinserta (abruptio). Diagnóstico CLÍNICO; la eco normal no lo descarta.'],
+   ['Vasa previa','Vasos fetales sobre el OCI; sangrado de origen FETAL → cesárea de emergencia.'],
+   ['PAS','Dos usos: (1) presión arterial sistólica; (2) espectro de placenta acreta (Placenta Accreta Spectrum).'],
+   ['Acretismo','Adherencia anormal de la placenta: acreta / increta / percreta.'],
+   ['Percreta','La placenta atraviesa el miometrio e invade órganos vecinos (vejiga).'],
+   ['OCI','Orificio cervical interno (referencia de la placenta previa).'],
+   ['RhD','Antígeno D del sistema Rh.'],
+   ['anti-D','Inmunoglobulina anti-D: 300 µg/1500 UI ≤72 h en RhD-negativa no sensibilizada.'],
+   ['FMH','Hemorragia fetomaterna; el test de Kleihauer guía la dosis adicional de anti-D.'],
+   ['Aloinmunización','Formación de anticuerpos contra antígenos eritrocitarios (riesgo de enfermedad hemolítica fetal futura).'],
+   ['RCIU','Restricción del crecimiento intrauterino.'],
+   ['Cell salvage','Recuperación intraoperatoria de sangre autóloga (aceptable para muchos Testigos de Jehová).']
+ ]},
+ {c:'Anemia y hierro',e:[
+   ['Hb','Hemoglobina.'],
+   ['Ferritina','Reserva de hierro: <30 µg/L = ferropenia absoluta. Es reactante de fase aguda (sube con la PCR).'],
+   ['TSAT','Saturación de transferrina; <20% apoya ferropenia (útil si la ferritina no es fiable).'],
+   ['PCR','Proteína C reactiva; eleva la ferritina sin reflejar el depósito real.'],
+   ['VCM','Volumen corpuscular medio.'],
+   ['EPO','Eritropoyetina.'],
+   ['PBM','Patient Blood Management: gestión de la sangre del paciente (optimizar antes de transfundir).'],
+   ['Carboximaltosa','Hierro IV; dosis única hasta 1000 mg (tope 20 mg/kg). Vigila hipofosfatemia.'],
+   ['Nadir','Punto más bajo de la Hb por hemodilución fisiológica (28–32 sem).']
+ ]},
+ {c:'Fisiología y general',e:[
+   ['EG','Edad gestacional (semanas + días).'],
+   ['IMC','Índice de masa corporal.'],
+   ['Volemia','Volumen sanguíneo; en la gestante a término ≈ 100 mL/kg (+45–50%).'],
+   ['Hto','Hematocrito.']
+ ]},
+ {c:'Sociedades, guías y ensayos',e:[
+   ['ASRA','American Society of Regional Anesthesia (guía anticoagulación/neuraxial, 5.ª ed. 2025).'],
+   ['ESAIC','European Society of Anaesthesiology and Intensive Care.'],
+   ['ACOG','American College of Obstetricians and Gynecologists.'],
+   ['RCOG','Royal College of Obstetricians and Gynaecologists.'],
+   ['GTG','Green-top Guideline (guía del RCOG).'],
+   ['SMFM','Society for Maternal-Fetal Medicine.'],
+   ['FIGO','International Federation of Gynecology and Obstetrics.'],
+   ['ASH','American Society of Hematology.'],
+   ['AABB','Association for the Advancement of Blood & Biotherapies.'],
+   ['BSH','British Society for Haematology.'],
+   ['ISTH','International Society on Thrombosis and Haemostasis.'],
+   ['WOMAN','Ensayo del ácido tranexámico en HPP (Lancet 2017).']
+ ]},
+ {c:'Local (Chile)',e:[
+   ['HHHA','Hospital Hernán Henríquez Aravena (Temuco).'],
+   ['SSASUR','Servicio de Salud Araucanía Sur.'],
+   ['MINSAL','Ministerio de Salud (Guía Perinatal 2024, edición vigente).'],
+   ['PAC','Plan Anual de Capacitación (vía de adopción vía curso del hospital).']
+ ]}
+];
+/* Temario: cada tema/subtema de la app → 1 línea + el/los paper(s) (claves de REFS, ya verificadas) */
+var TEMARIO=[
+ {c:'🔴 Código Rojo (HPP)',e:[
+   ['Activación y metas del Código Rojo','Protocolo de respuesta a la hemorragia obstétrica: roles, accesos, metas hemodinámicas.',['codigorojo']],
+   ['Ácido tranexámico (TXA) en HPP','Antifibrinolítico que reduce la muerte por sangrado si se da <3 h del parto.',['woman','whotxa']],
+   ['Uterotónicos escalonados','Oxitocina → ergometrina → carboprost → misoprostol; la comorbilidad reescribe la escalera.',['gt52','acog183','figoPPH']],
+   ['Fibrinógeno: predictor y meta','Cae primero; un "normal" de no-embarazada ya es bajo; meta >200 mg/dL.',['charbit','obs2']],
+   ['Transfusión masiva: ratio vs goal-directed','1:1:1 como puente; pasar pronto a guiado por fibrinógeno/viscoelastometría.',['esaic','hhhaTransf']],
+   ['Calcio iónico en transfusión masiva','El citrato lo quela y falla la cascada pese a reponer factores.',['esaic']],
+   ['Atonía refractaria: escalada mecánica/quirúrgica','Bakri/compresión → B-Lynch/ligaduras → histerectomía; no demorar.',['gt52','figoPPH']],
+   ['Umbral transfusional obstétrico','Restrictivo seguro; señal de daño con liberalismo en HPP moderada.',['aabb2023','williams2025']]
+ ]},
+ {c:'⚡ Eclampsia / PE severa',e:[
+   ['MgSO₄ para prevención de convulsiones','Anticonvulsivante de elección (Magpie); no es antihipertensivo.',['magpie','acog222']],
+   ['Toxicidad por magnesio y antídoto','Arreflexia → FR<12 → paro; gluconato de calcio preparado de antemano.',['acog222']],
+   ['Antihipertensivos de crisis','Labetalol/hidralazina/nifedipino; meta gradual ~140–150, no normalizar.',['acog767','acog222']],
+   ['Timing del parto en PE severa/HELLP','≥34 sem o complicación → interrumpir; el expectante con HELLP es peligroso.',['sibai2011','acog222']],
+   ['Neuraxial en preeclampsia','1ª línea sin trombocitopenia; evita los riesgos de la general en PE.',['soap2021','lambert2014']],
+   ['Anclaje local (Chile)','Guía Perinatal MINSAL 2024 (SHE), alineada con ACOG.',['minsalPerinatal']]
+ ]},
+ {c:'💉 Anticoagulación / neuraxial',e:[
+   ['Intervalos ASRA 5.ª por fármaco','Reloj fármaco→punción para HBPM/HNF/DOAC/warfarina/antiagregantes.',['asra5']],
+   ['Tromboprofilaxis periparto','Manejo anestésico de la gestante anticoagulada (SOAP).',['soap2018']],
+   ['Anestesia regional y antitrombóticos (Europa)','Guía ESAIC/ESRA; fuente de varios intervalos de DOAC.',['esaic2022']],
+   ['HBPM en insuficiencia renal','Reducir a la mitad la última dosis + anti-Xa ≤0,1; no solo "duplicar el tiempo".',['asra5','soap2018']],
+   ['TEV en el embarazo (manejo agudo)','RCOG Green-top 37b: heparinas, dosis y periparto.',['rcog37b']],
+   ['HBPM intermedia vs baja (Highlow)','Elegibilidad de neuraxial periparto según intensidad.',['highlow']],
+   ['Válvula mecánica en el embarazo','Ningún régimen es del todo seguro; dosis mayores, anti-Xa pico.',['bshvalve','esc2025']],
+   ['TIH/HIT y score 4Ts','Cuándo contar plaquetas (>4 días) y estimar probabilidad pretest.',['ash2018hit']],
+   ['Reversión de anticoagulantes','Protamina, CCP-4F, idarucizumab, andexanet.',['wienhold','asra5']],
+   ['Neuraxial en trastornos de coagulación (ISTH)','Marco de decisión en plaquetopenia/coagulopatía del adulto.',['isthssc']]
+ ]},
+ {c:'🩸 Trombocitopenia',e:[
+   ['Trombocitopenia en el embarazo (dx diferencial)','Gestacional vs PTI vs PE/HELLP vs microangiopatía.',['acog207','fogerty2024']],
+   ['Bandas de plaquetas para neuraxial (SOAP)','≥70 aceptable · 50–69 individualizar · <50 no recomendado.',['soap2021']],
+   ['PTI: guías ASH 2019','IgIV/corticoide para subir el recuento; la que SÍ se trata.',['ash2019']],
+   ['Microangiopatías (PTT/SHU/aHUS)','Recambio plasmático urgente; ⛔ no transfundir plaquetas.',['scully2023','zheng2020','urra2024']],
+   ['HELLP: timing del parto','El tratamiento es el parto; expectante prolongado contraindicado.',['sibai2011','woudstra2010']],
+   ['Neuraxial con plaquetas <100 (PTI)','Serie sin hematoma reportado; decisión individualizada.',['bailey2019']],
+   ['Transfusión de plaquetas (dosis/indicación)','Hasta 1 aféresis; metas según cirugía/sangrado.',['aabbPlt']]
+ ]},
+ {c:'🤰 Hemorragia anteparto',e:[
+   ['Placenta previa (SOGC)','Diagnóstico, relación con OCI y momento de la cesárea.',['sogc402']],
+   ['Espectro de placenta acreta (PAS)','Sospecha (cesárea previa + previa que cubre OCI), preparación.',['smfmPAS','rcog27a']],
+   ['Anestesia para acretismo','Plan anestésico y de hemorragia masiva, percreta-vejiga.',['merrill2021']],
+   ['DPPNI (abruptio): clínica y manejo','Diagnóstico clínico; la eco no lo descarta; CID precoz.',['brandtAnanth']],
+   ['Hemorragia anteparto (GTG-63)','Guía RCOG general de la hemorragia anteparto.',['gtg63']],
+   ['Corticoides de maduración fetal','Ventana 24+0–33+6 (curso único); rescate tardío es otro grupo.',['acog713','smfm52']],
+   ['MgSO₄ neuroprotección fetal','<32 sem + parto inminente; régimen BEAM o ACTOMgSO₄.',['rouseBEAM','acog455','smfm52']],
+   ['Anti-D y cell salvage','Prevención de aloinmunización; FMH y cell salvage (SALVO).',['salvo']]
+ ]},
+ {c:'🅰️ Anemia preoperatoria',e:[
+   ['Anemia ferropénica en el embarazo (UK)','Diagnóstico y manejo del hierro en la gestación (BSH).',['bsh2020']],
+   ['Anemia por deficiencia de hierro (FIGO)','Recomendaciones globales FIGO.',['figo2025']],
+   ['Hierro IV en el embarazo (Cochrane)','Eficacia y seguridad del hierro intravenoso.',['cochraneFe']],
+   ['Umbrales de transfusión (AABB)','Estrategia restrictiva basada en evidencia.',['aabb2023']],
+   ['Umbrales transfusionales en HPP (Cochrane)','Señal de daño con umbrales liberales.',['williams2025']],
+   ['PBM preoperatorio (SSASUR, Chile)','Manejo preop de cirugías de alto riesgo de sangrado, hierro IV obstétrico.',['ssasurPBM']],
+   ['Cambios fisiológicos del embarazo','Volemia +45–50%, nadir dilucional, índice de choque.',['somapillay']]
+ ]},
+ {c:'🏥 Transversal / local',e:[
+   ['Transfusión en obstetricia (RCOG GT-47)','Guía de transfusión sanguínea obstétrica: umbrales y productos.',['rcogGt47']],
+   ['Protocolo transfusional HHHA','Umbrales y ratios locales (PR-BS-0113 v10).',['hhhaTransf']],
+   ['Sangrado perioperatorio severo (ESAIC)','Guía europea de manejo del sangrado y la coagulopatía.',['esaic']]
+ ]}
+];
+var REF_SUB='temario';
+function renderReferencia(){
+  var h='<div class="sec" style="margin-top:0">📖 Referencia</div>';
+  h+='<div class="subtabs"><button class="subtab'+(REF_SUB==='temario'?' sel':'')+'" onclick="setRefSub(\'temario\')">📚 Temario</button><button class="subtab'+(REF_SUB==='siglas'?' sel':'')+'" onclick="setRefSub(\'siglas\')">🔤 Siglas</button></div>';
+  h+='<div id="ref-body">'+(REF_SUB==='siglas'?glosarioHTML():temarioHTML())+'</div>';
+  document.getElementById('glosario').innerHTML=h;
+}
+function setRefSub(s){ REF_SUB=s; renderReferencia(); window.scrollTo(0,0); }
+function filtrarRef(){ var qel=document.getElementById('ref-q'),q=(qel?qel.value:'').toLowerCase().trim();
+  document.querySelectorAll('#ref-body .glo-group').forEach(function(g){ var any=false;
+    g.querySelectorAll('.gl-item').forEach(function(it){ var show=!q||it.getAttribute('data-k').indexOf(q)>=0; it.style.display=show?'':'none'; if(show)any=true; });
+    g.style.display=any?'':'none'; }); }
+function glosarioHTML(){ var h='<input type="text" id="ref-q" class="glo-search" placeholder="🔎 Buscar sigla o término…" oninput="filtrarRef()">';
+  h+='<p class="glo-hint">Todas las siglas y términos de la app, agrupados. Escribe para filtrar.</p>';
+  GLOSARIO.forEach(function(g){ h+='<div class="glo-group"><div class="secn">'+g.c+'</div>';
+    g.e.forEach(function(it){ var k=(it[0]+' '+it[1]).toLowerCase().replace(/"/g,'');
+      h+='<div class="gl-item" data-k="'+k+'"><b>'+it[0]+'</b> — '+it[1]+'</div>'; });
+    h+='</div>'; });
+  return h; }
+function temarioHTML(){ var h='<input type="text" id="ref-q" class="glo-search" placeholder="🔎 Buscar tema…" oninput="filtrarRef()">';
+  h+='<p class="glo-hint">Cada tema y subtema de la app, en una línea y con el link al paper que lo explica completo. Bibliografía verificada (libre/suscripción/local).</p>';
+  TEMARIO.forEach(function(g){ h+='<div class="glo-group"><div class="secn">'+g.c+'</div>';
+    g.e.forEach(function(it){ var k=(it[0]+' '+it[1]).toLowerCase().replace(/"/g,'');
+      h+='<div class="gl-item" data-k="'+k+'"><b>'+it[0]+'</b> — '+it[1]+'<div class="refs">'+refsHtml(it[2])+'</div></div>'; });
+    h+='</div>'; });
+  return h; }
+</script>
+</body>
+</html>
