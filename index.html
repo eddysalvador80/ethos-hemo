@@ -125,7 +125,20 @@
       <div class="scard an" onclick="openSc('tr')"><div class="ic">🩸</div><div class="nm">Trombocitopenia</div><div class="ds">¿neuraxial? dx diferencial</div></div>
       <div class="scard cr" onclick="openSc('ap')"><div class="ic">🤰</div><div class="nm">Anteparto</div><div class="ds">previa · DPPNI · acretismo</div></div>
     </div>
-    <p class="small" style="margin-top:14px">Los <b>6 escenarios</b> están al nivel profundo: intake real del paciente + dosis/tiempos computados + salida rica con interpretación, plan, tarjetas multi-campo y capa docente, cada cifra con su fuente verificada.</p>
+    <div class="secn">Emergencia — Sepsis / ELA</div>
+    <div class="cards">
+      <div class="scard cr" onclick="openSc('se')"><div class="ic">🦠</div><div class="nm">Sepsis Materna</div><div class="ds">Shock séptico · bundle hora-1 · NE</div></div>
+      <div class="scard cr" onclick="openSc('ela')"><div class="ic">🌊</div><div class="nm">ELA / Colapso</div><div class="ds">PCR · TXA + fibrinógeno · histerotomía</div></div>
+    </div>
+    <div class="secn">Transfusión Masiva</div>
+    <div class="cards">
+      <div class="scard cr" onclick="openSc('mtp')"><div class="ic">⚖️</div><div class="nm">MTP / Hemorragia Masiva</div><div class="ds">1:1:1 · fibrinógeno 4g · ROTEM · targets</div></div>
+    </div>
+    <div class="secn">Parada Cardíaca Obstétrica</div>
+    <div class="cards">
+      <div class="scard cr" onclick="openSc('acls')"><div class="ic">❤️</div><div class="nm">ACLS Obstétrico</div><div class="ds">LUD · RH T+4 min · causa · pronóstico</div></div>
+    </div>
+    <p class="small" style="margin-top:14px">Los <b>10 escenarios</b> están al nivel profundo: intake real del paciente + dosis/tiempos computados + salida rica con interpretación, plan, tarjetas multi-campo y capa docente, cada cifra con su fuente verificada.</p>
   </div>
 
   <!-- INTAKE compartido + escenarios -->
@@ -304,6 +317,119 @@
       <button class="go activar" onclick="evAnteparto()">🤰 Evaluar Anteparto →</button>
     </div>
 
+    <!-- Sepsis Materna extras -->
+    <div id="x-se" class="card hidden">
+      <div class="grp-h">Sepsis Materna — situación, hemodinamia, foco, labs</div>
+      <label>Situación clínica</label>
+      <select id="s_sit"><option value="">— elige —</option><option value="sospecha">Sospecha de sepsis (disfunción orgánica + foco infeccioso)</option><option value="sepsis">Sepsis confirmada (sin shock)</option><option value="shock">Shock séptico (vasopresores + lactato ≥2 o MAP &lt;65)</option></select>
+      <div class="row">
+        <div><label>FC <span class="hint">lpm</span></label><input type="number" id="s_fc" placeholder="118"></div>
+        <div><label>FR <span class="hint">rpm</span></label><input type="number" id="s_fr" placeholder="24"></div>
+        <div><label>MAP <span class="hint">mmHg · objetivo ≥65</span></label><input type="number" id="s_map" placeholder="58"></div>
+      </div>
+      <div class="row2">
+        <div><label>Temperatura <span class="hint">°C · fiebre &gt;38 / hipotermia &lt;36</span></label><input type="number" step="0.1" id="s_temp" placeholder="38.8"></div>
+        <div><label>Lactato <span class="hint">mmol/L · ≥2 = hipoperfusión</span></label><input type="number" step="0.1" id="s_lactato" placeholder="3.1"></div>
+      </div>
+      <label>Foco presunto</label>
+      <div class="chips" id="s-foco">
+        <span class="chip" data-v="uterino" onclick="pick('s_foco','uterino',this,'s-foco')">Uterino/puerperal</span>
+        <span class="chip" data-v="urinario" onclick="pick('s_foco','urinario',this,'s-foco')">Urinario</span>
+        <span class="chip" data-v="abdominal" onclick="pick('s_foco','abdominal',this,'s-foco')">Abdominal</span>
+        <span class="chip" data-v="desconocido" onclick="pick('s_foco','desconocido',this,'s-foco')">Desconocido</span>
+      </div>
+      <div class="row2">
+        <div><label>¿Vasopresores ya iniciados?</label><select id="s_vasop"><option value="no">No</option><option value="si">Sí</option></select></div>
+        <div><label>¿ATB en las &lt;12 h previas?</label><select id="s_atbprev"><option value="no">No</option><option value="si">Sí — informar al equipo</option></select></div>
+      </div>
+      <label>Comorbilidad relevante</label>
+      <div class="chips" id="s-com">
+        <span class="chip" data-v="dm_inmunosup" onclick="tog('s_com','dm_inmunosup',this)">DM / inmunosupresión</span>
+        <span class="chip" data-v="gas_probable" onclick="tog('s_com','gas_probable',this)">GAS probable (puerperal)</span>
+        <span class="chip" data-v="valv" onclick="tog('s_com','valv',this)">Cardiopatía/valvulopatía</span>
+      </div>
+      <button class="go activar" onclick="evSepsis()">🦠 Evaluar Sepsis →</button>
+    </div>
+
+    <!-- ELA / Colapso Peripartum -->
+    <div id="x-ela" class="card hidden">
+      <div class="grp-h">ELA — momento, colapso cardiovascular, coagulación</div>
+      <label>Momento del evento</label>
+      <select id="ela_momento"><option value="">— elige —</option><option value="intraparto">Intraparto</option><option value="postparto_inm">Postparto inmediato (≤30 min)</option><option value="postparto_tard">Postparto tardío (&gt;30 min)</option><option value="antenatal">Anteparto / antenatal</option></select>
+      <label>¿Paro cardíaco? <span class="hint">PCR confirmado o en curso</span></label>
+      <div class="chips" id="e-paro">
+        <span class="chip" data-v="si" onclick="pick('ela_paro','si',this,'e-paro')">Sí — hay PCR</span>
+        <span class="chip" data-v="no" onclick="pick('ela_paro','no',this,'e-paro')">No (solo colapso)</span>
+      </div>
+      <div class="row">
+        <div><label>EG <span class="hint">sem</span></label><input type="number" id="ela_eg" placeholder="38"></div>
+        <div><label>Fibrinógeno Clauss <span class="hint">g/L</span></label><input type="number" step="0.1" id="ela_fib" placeholder="1.8"></div>
+        <div><label>FIBTEM A5 <span class="hint">mm · si disponible</span></label><input type="number" step="0.1" id="ela_fibtem" placeholder="8"></div>
+      </div>
+      <div class="row2 row">
+        <div><label>Plaquetas <span class="hint">×10⁹/L</span></label><input type="number" id="ela_plt" placeholder="62"></div>
+        <div><label>Atopia / alergia conocida</label>
+          <div class="chips" id="e-atop" style="margin-top:4px">
+            <span class="chip" data-v="si" onclick="pick('ela_atop','si',this,'e-atop')">Sí</span>
+            <span class="chip" data-v="no" onclick="pick('ela_atop','no',this,'e-atop')">No / desconocida</span>
+          </div>
+        </div>
+      </div>
+      <label>¿MTP obstétrico ya activado?</label>
+      <div class="chips" id="e-mtp">
+        <span class="chip" data-v="si" onclick="pick('ela_mtp','si',this,'e-mtp')">Sí, activado</span>
+        <span class="chip" data-v="no" onclick="pick('ela_mtp','no',this,'e-mtp')">No aún</span>
+      </div>
+      <button class="go activar" onclick="evELA()">🌊 Evaluar ELA →</button>
+    </div>
+
+    <!-- MTP / Hemorragia Masiva -->
+    <div id="x-mtp" class="card hidden">
+      <div class="grp-h">MTP — pérdida estimada, labs, VET, estado</div>
+      <div class="row">
+        <div><label>Pérdida estimada <span class="hint">mL</span></label><input type="number" id="m_perdida" placeholder="1800"></div>
+        <div><label>Fibrinógeno Clauss <span class="hint">g/L · opcional</span></label><input type="number" step="0.1" id="m_fib" placeholder="1.6"></div>
+        <div><label>Plaquetas <span class="hint">×10⁹/L · opcional</span></label><input type="number" id="m_plt" placeholder="82"></div>
+      </div>
+      <div class="row2 row">
+        <div><label>Hb actual <span class="hint">g/dL · opcional</span></label><input type="number" step="0.1" id="m_hb" placeholder="7.2"></div>
+        <div><label>FIBTEM A10 <span class="hint">mm · si VET disponible</span></label><input type="number" step="0.1" id="m_fibtem" placeholder="9"></div>
+      </div>
+      <label>¿VET/ROTEM disponible en el centro?</label>
+      <div class="chips" id="m-vet">
+        <span class="chip" data-v="si" onclick="pick('mtp_vet','si',this,'m-vet')">Sí</span>
+        <span class="chip" data-v="no" onclick="pick('mtp_vet','no',this,'m-vet')">No (solo lab convencional)</span>
+      </div>
+      <label>¿MTP ya activado?</label>
+      <div class="chips" id="m-act">
+        <span class="chip" data-v="si" onclick="pick('mtp_act','si',this,'m-act')">Sí, activo</span>
+        <span class="chip" data-v="no" onclick="pick('mtp_act','no',this,'m-act')">No — evaluar activación</span>
+      </div>
+      <button class="go activar" onclick="evMTP()">⚖️ Evaluar MTP →</button>
+    </div>
+
+    <!-- ACLS Obstétrico -->
+    <div id="x-acls" class="card hidden">
+      <div class="grp-h">ACLS — EG, tiempo de colapso, causa, ROSC</div>
+      <div class="row">
+        <div><label>EG <span class="hint">sem · si conocida</span></label><input type="number" id="acls_eg" placeholder="32"></div>
+        <div><label>Tiempo desde colapso <span class="hint">min</span></label><input type="number" id="acls_tmin" placeholder="5"></div>
+      </div>
+      <label>¿Útero palpable sobre el ombligo? <span class="hint">si EG desconocida</span></label>
+      <div class="chips" id="a-omb">
+        <span class="chip" data-v="si" onclick="pick('acls_ombligo','si',this,'a-omb')">Sí</span>
+        <span class="chip" data-v="no" onclick="pick('acls_ombligo','no',this,'a-omb')">No / desconocido</span>
+      </div>
+      <label>Causa probable</label>
+      <select id="acls_causa"><option value="">— elige —</option><option value="ela">ELA / embolia de líquido amniótico</option><option value="anafilaxia">Anafilaxia</option><option value="tep">TEP / tromboembolismo pulmonar</option><option value="hiperk">Hiperpotasemia aguda</option><option value="desconocida">Desconocida</option><option value="otra">Otra causa</option></select>
+      <label>¿ROSC obtenido?</label>
+      <div class="chips" id="a-rosc">
+        <span class="chip" data-v="si" onclick="pick('acls_rosc','si',this,'a-rosc')">Sí — hay ROSC</span>
+        <span class="chip" data-v="no" onclick="pick('acls_rosc','no',this,'a-rosc')">No — en PCR activo</span>
+      </div>
+      <button class="go activar" onclick="evACLS()">❤️ Evaluar ACLS →</button>
+    </div>
+
     <div id="out"></div>
   </div>
 
@@ -353,11 +479,17 @@ function evaluarCodigoRojo(P){
   var vol=volemia(peso,eg),osi=indiceChoque(fc,pas),pct=pctVolemia(perdida,vol);
   var activarTM=(pct!=null&&pct>=30)||(nivelOSI(osi)==='transfusion'||nivelOSI(osi)==='severo')||(perdida!=null&&perdida>=1500);
   var com=P.com||[],asma=com.indexOf('asma')>=0,hta=com.indexOf('hta')>=0;
+  // Umbral de acción WHO/FIGO/ICM 2025: ≥300 mL + signo vital alterado (FC>100, PAS<100 o OSI>1) o ≥500 mL solo
+  var svAlterado=(fc!=null&&fc>100)||(pas!=null&&pas<100)||(osi!=null&&osi>1.0);
+  var umbral300=(perdida!=null&&perdida>=300&&perdida<500&&svAlterado);
+  var umbral500=(perdida!=null&&perdida>=500);
+  var alertaAccion=umbral300||umbral500;
   return {incompleto:false,modo:'codigorojo',
     interp:{vol:vol,osi:osi,osiNivel:nivelOSI(osi),pct:pct,shock:claseShock(pct),activarTM:activarTM,
       txaVentana:ventanaTXA(minParto),hipofib:(fib!=null&&fib<200),triadaLetal:((temp!=null&&temp<36)||(ca!=null&&ca<1.1)||(ph!=null&&ph<7.2)),acidosis:(ph!=null&&ph<7.2),ph:ph, // tríada letal: hipotermia + hipocalcemia + acidosis (pH<7,2)
       cristaloides:Math.round(30*peso),uGR:uGR(10,hb,peso),uCrio:uCrio(peso),gConc:gConcFib(fib,peso),uPFC:uPFC(peso),
-      plaq50:uPlaq(50,plt,peso),plaq75:uPlaq(75,plt,peso),caBaja:(ca!=null&&ca<1.1),asma:asma,hta:hta,causa:P.causa,antico:(P.antico||null)}};
+      plaq50:uPlaq(50,plt,peso),plaq75:uPlaq(75,plt,peso),caBaja:(ca!=null&&ca<1.1),asma:asma,hta:hta,causa:P.causa,antico:(P.antico||null),
+      umbral300:umbral300,umbral500:umbral500,alertaAccion:alertaAccion}};
 }
 // ---- calc compartido renal/antropométrico ----
 function imc(peso,talla){ if(!peso||!talla) return null; var m=talla/100; return Math.round(peso/(m*m)*10)/10; }
@@ -494,6 +626,69 @@ function evaluarAnteparto(P){
     planNeuraxial:(!inestable&&plt!=null&&plt>=70&&!cid),tipo:tipo,fetal:fetal,dolor:dolor,grav:grav,
     jehova:com.indexOf('jehova')>=0,uCrio:uCrio(peso),hipofib:(fib!=null&&fib<200),cesarea:cesarea,eg:eg}};
 }
+// ---- sepsis materna ----
+function evaluarSepsis(P){
+  var peso=n(P.peso),eg=n(P.eg),fc=n(P.fc),fr=n(P.fr),map_val=n(P.map),temp=n(P.temp),lactato=n(P.lactato);
+  var sit=P.situacion,foco=P.foco||'desconocido',vasop=P.vasopresores==='si',atbPrev=P.atb_previo==='si';
+  var com=P.comorbilidades||[];
+  if(!sit) return {incompleto:true,msg:'Elige la situación clínica (sospecha / sepsis / shock séptico).'};
+  var flagLac=(lactato!=null&&lactato>=2);
+  var flagMap=(map_val!=null&&map_val<65);
+  var shock=(sit==='shock')||vasop||(flagLac&&flagMap);
+  var cristal=peso?Math.round(30*peso):null;
+  var focoUterino=(foco==='uterino');
+  var entrega=focoUterino||shock;
+  var hidroGate=vasop;
+  var gasProbable=com.indexOf('gas_probable')>=0;
+  return {incompleto:false,modo:'sepsis',interp:{
+    shock:shock,cristal:cristal,flagLac:flagLac,flagMap:flagMap,vasop:vasop,
+    atbPrev:atbPrev,foco:foco,focoUterino:focoUterino,entrega:entrega,
+    hidroGate:hidroGate,gasProbable:gasProbable,eg:eg,peso:peso,com:com,sit:sit
+  }};
+}
+function evaluarACLS(P){
+  var eg=n(P.eg),tmin=n(P.tmin);
+  var causa=P.causa||'desconocida',rosc=(P.rosc==='si'),ombligo=(P.ombligo==='si');
+  var rhInd=(eg!=null&&eg>=20)||ombligo;
+  var tZona=tmin==null?null:(tmin<4?'precoz':tmin<=5?'ventana':'superado');
+  var rhUrgente=rhInd&&(tmin!=null&&tmin>=4)&&!rosc;
+  return {incompleto:false,modo:'acls',interp:{eg:eg,tmin:tmin,causa:causa,rosc:rosc,ombligo:ombligo,rhInd:rhInd,tZona:tZona,rhUrgente:rhUrgente}};
+}
+function evaluarMTP(P){
+  var perdida=n(P.perdida),fib=n(P.fib),fibtem=n(P.fibtem),plt=n(P.plt),hb=n(P.hb);
+  var peso=n(P.peso),eg=n(P.eg);
+  var vet=(P.vet==='si'),activo=(P.activo==='si');
+  if(perdida==null) return {incompleto:true,msg:'Ingresa la pérdida estimada en mL para evaluar el umbral de activación.'};
+  var vol=volemia(peso,eg);
+  var pct=vol?Math.round(perdida/vol*100):null;
+  var activar=perdida>=1500||(vol&&perdida>=vol*0.25);
+  var defFib=(fib!=null&&fib<2)||(fibtem!=null&&fibtem<12);
+  var defPlt=(plt!=null&&plt<50);
+  var defHb=(hb!=null&&hb<8);
+  var pfcMin=peso?Math.round(15*peso):null;
+  var pfcMax=peso?Math.round(20*peso):null;
+  var pfcUMin=pfcMin?Math.ceil(pfcMin/250):null;
+  var pfcUMax=pfcMax?Math.ceil(pfcMax/250):null;
+  return {incompleto:false,modo:'mtp',interp:{
+    perdida:perdida,pct:pct,vol:vol,activar:activar,activo:activo,
+    fib:fib,fibtem:fibtem,plt:plt,hb:hb,peso:peso,eg:eg,vet:vet,
+    defFib:defFib,defPlt:defPlt,defHb:defHb,
+    pfcMin:pfcMin,pfcMax:pfcMax,pfcUMin:pfcUMin,pfcUMax:pfcUMax
+  }};
+}
+function evaluarELA(P){
+  var eg=n(P.eg),fib=n(P.fib),fibtem=n(P.fibtem),plt=n(P.plt);
+  var momento=P.momento,paro=(P.paro==='si'),atop=(P.atop==='si'),mtpYa=(P.mtp==='si');
+  if(!momento) return {incompleto:true,msg:'Elige el momento del evento (intraparto / postparto / antenatal).'};
+  var defFib=(fib!=null&&fib<=2)||(fibtem!=null&&fibtem<12);
+  var defPlt=(plt!=null&&plt<50);
+  var histEla=paro&&(eg!=null&&eg>=23);
+  return {incompleto:false,modo:'ela',interp:{
+    eg:eg,fib:fib,fibtem:fibtem,plt:plt,momento:momento,
+    paro:paro,atop:atop,mtpYa:mtpYa,defFib:defFib,
+    defPlt:defPlt,histEla:histEla
+  }};
+}
 // ---- validación de rango (VR): impide datos imposibles, avisa los implausibles ----
 // r = [min_abs, max_abs, min_típico, max_típico, unidad, pista_opcional]
 function validarValor(v,r){
@@ -515,6 +710,8 @@ var REFS={
   rcogGt47:{c:'RCOG. Blood Transfusion in Obstetrics (Green-top No. 47). 2015.',url:'https://www.rcog.org.uk/media/sdqcorsf/gtg-47.pdf',acc:'free'},
   gt52:{c:'Mavrides E, et al. (RCOG). Prevention and Management of PPH (Green-top No. 52). 2016.',doi:'10.1111/1471-0528.14178',acc:'free'},
   whotxa:{c:'WHO Recommendation on TXA for PPH. 2017.',pmid:'29630190',acc:'free'},
+  whoFigoIcm2025:{c:'WHO, FIGO, ICM. Consolidated guideline on prevention and management of postpartum haemorrhage. 5 Oct 2025. NCBI Bookshelf NBK619236; ISBN 978-92-4-011563-7.',url:'https://www.ncbi.nlm.nih.gov/books/NBK619236/',acc:'free'},
+  emotiveTrial:{c:'Gallos I, et al. (E-MOTIVE). Uterotonic agents, tranexamic acid, examination, and escalation for treatment of PPH. NEJM 2023;389(19):1745–1757.',doi:'10.1056/NEJMoa2303966',pmid:'37791716',acc:'free'},
   woman:{c:'WOMAN Trial. Lancet 2017;389:2105–2116.',doi:'10.1016/S0140-6736(17)30638-4',acc:'free'},
   figoPPH:{c:'Escobar MF, et al. FIGO recommendations on PPH 2022.',doi:'10.1002/ijgo.14116',acc:'free'},
   acog183:{c:'ACOG Practice Bulletin No. 183: Postpartum Hemorrhage. 2017.',doi:'10.1097/AOG.0000000000002351',acc:'pay'},
@@ -564,7 +761,29 @@ var REFS={
   // ---- cierre de needs-human (verificadas jun-2026) ----
   ash2018hit:{c:'Cuker A, et al. (ASH). 2018 guidelines for management of VTE: heparin-induced thrombocytopenia. Blood Adv 2018;2(22):3360–3392. (score 4Ts; TIH inicia 5–10 días.)',doi:'10.1182/bloodadvances.2018024489',acc:'free'},
   rouseBEAM:{c:'Rouse DJ, et al. (BEAM). MgSO₄ para prevención de parálisis cerebral (régimen 6 g carga + 2 g/h). N Engl J Med 2008;359(9):895–905.',doi:'10.1056/NEJMoa0801187',acc:'free'},
-  aabbPlt:{c:'Kaufman RM, et al. (AABB). Platelet transfusion: clinical practice guideline. Ann Intern Med 2015;162(3):205–213. (dosis: hasta 1 aféresis/equivalente; LP <50; cirugía mayor no neuraxial <50.)',doi:'10.7326/M14-1589',acc:'pay'}
+  aabbPlt:{c:'Kaufman RM, et al. (AABB). Platelet transfusion: clinical practice guideline. Ann Intern Med 2015;162(3):205–213. (dosis: hasta 1 aféresis/equivalente; LP <50; cirugía mayor no neuraxial <50.)',doi:'10.7326/M14-1589',acc:'pay'},
+  // ---- Sepsis Materna (verificadas por workflow jun-2026) ----
+  smfm2023Sep:{c:'Boelig RC, et al. (SMFM). SMFM Consult Series #68: Sepsis in Pregnancy. Am J Obstet Gynecol 2023;229(3):B2–B12.',doi:'10.1016/j.ajog.2023.04.006',pmid:'37236495',acc:'pay'},
+  ssc2021:{c:'Evans L, et al. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021. Crit Care Med 2021;49(11):e1063–e1143.',doi:'10.1097/CCM.0000000000005337',pmid:'34599691',acc:'free'},
+  rcog64Sep:{c:'Lissauer D, et al. (RCOG). Prevention and Management of Sepsis in Pregnancy (Green-top Guideline No. 64). BJOG 2024.',doi:'10.1111/1471-0528.17888',pmid:'39694496',acc:'free'},
+  yahya2025Mayo:{c:'Yahya A, et al. Maternal Sepsis and Septic Shock: A Practical Review. Mayo Clin Proc 2025.',pmid:'40610110',acc:'pay'},
+  // ---- ELA / Colapso Peripartum (verificadas por workflow jun-2026) ----
+  pacheco2016:{c:'Pacheco LD, et al. Amniotic fluid embolism: principles of early clinical management. Am J Obstet Gynecol 2016;214(4):359–366.',doi:'10.1016/j.ajog.2015.12.036',pmid:'26987420',acc:'pay'},
+  stafford2020Ela:{c:'Stafford IA, et al. Amniotic fluid embolism: A contemporary characterization through the United States National Inpatient Sample. Am J Obstet Gynecol MFM 2020;2(2):100083.',doi:'10.1016/j.ajogmf.2019.100083',pmid:'33345954',acc:'free'},
+  delloyd2023Ela:{c:'de Lloyd L, et al. Acute obstetric coagulopathy during postpartum hemorrhage is caused by hyperfibrinolysis and dysfibrinogenemia. J Thromb Haemost 2023;21(4):862–879.',doi:'10.1016/j.jtha.2022.11.036',pmid:'36696216',acc:'pay'},
+  hofer2023Ela:{c:'Hofer S, et al. Haemostatic support in postpartum haemorrhage: A review of the literature and expert opinion. Eur J Anaesthesiol 2023;40(1):29–38.',doi:'10.1097/EJA.0000000000001744',pmid:'36131564',acc:'free'},
+  // ---- MTP / Hemorragia Masiva (verificadas por workflow jun-2026) ----
+  cox2026:{c:'Cox C, Neave L, Hunt BJ. New approaches in the haemostatic management of postpartum haemorrhage. BMJ Med 2026;5(1):e002256.',doi:'10.1136/bmjmed-2025-002256',pmid:'42299317',acc:'free'},
+  cerny2025:{c:'Cerny V, et al. Diagnosis and treatment of peripartum haemorrhage, consensus of the interdisciplinary working group. Ceska Gynekol 2025;90(1):72–89.',doi:'10.48095/cccg202572',pmid:'40117262',acc:'free'},
+  eid2022:{c:'Eid J, Stahl D. Blood Product Replacement for Postpartum Hemorrhage. Clin Obstet Gynecol 2022;66(2):408–414.',doi:'10.1097/GRF.0000000000000766',pmid:'36730283',acc:'pay'},
+  yurashevich2023:{c:'Yurashevich M, et al. Evaluating the Association Between Fibrinogen and ROTEM and the Progression to Severe Obstetric Hemorrhage. Clin Appl Thromb Hemost 2023;29:10760296231175089.',doi:'10.1177/10760296231175089',pmid:'37186763',acc:'free'},
+  salmanian2021:{c:'Salmanian B, et al. Massive Transfusion Protocols in Obstetric Hemorrhage: Theory versus Reality. Am J Perinatol 2021;40(1):95–98.',doi:'10.1055/s-0041-1728833',pmid:'33990124',acc:'pay'},
+  // ---- ACLS Obstétrico (verificadas por workflow jun-2026) ----
+  panchal2020:{c:'Panchal AR, et al. (AHA). Part 3: Adult Basic and Advanced Life Support: 2020 AHA Guidelines for CPR and ECC. Circulation 2020;142(16_suppl_2):S366–S468.',doi:'10.1161/CIR.0000000000000916',pmid:'33081529',acc:'pay'},
+  combs2021:{c:'Combs CA, et al. (SMFM). SMFM Special Statement: Checklist for initial management of amniotic fluid embolism. Am J Obstet Gynecol 2021;224(4):B29–B32.',doi:'10.1016/j.ajog.2021.01.001',pmid:'33417901',acc:'pay'},
+  kim2026korean:{c:'Kim TY, et al. 2025 Korean Guidelines for CPR: Part 5. Cardiac arrest in special circumstances. Clin Exp Emerg Med 2026;13(Suppl 1):S61–S74.',doi:'10.15441/ceem.26.074',pmid:'42297408',acc:'free'},
+  leech2024:{c:'Leech C, et al. Maternal and neonatal outcomes following resuscitative hysterotomy for out-of-hospital cardiac arrest: A systematic review. Resuscitation 2024;207:110479.',doi:'10.1016/j.resuscitation.2024.110479',pmid:'39736393',acc:'pay'},
+  rajendran2025:{c:'Rajendran G, et al. Resuscitative Hysterotomy and Maternal and Neonatal Mortality in Maternal Cardiac Arrest: A Systematic Review and Meta-analysis. Can J Cardiol 2025;42(4):850–860.',doi:'10.1016/j.cjca.2025.09.025',pmid:'41038532',acc:'pay'}
 };
 // cita corta CLICABLE para las cajas docentes "Por qué (en ELLA)": (Autor año ↗)
 function srcMini(pairs){ return '<span class="small">('+pairs.map(function(p){ var r=REFS[p[0]]; if(!r) return p[1];
@@ -578,16 +797,16 @@ function refsHtml(keys){ return (keys||[]).map(function(k){ var r=REFS[k]; if(!r
 }).join(' · '); }
 
 /* ---- estado/intake ---- */
-var ST={a_dif:null,a_com:[],c_causa:null,c_com:[],c_antico:null,e_sint:[],e_com:[],k_coad:[],t_far:'ninguno',h_com:[],h_perc:[]};
+var ST={a_dif:null,a_com:[],c_causa:null,c_com:[],c_antico:null,e_sint:[],e_com:[],k_coad:[],t_far:'ninguno',h_com:[],h_perc:[],s_foco:null,s_com:[],ela_paro:null,ela_atop:null,ela_mtp:null,mtp_vet:null,mtp_act:null,acls_rosc:null,acls_ombligo:null};
 function pick(g,v,el,grp){ document.querySelectorAll('#'+grp+' .chip').forEach(function(c){c.classList.remove('sel');}); el.classList.add('sel'); ST[g]=v; }
 function tog(g,v,el){ el.classList.toggle('sel'); var s=ST[g]=ST[g]||[]; var i=s.indexOf(v); if(i<0)s.push(v); else s.splice(i,1); }
 function gv(id){ return document.getElementById(id).value; }
 function acToggleDoac(){ document.getElementById('k-doac').classList.toggle('hidden', gv('k_far')!=='DOAC'); }
 function goHome(){ crDetener(); document.getElementById('aprender').classList.add('hidden'); document.getElementById('glosario').classList.add('hidden'); document.getElementById('mtab-dec').classList.add('sel'); document.getElementById('mtab-apr').classList.remove('sel'); document.getElementById('mtab-glo').classList.remove('sel'); document.getElementById('home').classList.remove('hidden'); document.getElementById('sc').classList.add('hidden'); document.getElementById('out').innerHTML=''; window.scrollTo(0,0); }
-var SC_TITLES={an:'🅰️ Anemia preoperatoria — ¿optimizar o transfundir?',cr:'🔴 Código Rojo obstétrico — dosis por peso',ec:'⚡ Eclampsia / preeclampsia severa — MgSO₄, PA, HELLP',ac:'💉 Anticoagulación — ¿neuraxial AHORA? (reloj ASRA 5.ª)',tr:'🩸 Trombocitopenia — ¿neuraxial? dx diferencial',ap:'🤰 Hemorragia anteparto — previa / DPPNI / acretismo'};
+var SC_TITLES={an:'🅰️ Anemia preoperatoria — ¿optimizar o transfundir?',cr:'🔴 Código Rojo obstétrico — dosis por peso',ec:'⚡ Eclampsia / preeclampsia severa — MgSO₄, PA, HELLP',ac:'💉 Anticoagulación — ¿neuraxial AHORA? (reloj ASRA 5.ª)',tr:'🩸 Trombocitopenia — ¿neuraxial? dx diferencial',ap:'🤰 Hemorragia anteparto — previa / DPPNI / acretismo',se:'🦠 Sepsis Materna / Shock Séptico — bundle hora-1, NE, foco',ela:'🌊 ELA / Colapso Peripartum — TXA · fibrinógeno · RCP obstétrico',mtp:'⚖️ MTP / Hemorragia Masiva — 1:1:1 · fibrinógeno · ROTEM · targets',acls:'❤️ ACLS Obstétrico — LUD · histerotomía T+4 · causa · pronóstico'};
 var CUR_SC=null;
 function openSc(s){ CUR_SC=s; document.getElementById('aprender').classList.add('hidden'); document.getElementById('glosario').classList.add('hidden'); document.getElementById('mtab-dec').classList.add('sel'); document.getElementById('mtab-apr').classList.remove('sel'); document.getElementById('mtab-glo').classList.remove('sel'); document.getElementById('home').classList.add('hidden'); document.getElementById('sc').classList.remove('hidden'); document.getElementById('out').innerHTML='';
-  ['an','cr','ec','ac','tr','ap'].forEach(function(k){ document.getElementById('x-'+k).classList.toggle('hidden', s!==k); });
+  ['an','cr','ec','ac','tr','ap','se','ela','mtp','acls'].forEach(function(k){ document.getElementById('x-'+k).classList.toggle('hidden', s!==k); });
   document.getElementById('sc-title').innerHTML = SC_TITLES[s]||''; window.scrollTo(0,0); }
 function P_base(){ return {edad:gv('p_edad'),peso:gv('p_peso'),eg:gv('p_eg'),talla:gv('p_talla'),creatinina:gv('p_creat')}; }
 function trace(modo){ return '<div class="trace">'+new Date().toLocaleString('es-CL')+' · '+modo+' · caso efímero · sin datos guardados</div>'; }
@@ -605,7 +824,11 @@ var VR={
   k_horas:[0,720,0,200,'h'], k_plt:[1,1000,10,450,'×10⁹/L','en miles, no en absoluto'], k_inr:[0.5,12,0.8,6,''], k_ttpa:[0.5,10,0.8,5,'ratio'], k_axa:[0,3,0,1.5,'UI/mL'], k_dias:[0,60,0,30,'días'],
   t_plt:[1,1000,10,450,'×10⁹/L','en miles: 62, no 62000'], t_pltprev:[1,1000,10,450,'×10⁹/L','en miles'], t_dt:[0,200,0,72,'h'], t_hdesde:[0,200,0,72,'h'],
   t_pas:[30,300,60,220,'mmHg'], t_pad:[20,200,40,140,'mmHg'], t_ldh:[50,10000,100,2000,'UI/L'], t_ast:[1,5000,5,500,'UI/L'], t_lsn:[10,100,20,60,'UI/L'], t_fib:[10,1200,150,700,'mg/dL','en mg/dL, no g/L'], t_inr:[0.5,12,0.8,6,''],
-  h_ces:[0,10,0,5,'cesáreas'], h_fc:[20,250,50,180,'lpm'], h_pas:[30,300,60,200,'mmHg'], h_hb:[2,20,5,15,'g/dL'], h_plt:[1,1000,10,450,'×10⁹/L','en miles'], h_fib:[10,1200,150,700,'mg/dL','en mg/dL, no g/L']
+  h_ces:[0,10,0,5,'cesáreas'], h_fc:[20,250,50,180,'lpm'], h_pas:[30,300,60,200,'mmHg'], h_hb:[2,20,5,15,'g/dL'], h_plt:[1,1000,10,450,'×10⁹/L','en miles'], h_fib:[10,1200,150,700,'mg/dL','en mg/dL, no g/L'],
+  s_fc:[20,250,50,180,'lpm'], s_fr:[4,60,8,40,'rpm'], s_map:[20,200,40,130,'mmHg'], s_temp:[28,43,34,42,'°C'], s_lactato:[0,25,0.5,10,'mmol/L'],
+  ela_eg:[18,42,22,40,'sem'], ela_fib:[0,8,0.5,4,'g/L','¿es Clauss? en g/L (no mg/dL)'], ela_fibtem:[0,30,0,25,'mm'], ela_plt:[1,1000,10,450,'×10⁹/L','en miles: 62, no 62000'],
+  m_perdida:[100,10000,300,6000,'mL','¿en mL? si la tienes en L multiplica ×1000'], m_fib:[0,8,0.5,4,'g/L','en g/L Clauss (no mg/dL)'], m_fibtem:[0,30,0,25,'mm'], m_plt:[1,1000,10,450,'×10⁹/L','en miles: 82, no 82000'], m_hb:[2,20,5,15,'g/dL'],
+  acls_eg:[10,43,20,41,'sem'], acls_tmin:[0,120,0,30,'min']
 };
 function labelVR(id){ var el=document.getElementById(id); if(!el) return id; var p=el.previousElementSibling;
   if(p&&p.tagName==='LABEL') return p.textContent.replace(/\s+/g,' ').trim();
@@ -696,6 +919,8 @@ function evCodigoRojo(){
   if(crT0===null){ crT0=Date.now(); crTick(); crTimer=setInterval(crTick,1000); }
   var h='<div class="timerbar"><div><div class="lbl">Tiempo desde activación</div><div class="t" id="cr-clock">00:00</div></div><button onclick="crDetener()">⏸ Detener</button></div>';
   h+=trace('CÓDIGO ROJO');
+  // Banner umbral de acción WHO/FIGO/ICM 2025
+  if(I.alertaAccion) h+='<div class="vrbanner warn"><b>⚠️ UMBRAL DE ACCIÓN HPP 2025 (WHO/FIGO/ICM)</b><ul>'+(I.umbral300?'<li>≥300 mL + signo vital alterado (FC&gt;100 / PAS&lt;100 / OSI&gt;1) → iniciar bundle MOTIVE ahora.</li>':'')+(I.umbral500?'<li>≥500 mL → umbral diagnóstico clásico superado → iniciar bundle MOTIVE ahora.</li>':'')+srcMini([['whoFigoIcm2025','WHO/FIGO/ICM 2025']])+'</ul></div>';
   h+='<div class="interp alarma"><b>Interpretación</b>'
     +'<div class="d">• Volemia gestacional ≈ <b>'+(I.vol||'—')+' mL</b>'+(I.pct!=null?' · pérdida ≈ <b>'+I.pct+'%</b> → shock <b>'+I.shock+'</b>':'')+'.</div>'
     +(I.osi!=null?'<div class="d">• Índice de choque <b>'+I.osi+'</b> ('+(I.osiNivel==='transfusion'?'≥1,0 → transfusión urgente':I.osiNivel==='severo'?'≥1,7 → shock severo':I.osiNivel==='alerta'?'&gt;0,9 → alerta/UCI':'normal')+').</div>':'')
@@ -708,13 +933,16 @@ function evCodigoRojo(){
   plan.push({p:2,t:'MINUTOS: si persiste hipoperfusión → GR O-negativo sin cruzar'+(I.activarTM?' + activar TM 1:1:1':'')+'.'});
   plan.push({p:2,t:'MINUTOS: corregir coagulopatía dirigida (fibrinógeno, plaquetas, Ca²⁺, temperatura, pH).'});
   plan.push({p:3,t:'>60 min: escalar quirúrgico/mecánico (balón → B-Lynch/ligaduras → histerectomía si acretismo/rotura/previa central).'});
-  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  h+='<div class="sec">🗺️ Plan</div>';
+  // Bundle MOTIVE (WHO/FIGO/ICM 2025 + E-MOTIVE NEJM 2023)
+  h+='<div class="caja" style="margin-bottom:12px"><b>Bundle MOTIVE — primer minuto</b> '+srcMini([['emotiveTrial','E-MOTIVE'],['whoFigoIcm2025','WHO/FIGO/ICM 2025']])+'<br><span style="font-family:monospace;font-size:.9rem;line-height:2"><b>M</b> Masaje uterino &nbsp;·&nbsp; <b>O</b> Oxitócicos (escalonados) &nbsp;·&nbsp; <b>T</b> Tranexámico 1 g IV &lt;3 h &nbsp;·&nbsp; <b>I</b> IV fluidos (Ringer tibio) &nbsp;·&nbsp; <b>V</b> Vaginal exam (4T) &nbsp;·&nbsp; <b>E</b> Escalar</span><br><span class="small">~60% ↓ desenlaces graves vs. atención estándar (E-MOTIVE, 2023)</span></div>';
+  h+='<ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
   // componentes
   h+='<div class="sec">💉 Componentes / dosis computadas</div>';
   h+=compHtml({nm:'TXA',ic:'⏱️',est:'INDICAR',estT:'INDICAR · CÓDIGO ROJO',
     dosis:'<span class="dose">1 g (100 mg/mL) IV a 1 mL/min en 10 min</span>, lo antes posible. '+(I.txaVentana!=null?'Ventana restante: '+(I.txaVentana>0?'<b>'+I.txaVentana+' min</b>':'<b>FUERA</b>'):'<b>Hora del parto no ingresada</b> — válido si &lt;3 h del parto; confírmala.'),
     reev:'2.ª dosis 1 g si sigue a 30 min o reaparece &lt;24 h.',
-    evitar:'Administrar &gt;3 h del PARTO (sin beneficio); confundir la ventana con "desde el ingreso" — la referencia es la hora del parto.',refs:['whotxa','woman']});
+    evitar:'Administrar &gt;3 h del PARTO (sin beneficio); confundir la ventana con "desde el ingreso" — la referencia es la hora del parto. <b>TXA PROFILÁCTICO de rutina: NO recomendado</b> (WHO/FIGO/ICM 2025) — el WOMAN 2017 demostró beneficio solo en tratamiento (&lt;3 h), no en prevención rutinaria antes del sangrado.',refs:['whotxa','woman','whoFigoIcm2025']});
   if(I.causa==='tono'||I.causa==null) h+=compHtml({nm:'Uterotónicos (atonía)',ic:'💪',est:'INDICAR',estT:'INDICAR · escalonado',
     dosis:'1) Oxitocina <span class="dose">5 UI IV lenta (bolo NUNCA &gt;5 UI) o 10 UI IM</span> + infusión 40 UI/500 mL a 125 mL/h. '
       +'2) '+(I.hta?'<b>⛔ Ergometrina contraindicada (HTA/preeclampsia)</b>':'Ergometrina <span class="dose">0,5 mg IM</span> (ACOG 0,2 mg), c/2–4 h, máx 5')+'. '
@@ -826,6 +1054,284 @@ function evEclampsia(){
   if(I.postparto) h+='<div class="caja"><b>Eclampsia postparto.</b> El parto NO cierra la ventana: una parte importante de las eclampsias ocurre tras el parto. Mantén profilaxis con Mg y vigilancia de PA/síntomas en el puerperio. '+srcMini([['acog222','ACOG PB 222']])+'</div>';
   h+='<div class="caja"><b>Si concurre HPP (atonía):</b> ⛔ ergometrina EXCLUIDA en HTA/preeclampsia (vasoconstrictora → crisis HTA/ACV) → derivar a oxitocina (1ª línea) / carboprost (precaución si asma).'+srcMini([['gt52','GTG-52']])+'</div>';
   h+='<div class="caja"><b>Anclaje local.</b> Default = Guía Perinatal MINSAL <b>2024</b> (edición vigente) alineada con ACOG PB 222 (verificada). Plaquetas neuraxial: decisión del equipo = <b>SOAP ≥70</b> (neuraxial obstétrico); HHHA 50.000 y AABB ≥50 son para PL/cirugía NO neuraxial (pregunta distinta).</div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- SEPSIS MATERNA render ---- */
+function evSepsis(){
+  var P=Object.assign(P_base(),{fc:gv('s_fc'),fr:gv('s_fr'),map:gv('s_map'),temp:gv('s_temp'),lactato:gv('s_lactato'),situacion:gv('s_sit'),vasopresores:gv('s_vasop'),atb_previo:gv('s_atbprev'),foco:ST.s_foco,comorbilidades:ST.s_com});
+  var r=evaluarSepsis(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('SEPSIS MATERNA / SHOCK SÉPTICO');
+  h+='<div class="interp alarma"><b>Interpretación</b>'
+    +'<div class="d">• Categoría: <b>'+(I.shock?'SHOCK SÉPTICO OBSTÉTRICO — emergencia multidisciplinaria':I.sit==='sepsis'?'SEPSIS MATERNA — iniciar bundle en ≤1 h':'SOSPECHA — activar screening y cultivos')+'</b>. '+srcMini([['smfm2023Sep','SMFM 2023'],['rcog64Sep','RCOG GTG-64']])+'</div>'
+    +(I.flagLac?'<div class="d">• <b>Lactato ≥2 mmol/L</b> — hipoperfusión tisular: umbral de shock séptico junto a hipotensión refractaria. Reevaluar tras bolo.</div>':'')
+    +(I.flagMap?'<div class="d">• <b>MAP &lt;65 mmHg</b> — umbral de vasopresores (SSC 2021).</div>':'')
+    +(I.focoUterino?'<div class="d">• <b>Foco uterino</b>: el parto/evacuación es parte del control de foco — no hay antibiótico que lo reemplace.</div>':'')
+    +(I.gasProbable?'<div class="d">• <b>GAS probable</b>: cobertura para Streptococcus pyogenes desde el inicio — 1/3 progresa a shock tóxico en horas.</div>':'')
+    +'</div>';
+  var plan=[];
+  plan.push({p:1,t:'AHORA: hemocultivos (2 pares) + cultivos del foco — ANTES de los antibióticos, pero sin demorarlos. La toma de cultivos NO justifica retrasar el ATB.'});
+  plan.push({p:1,t:'AHORA: ATB empírico de amplio espectro en ≤1 h del reconocimiento (GRADE 1C SMFM / Strong SSC 2021). '+(I.gasProbable?'Cobertura GAS (Streptococcus pyogenes) incluida — sospecha puerperal de alto riesgo.':'Ajustar según foco presunto e historia local de resistencias.')+(I.atbPrev?' ⚠️ ATB previo en <12 h: informar al equipo — puede afectar la elección del empírico.':'')});
+  plan.push({p:1,t:'AHORA: cristaloide balanceado '+(I.cristal?I.cristal+' mL (30 mL/kg, SSC 2021)':'— ingresa el peso')+' en las primeras 3 h. Preferir Ringer lactato. Reevaluar respuesta con medidas dinámicas (PLR / VPP) antes de continuar. NO almidones ni gelatina (GRADE 1A SMFM).'});
+  if(I.shock||I.flagMap) plan.push({p:1,t:'AHORA: NOREPINEFRINA primera línea — MAP objetivo 65 mmHg. CVC preferido; periférica gruesa válida en la urgencia. Agregar vasopresina (0,01–0,03 U/min) si NE insuficiente antes de escalar dosis (SSC 2021).'});
+  if(I.entrega||I.focoUterino) plan.push({p:1,t:'URGENTE: evaluar parto/evacuación uterina (foco uterino = no controla sin vaciar). Decisión multidisciplinaria obstetra-intensivista-anestesiólogo.'+(I.eg!=null&&I.eg>=24&&I.eg<34?' Corticoides para maduración si tiempo disponible'+(I.eg<32?' + MgSO₄ neuroprotección (<32 sem)':'')+'.':(I.eg!=null&&I.eg>=34?' EG ≥34 sem: interrumpir.':''))});
+  if(I.hidroGate) plan.push({p:2,t:'Hidrocortisona 200 mg/día IV si NE ≥0,25 mcg/kg/min por ≥4 h sin respuesta suficiente (GRADE 2B SMFM). ⚠️ Si <34 sem: NO sustituye betametasona IM para maduración fetal — dar ambas si corresponde.'});
+  plan.push({p:2,t:'Lactato seriado cada 2 h hasta normalizar (<2 mmol/L). Diuresis >0,5 mL/kg/h. Repetir hemocultivos si fiebre persiste >72 h con ATB en curso.'});
+  plan.push({p:3,t:'Glucemia: insulinoterapia si >180 mg/dL, meta 144–180 mg/dL. Profilaxis TEV farmacológica (HBPM) tan pronto el riesgo de sangrado lo permita (GRADE 1B SMFM). Seguimiento salud mental posparto.'});
+  h+='<div class="sec">🗺️ Plan</div><ol class="plan">'+plan.map(function(s){return '<li class="p'+s.p+'">'+s.t+'</li>';}).join('')+'</ol>';
+  h+='<div class="sec">💉 Conducta / dosis</div>';
+  h+=compHtml({nm:'ATB empírico en ≤1 h',ic:'💊',est:'INDICAR',estT:'ATB EN ≤1 h — no esperar cultivos',
+    dosis:'Las dosis específicas de antibióticos varían por protocolo institucional HHHA — verificar antes de programar. Principio clave: <b>amplio espectro, cobertura GAS si puerperal</b> (betalactámico de amplio espectro ± clindamicina para cubrir Streptococcus pyogenes). Ajustar a antibiograma a 48–72 h (de-escalada GRADE 1C SMFM). En alergia severa a penicilina: verificar esquema alternativo en protocolo HHHA.',
+    reev:'Hemocultivos a 48–72 h; de-escalar según antibiograma. Repetir cultivos si fiebre >72 h.',
+    evitar:'Demorar ATB esperando cultivos — mortalidad aumenta ~7% por hora de retraso. Mantener espectro amplio >3–5 días si hay oportunidad de de-escalada. Usar carbapenem de entrada sin indicación resistencia.',refs:['smfm2023Sep','ssc2021','rcog64Sep']});
+  h+=compHtml({nm:'Cristaloide balanceado (resucitación)',ic:'💧',est:'INDICAR',estT:'30 mL/kg en 3 h',
+    dosis:'<span class="dose">30 mL/kg ≈ '+(I.cristal?I.cristal+' mL':'— (ingresa peso)')+' IV en 3 h</span> (SSC 2021). SMFM: 1–2 L iniciales. Ringer lactato o solución balanceada preferida sobre ClNa 0,9%. Reevaluar respuesta hemodinámica dinámica (PLR, VPP) antes de continuar bolo si hay riesgo de sobrecarga (la gestante tiene menor reserva cardiopulmonar).',
+    reev:'MAP, FC, diuresis (>0,5 mL/kg/h), lactato seriado. Suspender si sin respuesta o signos de sobrecarga.',
+    evitar:'Almidones (HES) o gelatinas — GRADE 1A en contra (SMFM). Bolos irrestrictos sin reevaluar: la gestante no tolera la sobrecarga. ClNa 0,9% irrestricto (acidosis hiperclorémica).',refs:['smfm2023Sep','ssc2021']});
+  if(I.shock||I.flagMap) h+=compHtml({nm:'Norepinefrina (vasopresor 1ª línea)',ic:'⚡',est:'INDICAR',estT:'INDICAR — MAP <65 o shock',
+    dosis:'Norepinefrina primera línea en shock séptico obstétrico (GRADE 1C SMFM). <b>Dosis: rango adulto general 0,01–0,03 mcg/kg/min de inicio — confirmar rango con UCI/protocolo HHHA</b> (no existe RCT obstétrico específico). MAP objetivo 65 mmHg. CVC preferido; periférica gruesa válida en urgencia mientras se obtiene acceso central.',
+    reev:'MAP, FC y lactato seriado cada hora; valorar respuesta a los 30–60 min. Agregar vasopresina (0,01–0,03 U/min, SSC 2021) si NE en rango ≥0,25 mcg/kg/min antes de escalar.',
+    evitar:'Dopamina como 1ª línea (más arritmias). Epinefrina de entrada (usar como 3.ª línea si NE+vasopresina insuficientes). No dilatar el inicio si MAP <65 esperando acceso central.',refs:['smfm2023Sep','ssc2021']});
+  if(I.hidroGate) h+=compHtml({nm:'Hidrocortisona',ic:'💊',est:'EVALUAR',estT:'INDICAR si NE ≥0,25 mcg/kg/min ≥4 h',
+    dosis:'<span class="dose">200 mg/día IV</span>: 50 mg IV c/6 h o infusión continua (SSC 2021 / GRADE 2B SMFM). Iniciar si NE o epinefrina ≥0,25 mcg/kg/min por ≥4 h sin MAP adecuada. <b>⚠️ Si embarazo &lt;34 sem: hidrocortisona IV en shock NO sustituye betametasona IM para maduración pulmonar fetal — son indicaciones, dosis y vías distintas. Dar ambas si la situación lo permite.</b>',
+    reev:'Respuesta hemodinámica (MAP) a las 4–6 h; de-escalar vasopresores antes de suspender hidrocortisona.',
+    evitar:'Usar profilácticamente antes de vasopresores. Confundir con corticoides de maduración fetal. Suspender bruscamente sin de-escalada de vasopresores.',refs:['smfm2023Sep','ssc2021']});
+  if(I.entrega) h+=compHtml({nm:'Control de foco — evacuación uterina',ic:'🤰',est:'INDICAR',estT:'INDICAR — foco uterino/shock',
+    dosis:'No es una dosis: es el tratamiento causal. La infección uterina NO se controla sin evacuar el útero. Decisión multidisciplinaria (obstetra + intensivista + anestesiólogo + neonatólogo) sin importar la EG.'+(I.eg!=null&&I.eg>=24&&I.eg<34?' Corticoides de maduración (ciclo estándar si tiempo disponible)'+(I.eg<32?' + MgSO₄ neuroprotección fetal.':'.'):''),
+    reev:'Respuesta hemodinámica y descenso de lactato tras evacuación; persistencia de fiebre sugiere foco secundario.',
+    evitar:'Diferir el parto para "estabilizar más" cuando el foco es uterino — sin evacuación, la estabilidad es imposible. Omitir corticoides/MgSO₄ si hay tiempo.',refs:['smfm2023Sep','rcog64Sep']});
+  h+='<div class="sec">🎓 Por qué (en ELLA)</div>';
+  h+='<div class="caja"><b>La gestante no encaja en los criterios del adulto general.</b> Taquicardia, leucocitosis y alcalosis respiratoria son cambios NORMALES del embarazo. El SMFM 2023 usa sus propios criterios (disfunción orgánica + foco infeccioso, sin exigir fiebre). qSOFA no está prospectivamente validado en gestantes. '+srcMini([['smfm2023Sep','SMFM 2023']])+'</div>';
+  h+='<div class="caja"><b>GAS y sepsis puerperal: 1/3 progresa a shock tóxico en horas.</b> Streptococcus pyogenes (GAS) es el agente más letal en sepsis puerperal; la progresión puede ser fulminante. Cobertura desde el primer antibiótico, sin esperar cultivo. '+srcMini([['smfm2023Sep','SMFM 2023'],['rcog64Sep','RCOG GTG-64']])+'</div>';
+  h+='<div class="caja"><b>El útero es la fuente: sin vaciarlo, los antibióticos no alcanzan.</b> La endometritis/infección uterina tiene un reservorio con flujo reducido de antibióticos. Evacuar el útero es el paso de control de foco que ningún antibiótico puede reemplazar.</div>';
+  h+='<div class="caja"><b>TEV pospepsis: profilaxis obligatoria.</b> La SMFM (GRADE 1B) recomienda HBPM tan pronto como el riesgo de sangrado lo permita. Si hay catéter neuraxial, aplicar los intervalos ASRA. '+srcMini([['smfm2023Sep','SMFM 2023'],['asra5','ASRA 5.ª']])+'</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul><li>ATB en ≤1 h — la mortalidad sube ~7% por hora de retraso.</li><li>Cristaloide balanceado 30 mL/kg; reevaluar dinámicamente antes de continuar.</li><li>NE primera línea; vasopresina como 2ª si NE insuficiente.</li><li>Foco uterino = parto/evacuación es el tratamiento, no una opción.</li><li>Hidrocortisona solo si NE ≥0,25 mcg/kg/min ≥4 h — no profiláctica.</li><li>Hidrocortisona IV (shock) ≠ betametasona IM (maduración fetal): dar ambas si corresponde.</li></ul></div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- ACLS Obstétrico render ---- */
+function evACLS(){
+  var P=Object.assign(P_base(),{eg:gv('acls_eg'),tmin:gv('acls_tmin'),causa:gv('acls_causa'),rosc:ST.acls_rosc,ombligo:ST.acls_ombligo});
+  var r=evaluarACLS(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  var I=r.interp,h=trace('ACLS Obstétrico');
+  // Banner principal
+  if(I.rosc){
+    h+='<div class="interp"><b>✅ ROSC obtenido — Cuidados post-parada</b>'
+     +'<div class="d">• UCI/UCIO con monitoreo materno-fetal continuo.</div>'
+     +'<div class="d">• Temperatura objetivo: según criterios adulto + monitoreo fetal (riesgo bradicardia fetal en hipotermia).</div>'
+     +'<div class="d">• Tratar causa desencadenante (ver abajo). '+srcMini([['kim2026korean','Korea 2026']])+'</div></div>';
+  } else {
+    h+='<div class="interp alarma"><b>❤️ PARADA CARDÍACA EN EMBARAZADA'+(I.eg?' — EG '+I.eg+' sem':'')+'</b>'
+     +'<div class="d">• <b>LUD manual izquierdo INMEDIATO</b> (supino; más eficaz que inclinar 30°). Reduce compresión aortocava 30–40%.</div>'
+     +'<div class="d">• <b>RCP ACLS estándar</b>. Compresiones en posición estándar. <b>NO dispositivo mecánico</b> (LUCAS/AutoPulse contraindicados en embarazo).</div>'
+     +'<div class="d">• <b>Intubación endotraqueal precoz</b>: alto riesgo de hipoxia + regurgitación + VAD. Plan quirúrgico de rescate disponible.</div>'
+     +(I.rhInd?'<div class="d">• '+( I.rhUrgente?'<b>⚠ HISTEROTOMÍA RESUCITADORA AHORA</b> (T='+I.tmin+' min ≥4 sin ROSC)':'Preparar histerotomía resucitadora — iniciar si no hay ROSC a T+4 min.')+'</div>':'<div class="d">• EG &lt;20 sem / útero no palpable: histerotomía no indicada de rutina.</div>')
+     +srcMini([['panchal2020','AHA 2020'],['kim2026korean','Korea 2026']])+'</div>';
+  }
+  // Timeline visual
+  if(!I.rosc&&I.tmin!=null){
+    var zonaColor=I.tZona==='precoz'?'var(--green)':I.tZona==='ventana'?'var(--amber)':'var(--red)';
+    var zonaMsg=I.tZona==='precoz'?'Tiempo en ventana — preparar RH para T+4 min':I.tZona==='ventana'?'⚠ Ventana RH — INICIAR histerotomía resucitadora ahora':'⚡ Ventana clásica superada — NO abandonar RH si RCP de calidad. Supervivencia materna documentada hasta T+12 min. '+srcMini([['rajendran2025','Rajendran 2025']]);
+    h+='<div style="background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px;margin-bottom:12px">'
+     +'<div style="font-size:.76rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:7px">Cronología — T='+I.tmin+' min desde colapso</div>'
+     +'<div style="display:flex;align-items:center;gap:6px;font-size:.82rem;flex-wrap:wrap">'
+     +'<span style="background:var(--green-soft);color:var(--green);padding:3px 9px;border-radius:999px;font-weight:700">T+0: LUD+RCP</span>'
+     +'<span style="color:var(--muted)">→</span>'
+     +'<span style="background:'+(I.tZona==='precoz'?'var(--blue-soft);color:var(--blue)':'var(--red-soft);color:var(--red)')+';padding:3px 9px;border-radius:999px;font-weight:700">T+4: INICIAR RH</span>'
+     +'<span style="color:var(--muted)">→</span>'
+     +'<span style="background:var(--amber-soft);color:var(--amber);padding:3px 9px;border-radius:999px;font-weight:700">T+5: Objetivo completada</span>'
+     +'</div>'
+     +'<div style="margin-top:8px;font-size:.84rem;font-weight:600;color:'+zonaColor+'">'+zonaMsg+'</div>'
+     +'</div>';
+  }
+  // Plan general
+  var plan=[];
+  if(!I.rosc){
+    plan.push({p:1,t:'LUD manual izquierdo: empujar el útero hacia la izquierda con la paciente en supino. Mantener durante toda la RCP. '+srcMini([['kim2026korean','Korea 2026']])});
+    plan.push({p:1,t:'RCP de alta calidad: compresiones 100–120/min, profundidad 5–6 cm, relación 30:2. SIN dispositivo mecánico.'});
+    plan.push({p:1,t:'Intubación endotraqueal precoz (NO supraglótica como primera línea). Plan B quirúrgico disponible desde el inicio.'});
+    plan.push({p:1,t:'Desfibrilar si FV/TV: energía y posición de electrodos estándar — no hay cambio de impedancia por embarazo ni daño fetal reportado.'});
+    if(I.rhInd) plan.push({p:I.rhUrgente?1:2,t:(I.rhUrgente?'HISTEROTOMÍA RESUCITADORA AHORA':'Histerotomía resucitadora a T+4 min si no hay ROSC.')+' Vaciar el útero donde esté la paciente. RCP continúa simultáneamente. Si EG ≥26 sem: neonatólogo en sala. '+srcMini([['rajendran2025','Rajendran 2025']])});
+    plan.push({p:2,t:'Epinefrina 1 mg IV cada 3–5 min (ACLS estándar). Tratar causa reversible (4H/4T obstétricas).'});
+  }
+  plan.push({p:2,t:'Causa: '+( I.causa==='ela'?'ELA → aplicar checklist SMFM 2021 (TXA + fibrinógeno + manejo fallo VD). '+srcMini([['combs2021','SMFM 2021']]):I.causa==='anafilaxia'?'Anafilaxia → epinefrina IM 0,2–0,5 mg (1:1000). Fluidos ≥500 mL/5–10 min. '+srcMini([['kim2026korean','Korea 2026']]):I.causa==='tep'?'TEP → si parada: trombolítico sistémico (alteplase 50 mg IV bolo). Continuar RCP 60–90 min post-trombolisis.':I.causa==='hiperk'?'Hiperpotasemia → insulina 8–12 UI IV + glucosa + bicarbonato + calcio IV.':'Causa desconocida → tratar reversibles: hipoxia, hipovolemia, hipotermia, hipopotasemia, TEP, neumotórax, ELA, anafilaxia.')});
+  h+='<div class="sec">Plan</div><ul class="plan">';
+  plan.forEach(function(it){ h+='<li class="p'+it.p+'">'+it.t+'</li>'; });
+  h+='</ul>';
+  // Causa-specific boxes
+  if(I.causa==='ela'){
+    h+='<div class="sec">Checklist ELA — SMFM 2021</div>';
+    h+=compHtml({nm:'ELA: checklist SMFM 2021',ic:'🌊',est:'ACTIVAR',estT:'Si causa probable es ELA',
+      dosis:'1. RCP + LUD + histerotomía resucitadora si EG ≥20 sem · 2. TXA 1g IV · 3. Fibrinógeno concentrado 4g IV si CID · 4. Soporte fallo VD (evitar sobrecarga de volumen) · 5. Considerar iNO/sildenafilo si HTP · 6. ECMO si refractario.',
+      reev:'Revisión continua de coagulopatía: Clauss, FIBTEM. Ver escenario ELA para manejo hemodinámico completo.',
+      evitar:'Soporte de volumen agresivo si hay fallo VD — empeora la HTP. Omitir TXA ante CID con hiperfibrinólisis.',refs:['combs2021','pacheco2016']});
+  }
+  if(I.causa==='anafilaxia'){
+    h+='<div class="sec">Anafilaxia — dosis</div>';
+    h+=compHtml({nm:'Epinefrina en anafilaxia',ic:'💉',est:'INDICAR',estT:'Primera línea — sin demora',
+      dosis:'IM cara anterolateral muslo: <span class="dose">0,2–0,5 mg (1:1.000)</span>. Repetir cada 5 min si no mejora. IV (solo si fallo circulatorio): bolo inicial <span class="dose">20–50 mcg</span> luego infusión 2–10 mcg/min.',
+      reev:'PA, SatO₂, FC, síntomas. SpO₂ objetivo 94–98%. Monitorización ECG obligatoria si se usa IV (riesgo sobredosis fatal).',
+      evitar:'Vía SC (absorción lenta en shock). IV sin monitorización de PA+ECG (sobredosis fatal reportada). Antihistamínicos como primera línea.',refs:['kim2026korean']});
+  }
+  // Docente
+  h+='<div class="sec">Para entender</div>';
+  h+='<div class="caja"><b>LUD manual > inclinar la camilla.</b> La inclinación lateral 15–30° reduce la eficacia de las compresiones torácicas. El desplazamiento uterino izquierdo manual (mano del ayudante empuja el útero hacia la izquierda) con la paciente en supino es más eficiente: permite compresiones de calidad mientras se mantiene la descompresión. '+srcMini([['kim2026korean','Korea 2026']])+'</div>';
+  h+='<div class="caja"><b>La ventana de 5 min es un objetivo, no una contraindicación.</b> El meta-análisis de Rajendran 2025 (n=507) muestra supervivencia materna documentada hasta T+12 min y neonatal hasta T+10 min de RCP de calidad previa a la RH. La ventana clásica AHA/guía coreana (T+4/T+5) mantiene validez normativa, pero superarla NO justifica abandoner la RH si la RCP es de alta calidad. '+srcMini([['rajendran2025','Rajendran 2025']])+'</div>';
+  h+='<div class="caja"><b>Pronóstico realista.</b> En OHCA (parada fuera del hospital), la supervivencia materna hasta el alta es del 4,5% (n=66); la supervivencia neonatal alcanza el 45% (n=68). La RH es principalmente un procedimiento que salva al neonato; la descompresión aortocava puede ayudar a la reanimación materna, pero no garantiza el ROSC. Toda la evidencia es de muy baja certeza (series y reportes de caso). '+srcMini([['leech2024','Leech 2024']])+'</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul>'
+   +'<li>LUD manual inmediato — supino, no inclinar la camilla.</li>'
+   +'<li>RCP estándar. SIN dispositivo mecánico (contraindicado en embarazo).</li>'
+   +'<li>Intubación endotraqueal precoz: VAD + regurgitación + hipoxia rápida.</li>'
+   +'<li>Histerotomía resucitadora a T+4 min si EG ≥20 sem y no hay ROSC.</li>'
+   +'<li>Si superaste T+5 y RCP es de calidad: NO abandonar la RH.</li>'
+   +'<li>Causa ELA → checklist SMFM 2021. Anafilaxia → epinefrina IM primero.</li>'
+   +'</ul></div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- MTP / Hemorragia Masiva render ---- */
+function evMTP(){
+  var P=Object.assign(P_base(),{perdida:gv('m_perdida'),fib:gv('m_fib'),fibtem:gv('m_fibtem'),plt:gv('m_plt'),hb:gv('m_hb'),vet:ST.mtp_vet,activo:ST.mtp_act});
+  var r=evaluarMTP(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('MTP / Hemorragia Masiva');
+  // Banner activación
+  if(I.activar){
+    h+='<div class="interp alarma"><b>⚖️ UMBRAL MTP ALCANZADO — ACTIVAR PROTOCOLO</b>'
+     +'<div class="d">• Pérdida <b>'+I.perdida+' mL</b>'+(I.pct?' / <b>'+I.pct+'% de la volemia estimada</b>':'')+'.</div>'
+     +(I.activo?'<div class="d">• MTP reportado como ya activo — revisar stock y continuar guiado por labs.</div>':'<div class="d">• <b>ACTIVAR MTP obstétrico ahora.</b> Avisar banco de sangre, anestesiología, hematología.</div>')
+     +srcMini([['eid2022','Eid 2022'],['cerny2025','Cerny 2025']])+'</div>';
+  } else {
+    h+='<div class="interp"><b>Pérdida '+I.perdida+' mL'+(I.pct?' ('+I.pct+'% volemia)':'')+' — por debajo del umbral MTP</b>'
+     +'<div class="d">Umbral: ≥1.500 mL o ≥25% de la volemia estimada. Vigilar y reevaluar si el sangrado continúa. Tratar coagulopatía si presente.</div></div>';
+  }
+  // Plan
+  var plan=[];
+  if(I.activar&&!I.activo) plan.push({p:1,t:'ACTIVAR MTP: llamar a banco de sangre + avisar obstetricia + activar sala de quirófano si no está.'});
+  plan.push({p:1,t:'STOCK INMEDIATO (banco de sangre): <b>4U GR + 4U PFC + 6 g fibrinógeno concentrado</b>. Confirmar 8 g fibrinógeno adicionales disponibles en farmacia en ≤1 h. '+srcMini([['cerny2025','Cerny 2025']])});
+  plan.push({p:1,t:'RATIO INICIAL: <b>1:1:1 (GR:PFC:PLQ)</b> mientras llegan los resultados de laboratorio. Ajustar en cuanto tengas Clauss/FIBTEM. '+srcMini([['eid2022','Eid 2022']])});
+  plan.push({p:1,t:'FIBRINÓGENO: '+(I.defFib?'<b>INDICADO</b> — '+(I.fib!=null?'Clauss '+I.fib+' g/L':''+(I.fibtem!=null?' FIBTEM A10 '+I.fibtem+' mm':''))+' → concentrado fibrinógeno <b>4 g IV</b> ahora. Meta >2 g/L (TM: >2,5 g/L).':'Solicitar Clauss urgente; si hay sospecha clínica de hipofibrinogenemia, dar 4 g IV sin esperar resultado.')+' '+srcMini([['cerny2025','Cerny 2025']])});
+  plan.push({p:1,t:'TXA <b>1 g IV</b> lo antes posible. Repetir 1 g si sangrado persiste a los 30 min (solo una repetición). No dar TXA una vez controlado el sangrado.'});
+  plan.push({p:2,t:'CORRECCIONES: Ca²⁺ iónico (citrato lo quela en TM → cloruro de calcio 1g IV), temperatura (hipotermia frena coagulación), acidosis metabólica. '+srcMini([['cerny2025','Cerny 2025']])});
+  if(I.defPlt) plan.push({p:2,t:'Plaquetas <b>'+I.plt+'×10⁹/L &lt;50</b> → transfundir pool. Meta ≥50×10⁹/L.'});
+  if(I.defHb) plan.push({p:2,t:'Hb <b>'+I.hb+' g/dL &lt;8</b> → transfundir GR. Target 7–8 g/dL durante reposición activa.'});
+  plan.push({p:3,t:'HIPOTENSIÓN PERMISIVA hasta control de la fuente: PAS objetivo 80–90 mmHg. Una vez controlado el sangrado, normalizar la PA.'});
+  plan.push({p:3,t:'AJUSTE GUIADO: pasar de ratio 1:1:1 a transfusión goal-directed con FIBTEM A10/A20 (si VET) o Clauss serial cada 30–60 min. '+srcMini([['yurashevich2023','Yurashevich 2023']])});
+  h+='<div class="sec">Plan de acción</div><ul class="plan">';
+  plan.forEach(function(it){ h+='<li class="p'+it.p+'">'+it.t+'</li>'; });
+  h+='</ul>';
+  // Component cards
+  h+='<div class="sec">Hemostasia / hemoderivados</div>';
+  h+=compHtml({nm:'Concentrado de fibrinógeno',ic:'🔶',est:I.defFib?'INDICAR':'EVALUAR',estT:I.defFib?'Déficit confirmado — dar ahora':'Solicitar Clauss urgente',
+    dosis:'<span class="dose">4 g IV</span> dosis inicial (stock mínimo activación: 6 g; confirmar 8 g adicionales en ≤1 h). Meta Clauss >2 g/L. Repetir 2–4 g según Clauss/FIBTEM serial.',
+    reev:'Clauss a los 30–60 min. FIBTEM A10 si disponible (meta ≥12 mm; AUC predictiva 0,726 para hemorragia severa). '+srcMini([['yurashevich2023','Yurashevich 2023']]),
+    evitar:'PFC de primera línea para el fibrinógeno: 4U PFC aportan solo ~1 g — insuficiente y lento. El PFC es útil si coagulopatía multifactorial.',
+    refs:['cerny2025','yurashevich2023']});
+  h+=compHtml({nm:'Ácido tranexámico (TXA)',ic:'🩹',est:'INDICAR',estT:'Dar lo antes posible desde el inicio de la HPP masiva',
+    dosis:'<span class="dose">1 g IV</span> en 10 min. Repetir 1 g una sola vez si sangrado continúa a los 30 min e hiperfibrinólisis probable. No repetir tras control del sangrado.',
+    reev:'Respuesta clínica. La WOMAN trial mostró beneficio en <3 h del parto; el consenso 2025 lo extiende como primera línea desde el inicio de HPP masiva.',
+    evitar:'Más de 2 dosis totales. Administrar pasadas las 3 h sin hiperfibrinólisis demostrada.',
+    refs:['cerny2025','williams2025']});
+  h+=compHtml({nm:'GR + PFC + plaquetas (ratio 1:1:1)',ic:'🩸',est:'INDICAR',estT:'Ratio empírico de inicio mientras llega laboratorio',
+    dosis:'Stock inicial: <span class="dose">4U GR + 4U PFC + pool plaquetas</span>. PFC a razón de '+( I.pfcMin&&I.pfcMax?I.pfcMin+'–'+I.pfcMax+' mL':'15–20 mL/kg')+(I.pfcUMin&&I.pfcUMax?' (aprox. '+I.pfcUMin+'–'+I.pfcUMax+' U)':'')+'. Hb target 7–8 g/dL. Plt ≥50×10⁹/L.',
+    reev:'Ajustar el ratio según Clauss/FIBTEM. En práctica real el consumo diverge del 1:1:1 (media: 6,5 U GR / 14,8 U PFC+crio / 8,3 U PLQ). '+srcMini([['salmanian2021','Salmanian 2021']]),
+    evitar:'PFC empírico de rutina sin comprobar déficit de factores — la mayoría de pacientes con HPP preserva los factores; el déficit de fibrinógeno es la anomalía dominante. '+srcMini([['cox2026','Cox 2026']]),
+    refs:['eid2022','salmanian2021','cox2026']});
+  // Docente
+  h+='<div class="sec">Para entender</div>';
+  h+='<div class="caja"><b>El fibrinógeno cae primero — y el ratio 1:1:1 no lo repone bien.</b> La hipofibrinogenemia es el predictor más precoz de hemorragia severa (OR 1,037 por cada 50 mg/dL de descenso). El FIBTEM A10 al inicio del MTP tiene AUC 0,726 para predecir progresión. 4U de PFC solo aportan ~1 g de fibrinógeno — insuficiente para corregir. Usa concentrado de fibrinógeno desde el inicio. '+srcMini([['yurashevich2023','Yurashevich 2023'],['cerny2025','Cerny 2025']])+'</div>';
+  h+='<div class="caja"><b>El ratio 1:1:1 es el punto de partida, no el destino.</b> El consumo real en HPP obstétrica difiere sustancialmente del 1:1:1 teórico (media publicada: 6,5U GR, 14,8U PFC+crioprecipitado, 8,3U PLQ). La razón es que cada hemorragia obstétrica tiene una etiología y evolución propias. Pasar rápido a goal-directed con labs mejora los resultados. '+srcMini([['salmanian2021','Salmanian 2021']])+'</div>';
+  h+='<div class="caja"><b>Cochrane 2025: evidencia moderada-baja.</b> La revisión sistemática de MTP en HPP (n=17.868) excluye los NRSIs con sesgo crítico por confusión. La certeza es muy baja para muerte materna con concentrado de fibrinógeno. Los datos sobre MTP vs no-MTP no permiten conclusiones definitivas. La decisión clínica individual sigue siendo soberana. '+srcMini([['williams2025','Cochrane 2025']])+'</div>';
+  h+='<div class="caja"><b>No reponer antitrombina III ni dar CCP de rutina.</b> El consenso 2025 recomienda EXPLÍCITAMENTE en contra: no medir ni reponer ATIII de rutina; no dar PCC salvo evidencia de laboratorio de déficit de factores PCC. Son intervenciones costosas sin beneficio neto en HPP estándar. '+srcMini([['cerny2025','Cerny 2025']])+'</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul>'
+   +'<li>Umbral MTP: ≥1.500 mL o ≥25% volemia. Activar antes de que la situación sea crítica.</li>'
+   +'<li>Stock inicial: 4U GR + 4U PFC + 6g fibrinógeno. Confirmar 8g adicionales en ≤1h.</li>'
+   +'<li>Ratio 1:1:1 solo como puente — pasar a goal-directed con Clauss/FIBTEM lo antes posible.</li>'
+   +'<li>Fibrinógeno <2 g/L → concentrado 4g IV; no esperar si la sospecha clínica es alta.</li>'
+   +'<li>PFC no repone bien el fibrinógeno (1g/4U) — no de primera línea para hipofibrinogenemia.</li>'
+   +'<li>Corregir la triada letal: hipotermia + acidosis + hipocalcemia.</li>'
+   +'</ul></div>';
+  o.innerHTML=out2(vr,h); scrollOut();
+}
+
+/* ---- ELA / Colapso Peripartum render ---- */
+function evELA(){
+  var P=Object.assign(P_base(),{eg:gv('ela_eg'),fib:gv('ela_fib'),fibtem:gv('ela_fibtem'),plt:gv('ela_plt'),momento:gv('ela_momento'),paro:ST.ela_paro,atop:ST.ela_atop,mtp:ST.ela_mtp});
+  var r=evaluarELA(P),o=document.getElementById('out');
+  var vr=recolectarVR(); if(vr.errors.length){ o.innerHTML=bannerVR(vr); scrollOut(); return; }
+  if(r.incompleto){ o.innerHTML='<div class="card"><span class="small">'+r.msg+'</span></div>'; return; }
+  var I=r.interp,h=trace('ELA / Colapso Peripartum');
+  // Banner interpretación
+  if(I.paro){
+    h+='<div class="interp alarma"><b>⚡ PCR EN CURSO — ACLS AHORA</b>'
+     +'<div class="d">• RCP ACLS estándar. Compresiones de alta calidad (100–120/min), desfibrilar si FV/TV.</div>'
+     +(I.histEla?'<div class="d">• <b>EG '+I.eg+' sem ≥23 → HISTEROTOMÍA RESUCITADORA a T+4 min del colapso</b> si no hay ROSC. Libera la compresión aortocava y mejora el gasto cardíaco durante RCP. '+srcMini([['pacheco2016','Pacheco 2016']])+'</div>':'<div class="d">• EG &lt;23 sem: histerotomía resucitadora no indicada de rutina.</div>')
+     +'<div class="d">• En paralelo con RCP: TXA + fibrinógeno + vasopresores.</div></div>';
+  } else {
+    var momTxt={'intraparto':'<b>intraparto</b>','postparto_inm':'<b>postparto inmediato</b>','postparto_tard':'postparto tardío','antenatal':'anteparto / antenatal'};
+    h+='<div class="interp alarma"><b>🌊 Colapso peripartum — ELA probable</b>'
+     +'<div class="d">• Momento: '+(momTxt[I.momento]||I.momento)+'.</div>'
+     +'<div class="d">• Diagnóstico de <b>exclusión</b>: descartar PE, anafilaxia, sepsis, cardiomiopatía, neumotórax antes de etiquetar ELA.</div>'
+     +(I.atop?'<div class="d">• <b>Atopia reportada</b> — refuerza el peso diagnóstico; componente anafilactoide plausible → epinefrina si hay broncoespasmo/angioedema.</div>':'')
+     +srcMini([['stafford2020Ela','Registro EUA 2020']])+'</div>';
+  }
+  // Plan
+  var plan=[];
+  if(I.paro){
+    plan.push({p:1,t:'RCP ACLS estándar. Compresiones 100–120/min; desfibrilar si FV/TV sin pulso. Vía aérea segura.'});
+    if(I.histEla) plan.push({p:1,t:'HISTEROTOMÍA RESUCITADORA a T+4 min del colapso (EG '+I.eg+' sem ≥23). Vaciar el útero donde esté la paciente — libera la vena cava y mejora el retorno venoso. El objetivo es la madre. '+srcMini([['pacheco2016','Pacheco 2016']])});
+  } else {
+    plan.push({p:1,t:'Soporte hemodinámico: vasopresores (NE / epinefrina). O₂ alto flujo 15 L/min. Intubación si SpO₂ no responde.'});
+  }
+  plan.push({p:1,t:'TXA <b>1 g IV</b> en 10 min (hiperfibrinólisis). Puede repetir 1 g a los 30 min si sangrado persiste. '+srcMini([['delloyd2023Ela','de Lloyd 2023'],['hofer2023Ela','Hofer 2023']])});
+  plan.push({p:1,t:'Fibrinógeno: '+(I.defFib?'<b>INDICADO</b> — '+(I.fib!=null?'Clauss '+I.fib+' g/L':''+(I.fibtem!=null?' / FIBTEM A5 '+I.fibtem+' mm':''))+' → concentrado fibrinógeno <b>4 g IV</b> AHORA. Meta &gt;2 g/L.':'Sin dato Clauss — solicitarlo urgente; si alta sospecha clínica, administrar 4 g IV sin esperar resultado.')+' NO usar PFC de primera línea como fuente de fibrinógeno. '+srcMini([['hofer2023Ela','Hofer 2023']])});
+  if(I.defPlt) plan.push({p:2,t:'Plaquetas <b>'+I.plt+'×10⁹/L &lt;50</b> → transfundir pool. Meta ≥50×10⁹/L.'});
+  if(!I.mtpYa) plan.push({p:2,t:'Hemorragia masiva o en escalada: ACTIVAR MTP obstétrico ahora si no está activo.'});
+  plan.push({p:3,t:'Laboratorio urgente: fibrinógeno Clauss, hemograma, TP/TTPa, GSA, Ca iónico. Si disponible: ROTEM (FIBTEM A5/A10 + EXTEM MCE).'});
+  plan.push({p:3,t:'Soporte respiratorio: O₂ → VMI si SpO₂ &lt;90% o trabajo respiratorio severo. El edema pulmonar es frecuente en ELA.'});
+  h+='<div class="sec">Plan de acción</div><ul class="plan">';
+  plan.forEach(function(it){ h+='<li class="p'+it.p+'">'+it.t+'</li>'; });
+  h+='</ul>';
+  // Component cards
+  h+='<div class="sec">Fármacos / intervenciones</div>';
+  h+=compHtml({nm:'Ácido tranexámico (TXA)',ic:'🩹',est:'INDICAR',estT:'Hiperfibrinólisis — siempre en coagulopatía por ELA',
+    dosis:'<span class="dose">1 g IV</span> en 10 min. Repetir 1 g si sangrado persistente a los 30 min. Administrar lento (bolo rápido puede dar hipotensión).',
+    reev:'Respuesta clínica al sangrado. Si ROTEM disponible: mejoría del MCE/FIBTEM tras TXA confirma hiperfibrinólisis.',
+    evitar:'Omitirlo "porque no hay RCT específico de TXA en ELA" — la hiperfibrinólisis es el mecanismo dominante de CID en ELA, y el TXA lo bloquea directamente.',
+    refs:['delloyd2023Ela','hofer2023Ela']});
+  h+=compHtml({nm:'Concentrado de fibrinógeno',ic:'🔶',est:I.defFib?'INDICAR':'EVALUAR',estT:I.defFib?'Deficiencia confirmada':'Sin dato Clauss — solicitar urgente',
+    dosis:'<span class="dose">4 g IV</span> dosis fija inicial (emergencia: no ajustar por peso). Reevaluar Clauss post-infusión. Meta &gt;2 g/L (TM: &gt;2,5 g/L). Si persiste déficit: repetir 2–4 g guiado por Clauss/FIBTEM.',
+    reev:'Fibrinógeno Clauss a 30–60 min. FIBTEM A5: meta ≥12 mm.',
+    evitar:'PFC como fuente primaria de fibrinógeno: 4 U PFC (≈1 L) aportan solo ~1 g — insuficiente, lento y con riesgo de TRALI/sobrecarga. PFC es útil si coagulopatía multifactorial, no para hipofibrinogenemia aislada.',
+    refs:['hofer2023Ela','delloyd2023Ela']});
+  h+=compHtml({nm:'Vasopresores (NE / epinefrina)',ic:'💉',est:'INDICAR',estT:'Shock / hipotensión refractaria',
+    dosis:'Norepinefrina: <span class="dose">0,05–0,5 mcg/kg/min IV</span>, titular. Epinefrina: <span class="dose">2–10 mcg/min IV</span> (preferida si hay sospecha de componente anafilactoide — broncoespasmo, urticaria, atopia).',
+    reev:'PA, FC, lactato, diuresis. Si hay sospecha anafiláctica + atopia: epinefrina IM 0,5 mg como bridge antes de la vía IV.',
+    evitar:'Vasopresores solos sin corregir la coagulopatía: la CID consume fibrinógeno y plaquetas más rápido de lo que la PA mejora.',
+    refs:['pacheco2016','stafford2020Ela']});
+  if(I.histEla) h+=compHtml({nm:'Histerotomía resucitadora',ic:'🏥',est:'INDICAR',estT:'PCR + EG ≥23 sem — a T+4 min del colapso sin ROSC',
+    dosis:'Incisión uterina y extracción del feto. No requiere anestesia (madre en PCR). Realizarla donde esté la paciente (no trasladar a quirófano). El equipo de reanimación no se detiene.',
+    reev:'¿ROSC tras vaciamiento? La descompresión de la VCI mejora el retorno venoso y la eficacia de las compresiones. Tras ROSC: UCI obstétrica.',
+    evitar:'Demorar "esperando que el feto esté en mejores condiciones" o "trasladar primero". Cada minuto sin vaciamiento es menor probabilidad de ROSC materno.',
+    refs:['pacheco2016']});
+  // Docente boxes
+  h+='<div class="sec">Para entender</div>';
+  h+='<div class="caja"><b>ELA = diagnóstico de exclusión, no marcador.</b> No existe biomarcador patognomónico en uso clínico estándar. El diagnóstico requiere: colapso cardiovascular agudo + hipoxia + CID o hemorragia masiva en el contexto periparto, sin otra causa. Descartar activamente PE, anafilaxia, sepsis y cardiomiopatía. '+srcMini([['stafford2020Ela','Stafford 2020']])+'</div>';
+  h+='<div class="caja"><b>Histerotomía resucitadora ≠ cesárea de emergencia.</b> El objetivo es la madre, no el feto. El útero grávido comprime la VCI → reduce el retorno venoso durante la RCP → las compresiones torácicas son ineficaces. Vaciarlo a T+4 min mejora drásticamente la probabilidad de ROSC. '+srcMini([['pacheco2016','Pacheco 2016']])+'</div>';
+  h+='<div class="caja"><b>PFC no es primera línea para el fibrinógeno.</b> 4 U de PFC aportan solo ~1 g de fibrinógeno (el contenido es 2–4 g/L). El concentrado de fibrinógeno da 4 g en 100 mL, sin tiempo de descongelación ni riesgo de TRALI. Usa PFC si sospechas coagulopatía multifactorial (déficit de múltiples factores). '+srcMini([['hofer2023Ela','Hofer 2023']])+'</div>';
+  h+='<div class="caja"><b>A-OK (atropina + ondansetrón + ketorolaco): solo investigacional.</b> Propuesto como régimen inmunomodulador en ELA (teoría anafilactoide). Sin ensayo clínico aleatorizado que lo respalde. No se programa aquí como recomendación estándar; citar con ese disclaimer si el equipo lo discute. '+srcMini([['pacheco2016','Pacheco 2016']])+'</div>';
+  h+='<div class="takeaways"><b>Puntos clave</b><ul>'
+   +'<li>ELA = diagnóstico de exclusión — descartar PE, anafilaxia, sepsis.</li>'
+   +'<li>PCR + EG ≥23 sem → histerotomía resucitadora T+4 min. El objetivo es la madre.</li>'
+   +'<li>TXA 1 g IV inmediato: la hiperfibrinólisis es el mecanismo de la CID en ELA.</li>'
+   +'<li>Fibrinógeno concentrado 4 g IV si Clauss ≤2 g/L o FIBTEM A5 &lt;12 mm — NO PFC de primera línea.</li>'
+   +'<li>Plaquetas si &lt;50×10⁹/L. Activar MTP si hemorragia masiva.</li>'
+   +'<li>A-OK no es protocolo estándar — solo investigacional, sin RCT.</li>'
+   +'</ul></div>';
   o.innerHTML=out2(vr,h); scrollOut();
 }
 
@@ -1038,7 +1544,7 @@ function compHtml(c){ var bcl=c.est==='INDICAR'?'b-ind':c.est==='NO INDICAR'?'b-
 function scrollOut(){ var o=document.getElementById('out'); window.scrollTo(0,o.offsetTop-10); }
 /* ---- Continuidad de paciente + handoff (copiar plan) ---- */
 function out2(vr,h){ return bannerVR(vr)+barraAcciones()+h+continuidadBar(); }
-var SC_NOMBRE={cr:'🔴 Código Rojo',ec:'⚡ Eclampsia',an:'🅰️ Anemia',ac:'💉 Anticoag',tr:'🩸 Trombocitopenia',ap:'🤰 Anteparto'};
+var SC_NOMBRE={cr:'🔴 Código Rojo',ec:'⚡ Eclampsia',an:'🅰️ Anemia',ac:'💉 Anticoag',tr:'🩸 Trombocitopenia',ap:'🤰 Anteparto',se:'🦠 Sepsis Materna',ela:'🌊 ELA / Colapso',mtp:'⚖️ MTP',acls:'❤️ ACLS Obstétrico'};
 // labs comunes que se arrastran al cambiar de escenario (la paciente base edad/peso/EG/talla/creat ya es compartida)
 var LAB_MAP={ hb:{an:'a_hb',cr:'c_hb',ap:'h_hb'}, plt:{cr:'c_plt',ec:'e_plt',tr:'t_plt',ac:'k_plt',ap:'h_plt'},
   fib:{cr:'c_fib',tr:'t_fib',ap:'h_fib'}, pas:{cr:'c_pas',ec:'e_pas',tr:'t_pas',ap:'h_pas'}, pad:{ec:'e_pad',tr:'t_pad'},
@@ -1064,12 +1570,16 @@ function textoResumen(){ var o=document.getElementById('out'); if(!o||!o.innerHT
   return L.join('\n'); }
 
 /* ===== Cara APRENDER (loop de hábito: recuerdo activo + caso del día + racha) ===== */
-var SC_ICON={cr:'🔴',ec:'⚡',an:'🅰️',ac:'💉',tr:'🩸',ap:'🤰'};
+var SC_ICON={cr:'🔴',ec:'⚡',an:'🅰️',ac:'💉',tr:'🩸',ap:'🤰',se:'🦠',ela:'🌊',mtp:'⚖️',acls:'❤️'};
 var CASOS=[
-  {sc:'cr',titulo:'TXA en HPP — la ventana correcta',objetivo:'En HPP, reconocer el ácido tranexámico como prioridad inmediata y cómo se mide su ventana de 3 h.',vineta:'Multípara, 72 kg, 39 sem, cesárea hace 35 min. Atonía, 2000 mL acumulados, FC 128, PAS 84 (índice de choque 1,5).',
+  {sc:'cr',titulo:'TXA en HPP — la ventana correcta',objetivo:'En HPP, reconocer el ácido tranexámico como prioridad inmediata y cómo se mide su ventana de 3 h. Distinguir tratamiento de profilaxis.',vineta:'Multípara, 72 kg, 39 sem, cesárea hace 35 min. Atonía, 2000 mL acumulados, FC 128, PAS 84 (índice de choque 1,5).',
    pregunta:'¿Cuál es la prioridad farmacológica que NO debe demorarse?',opciones:['Ergometrina 0,5 mg IM','Ácido tranexámico 1 g IV en 10 min','Esperar el fibrinógeno para decidir','Bolo de oxitocina 10 UI IV rápido'],correcta:1,
-   explica:'El TXA reduce la mortalidad por sangrado en HPP si se administra <strong>&lt;3 h del PARTO</strong> (WOMAN): 1 g IV en 10 min, lo antes posible — aquí quedan ~145 min de ventana. Corre en paralelo con uterotónicos y resucitación, sin esperar el laboratorio.',
-   perla:'La ventana de 3 h se cuenta desde el PARTO, no desde el ingreso a pabellón.',error:'Demorar el TXA esperando exámenes; o el bolo de oxitocina IV rápido &gt;5 UI (hipotensión/arritmia).',refs:['woman','whotxa']},
+   explica:'El TXA reduce la mortalidad por sangrado en HPP si se administra <strong>&lt;3 h del PARTO</strong> (WOMAN 2017): 1 g IV en 10 min, lo antes posible — aquí quedan ~145 min de ventana. Corre en paralelo con uterotónicos y resucitación, sin esperar el laboratorio. <strong>Ojo:</strong> la guía WHO/FIGO/ICM 2025 recomienda TXA como TRATAMIENTO (&lt;3 h), pero recomienda EN CONTRA de su uso profiláctico rutinario antes de que ocurra el sangrado.',
+   perla:'La ventana de 3 h se cuenta desde el PARTO, no desde el ingreso a pabellón.',error:'Demorar el TXA esperando exámenes; o el bolo de oxitocina IV rápido &gt;5 UI (hipotensión/arritmia). No usar TXA profiláctico de rutina.',refs:['woman','whotxa','whoFigoIcm2025']},
+  {sc:'cr',titulo:'Bundle MOTIVE — umbral de 300 mL y el primer minuto',objetivo:'Reconocer el nuevo umbral de acción HPP 2025 (300 mL + signo vital alterado) y el acrónimo MOTIVE como estructura del primer minuto.',vineta:'Cesárea terminada hace 15 min. Pérdida estimada 350 mL, FC 112 lpm, PAS 96 mmHg. La matrona pregunta: ¿esperamos a los 500 mL para activar?',
+   pregunta:'¿Cuál es el umbral correcto para iniciar el bundle MOTIVE según la guía 2025?',opciones:['≥1000 mL (umbral de cesárea)','≥500 mL en cualquier caso','≥300 mL con signo vital alterado — y aquí ya se cumple','Solo cuando baja la PA por debajo de 90/60'],correcta:2,
+   explica:'La guía consolidada WHO/FIGO/ICM 2025 introduce un <strong>umbral de acción de 300 mL si hay signo vital alterado</strong> (FC&gt;100, PAS&lt;100 o IShock&gt;1). Aquí 350 mL + FC 112 + PAS 96 lo cumplen: iniciar el bundle MOTIVE ahora. MOTIVE = <strong>M</strong>asaje · <strong>O</strong>xitócicos · <strong>T</strong>ranexámico · <strong>I</strong>V fluidos · <strong>V</strong>aginal exam (4T) · <strong>E</strong>scalar. El E-MOTIVE (NEJM 2023) mostró ~60% de reducción de desenlaces graves con este bundle estructurado.',
+   perla:'No esperes al "Código Rojo clásico": si hay ≥300 mL + cualquier signo vital alterado, el bundle empieza ahora.',error:'Esperar los 500 mL formales; o ejecutar los componentes MOTIVE sin coordinación de roles (el bundle requiere activación simultánea).',refs:['emotiveTrial','whoFigoIcm2025']},
   {sc:'cr',titulo:'La comorbilidad reescribe los uterotónicos',objetivo:'Cómo la comorbilidad (HTA, asma) cambia la escalera de uterotónicos en la atonía.',vineta:'Atonía postparto en preeclámptica (PA 165/110) y asmática. El residente prepara la escalera de uterotónicos.',
    pregunta:'¿Qué DOS fármacos están contraindicados aquí?',opciones:['Oxitocina y misoprostol','Ergometrina y carboprost','Oxitocina y carboprost','Ninguno, todos son seguros'],correcta:1,
    explica:'La <strong>ergometrina</strong> es vasoconstrictora → en HTA/preeclampsia puede desencadenar crisis hipertensiva/ACV. El <strong>carboprost</strong> (PGF2α) es broncoconstrictor → contraindicado en asma. La comorbilidad reescribe la escalera: aquí queda oxitocina (1ª línea) + misoprostol.',
@@ -1105,7 +1615,28 @@ var CASOS=[
   {sc:'ap',titulo:'Bandera de acretismo',objetivo:'Identificar la bandera de acretismo y qué cambia en la preparación del caso.',vineta:'Gestante con 2 cesáreas previas y placenta previa que CUBRE el OCI.',
    pregunta:'¿Qué bandera levanta y qué implica?',opciones:['Ninguna en especial','Sospecha de acretismo (PAS): centro nivel III/IV, equipo multidisciplinario, NO manipular la placenta','Solo cesárea de rutina','Indicación de parto vaginal'],correcta:1,
    explica:'Cesárea previa + previa que cubre el OCI es el factor principal de <strong>acretismo (PAS)</strong>. Implica planificar: centro nivel III/IV, equipo multidisciplinario, cesárea-histerectomía con placenta IN SITU (no extraerla), cell salvage ofrecido. Es la mortalidad materna más predecible y la que más se beneficia de preparación.',
-   perla:'Cesárea previa + previa anterior que cubre OCI = piensa acretismo y prepara el equipo ANTES.',error:'Manipular/extraer la placenta (hemorragia masiva) o manejarlo fuera de un centro con capacidad.',refs:['smfmPAS','rcog27a']}
+   perla:'Cesárea previa + previa anterior que cubre OCI = piensa acretismo y prepara el equipo ANTES.',error:'Manipular/extraer la placenta (hemorragia masiva) o manejarlo fuera de un centro con capacidad.',refs:['smfmPAS','rcog27a']},
+  {sc:'se',titulo:'Sepsis materna: el ATB manda en 1 h',objetivo:'Reconocer que en sepsis materna el antibiótico debe iniciarse en ≤1 h del reconocimiento — sin esperar cultivos — y que el foco uterino requiere evacuación como parte del tratamiento.',vineta:'Puérpera 28h postparto, fiebre 38,8°C, FC 122 lpm, FR 24 rpm, MAP 58 mmHg, lactato 3,2 mmol/L. Foco uterino probable. El equipo propone "esperamos los hemocultivos antes de dar ATB".',
+   pregunta:'¿Cuál es la conducta correcta?',opciones:['Esperar hemocultivos antes de iniciar ATB','ATB empírico amplio en ≤1 h; tomar cultivos primero pero sin demorar el ATB por ellos','Solo fluidos y reevaluar en 2 h','Vasopresores primero, ATB después'],correcta:1,
+   explica:'La guía SMFM 2023 y SSC 2021 indican ATB empírico de amplio espectro en <strong>≤1 h del reconocimiento</strong> en sepsis/shock (GRADE 1C). Los hemocultivos deben tomarse ANTES, pero sin que eso retrase el ATB. La mortalidad aumenta ~7% por hora de retraso. MAP 58 + lactato 3,2 definen shock séptico → además de ATB y fluidos, vasopresores (NE primera línea) y evaluar evacuación uterina como control de foco.',
+   perla:'Cultivos ANTES del ATB — pero si los cultivos retrasarían el ATB, primero el ATB. La ventana es 60 minutos, no "cuando baje el lactato".',error:'Esperar el resultado de cultivos para iniciar ATB. O no evaluar la evacuación uterina cuando el foco es uterino: sin vaciar el útero, los antibióticos no controlan la fuente.',refs:['smfm2023Sep','ssc2021','rcog64Sep']},
+  {sc:'ela',titulo:'ELA: histerotomía resucitadora — ¿cuándo y para qué?',objetivo:'Reconocer que en ELA con PCR y EG ≥23 sem la histerotomía resucitadora debe realizarse en T+4 min del colapso para mejorar el ROSC materno — y que el objetivo es la madre, no el feto.',
+   vineta:'Cesárea electiva en gestante de 38 sem. Inmediatamente tras la inducción: colapso cardiovascular, SpO₂ 55%, PCR confirmado. Han transcurrido 4 minutos de RCP ACLS sin ROSC. El equipo propone "seguimos con ACLS y esperamos que se recupere".',
+   pregunta:'¿Cuál es la conducta prioritaria en este momento?',opciones:['Continuar ACLS y esperar recuperación espontánea','Histerotomía resucitadora inmediata: vaciar el útero libera la VCI y mejora el ROSC materno','PFC 4 U como primera línea para corregir la coagulopatía','A-OK (atropina + ondansetrón + ketorolaco) — protocolo estándar en ELA'],correcta:1,
+   explica:'En PCR obstétrico con EG ≥23 sem, la histerotomía resucitadora (vaciamiento uterino de emergencia) debe realizarse a T+4 min del colapso si no hay ROSC. El útero grávido comprime la vena cava inferior y reduce drásticamente el retorno venoso durante la RCP. Vaciarlo libera esa compresión y hace eficaces las compresiones torácicas. El objetivo PRIMARIO es la madre — el beneficio fetal es secundario. A-OK no tiene RCT. PFC no es primera línea para fibrinógeno (aporta solo ~1 g/4 U).',
+   perla:'Histerotomía resucitadora a T+4 min: no es una cesárea de emergencia fetal — es una maniobra resucitadora materna. La madre no puede esperar el traslado a quirófano.',error:'Demorar la histerotomía esperando recuperación espontánea o trasladando a quirófano. Confundir A-OK con protocolo estándar (es investigacional).',refs:['pacheco2016','stafford2020Ela']},
+  {sc:'mtp',titulo:'MTP obstétrico: ¿PFC o fibrinógeno concentrado primero?',objetivo:'Reconocer que en HPP con hipofibrinogenemia el concentrado de fibrinógeno es la primera línea hemostática — no el PFC — y que el ratio 1:1:1 es el punto de partida, no el destino.',
+   vineta:'Cesárea por DPPNI, pérdida estimada 1.800 mL en 35 min. Fibrinógeno Clauss 1,4 g/L, Hb 6,9 g/dL, Plt 72×10⁹/L. El equipo planea iniciar con PFC 4U "para cubrir toda la coagulación".',
+   pregunta:'¿Cuál es la conducta correcta en hemostasia?',
+   opciones:['PFC 4U de primera línea para corregir la coagulopatía','Concentrado fibrinógeno 4g IV + TXA 1g IV + activar ratio 1:1:1 con stock 4U GR + 4U PFC','Esperar el ROTEM antes de cualquier tratamiento hemostático','Transfundir solo GR hasta Hb >10 g/dL antes de tratar la coagulopatía'],correcta:1,
+   explica:'Con fibrinógeno Clauss 1,4 g/L (&lt;2 g/L) la prioridad es el concentrado de fibrinógeno 4g IV — no el PFC. 4U de PFC aportan solo ~1 g de fibrinógeno (ineficaz, lento y con riesgo de TRALI/sobrecarga). TXA 1g IV debe darse lo antes posible. El ratio 1:1:1 es el inicio empírico mientras llega el laboratorio, no el tratamiento definitivo. Esperar ROTEM cuando el paciente sangra activamente es una demora inaceptable. La Hb target es 7–8 g/dL, no 10.',
+   perla:'En HPP masiva con hipofibrinogenemia: fibrinógeno concentrado > PFC. El PFC corrige los déficits de factores de la coagulación, pero es una fuente pobre de fibrinógeno.',error:'Dar PFC como fuente primaria de fibrinógeno. Esperar el resultado de laboratorio para iniciar la hemostasia si la sospecha clínica es alta.',refs:['cerny2025','yurashevich2023','cox2026']},
+  {sc:'acls',titulo:'ACLS Obstétrico: la ventana de 5 minutos se ha superado — ¿qué hago?',objetivo:'Reconocer que la histerotomía resucitadora NO debe abandonarse si se superó el límite clásico de 5 min, siempre que la RCP sea de alta calidad.',
+   vineta:'Embarazada de 32 sem, PCR en sala de partos. LUD manual aplicado, RCP de alta calidad en curso. Han transcurrido 7 min sin ROSC. Un miembro del equipo dice "ya pasaron los 5 minutos, la cesárea ya no sirve".',
+   pregunta:'¿Cuál es la conducta correcta?',
+   opciones:['Suspender la histerotomía porque ya se superó la ventana de 5 min','Iniciar la histerotomía resucitadora inmediatamente — supervivencia materna documentada hasta T+12 min con RCP de calidad','Usar un dispositivo mecánico de RCP (LUCAS) para mejorar las compresiones','Inclinar a la paciente 30° lateral izquierda en lugar del LUD manual'],correcta:1,
+   explica:'El meta-análisis de Rajendran 2025 (n=507) muestra supervivencia materna hasta ~12 min y neonatal hasta ~10 min de RCP previa a la histerotomía resucitadora. La ventana clásica AHA de T+4/T+5 es un objetivo, no una contraindicación absoluta. El dispositivo mecánico de RCP está contraindicado en embarazo (guía coreana 2025). La inclinación de la camilla es menos eficaz que el LUD manual en supino.',
+   perla:'Pasados los 5 min de PCR obstétrico con buena calidad de RCP y EG ≥20 sem: la histerotomía resucitadora sigue indicada. No abandonar.',error:'Suspender la histerotomía por haber superado el límite clásico. Usar dispositivo mecánico de RCP o inclinar la camilla como sustituto del LUD manual.',refs:['rajendran2025','kim2026korean']}
 ];
 function showFace(f){
   ['dec','apr','glo'].forEach(function(x){ document.getElementById('mtab-'+x).classList.toggle('sel',f===x); });
@@ -1174,8 +1705,8 @@ function responder(j){ if(!CASO_CUR||CASO_CUR.resuelto) return; CASO_CUR.resuelt
 /* ===== GLOSARIO de términos y siglas ===== */
 var GLOSARIO=[
  {c:'Hemorragia y transfusión',e:[
-   ['HPP','Hemorragia posparto: ≥500 mL (parto vaginal) o ≥1000 mL (cesárea), o con repercusión hemodinámica.'],
-   ['TXA','Ácido tranexámico: antifibrinolítico. 1 g IV en 10 min; beneficio si <3 h del PARTO (WOMAN).'],
+   ['HPP','Hemorragia posparto: ≥500 mL (parto vaginal) o ≥1000 mL (cesárea) — umbrales diagnósticos clásicos. WHO/FIGO/ICM 2025 agrega UMBRAL DE ACCIÓN: ≥300 mL + signo vital alterado (FC>100, PAS<100 o IShock>1), o ≥500 mL solo.'],
+   ['TXA','Ácido tranexámico: antifibrinolítico. 1 g IV en 10 min; beneficio si <3 h del PARTO (WOMAN 2017, tratamiento). WHO/FIGO/ICM 2025: en CONTRA del uso profiláctico de rutina.'],
    ['TM','Transfusión masiva (protocolo): reposición rápida y balanceada de hemocomponentes.'],
    ['4 T','Causas de HPP: Tono (atonía), Trauma, Tejido (retención), Trombina (coagulopatía).'],
    ['OSI','Índice de choque obstétrico = FC/PAS. >0,9–1,0 alerta; ≥1,7 severo. Delata el shock antes que la PA.'],
@@ -1282,6 +1813,51 @@ var GLOSARIO=[
    ['ISTH','International Society on Thrombosis and Haemostasis.'],
    ['WOMAN','Ensayo del ácido tranexámico en HPP (Lancet 2017).']
  ]},
+ {c:'Sepsis materna',e:[
+   ['Sepsis','Disfunción orgánica potencialmente mortal causada por respuesta desregulada del huésped a la infección. En la gestante: los cambios fisiológicos (taquicardia, leucocitosis, alcalosis) enmascaran los criterios del adulto.'],
+   ['Shock séptico','Sepsis + hipotensión refractaria a fluidos que requiere vasopresores + lactato ≥2 mmol/L. Mortalidad materna >10%.'],
+   ['MAP','Presión arterial media. Objetivo en shock séptico ≥65 mmHg (SSC 2021).'],
+   ['Lactato','Marcador de hipoperfusión tisular. ≥2 mmol/L define shock séptico junto a hipotensión. Normalizar <2 es meta de resucitación.'],
+   ['GAS','Streptococcus pyogenes (Grupo A). Principal agente de sepsis puerperal; 1/3 progresa a shock tóxico estreptocócico. Cobertura desde el primer ATB.'],
+   ['SSC','Surviving Sepsis Campaign: guía internacional de manejo de sepsis y shock séptico (2021).'],
+   ['qSOFA','Score de screening adulto (FR≥22, alteración mental, PAS≤100); NO validado prospectivamente en embarazo (cambios fisiológicos basales lo distorsionan).'],
+   ['Bundle hora-1','Paquete de acciones en ≤1 h: cultivos → ATB → fluidos → vasopresores → lactato (SSC 2021 / SMFM 2023).'],
+   ['Norepinefrina (NE)','Vasopresor de primera línea en shock séptico obstétrico (GRADE 1C SMFM). Agrega vasopresina como 2.° vasopresor si NE insuficiente.'],
+   ['Hidrocortisona','200 mg/día IV en shock séptico que requiere NE ≥0,25 mcg/kg/min ≥4 h. ≠ betametasona IM para maduración fetal (dosis e indicación distintas).'],
+   ['Control de foco','Evacuación de la fuente de infección. En sepsis puerperal uterina: el parto/evacuación uterina es el paso terapéutico irrenunciable.']
+ ]},
+ {c:'ACLS Obstétrico / Parada Cardíaca',e:[
+   ['LUD','Left Uterine Displacement. Desplazamiento uterino izquierdo manual. Empujar el útero hacia la izquierda con la paciente en supino. Descomprime la VCI/aorta y mejora el gasto cardíaco durante la RCP. Más eficaz que inclinar la camilla.'],
+   ['RH / Histerotomía resucitadora','Vaciamiento uterino de emergencia durante PCR. Objetivo: descomprimir la VCI para mejorar el ROSC materno. Indicada si EG ≥20 sem y no hay ROSC a T+4 min. NO es una cesárea de emergencia fetal.'],
+   ['Ventana T+4/T+5','Objetivo normativo AHA: iniciar RH a T+4 min del colapso, completarla en T+5. NO es una contraindicación absoluta — supervivencia documentada hasta T+12 min materno / T+10 min neonatal (Rajendran 2025).'],
+   ['OHCA','Out-of-Hospital Cardiac Arrest. Parada cardíaca fuera del hospital. Pronóstico muy grave: supervivencia materna ~4,5%, neonatal ~45% (Leech 2024, evidencia muy baja certeza).'],
+   ['Dispositivo mecánico RCP','LUCAS, AutoPulse. Contraindicados en parada cardíaca durante el embarazo (guía coreana 2025). No usar en esta situación.'],
+   ['4H/4T obstétricas','Causas reversibles en parada obstétrica: Hipoxia, Hipovolemia, Hipotermia, Hipopotasemia / TEP, TEP, Tóxicos, Taponamiento. Añadir: ELA, Anafilaxia, Eclampsia, Hemorragia.'],
+   ['Checklist ELA SMFM 2021','Protocolo SMFM para ELA en PCR: RCP + LUD + histerotomía + TXA + fibrinógeno + soporte fallo VD + HTP. Toda la evidencia es de muy baja certeza (series de casos).'],
+   ['ROSC','Return of spontaneous circulation. Retorno de circulación espontánea.']
+ ]},
+ {c:'MTP / Hemorragia Masiva',e:[
+   ['MTP','Massive Transfusion Protocol. Protocolo de transfusión masiva: conjunto de acciones coordinadas ante pérdida hemática ≥1.500 mL o ≥25% de la volemia estimada.'],
+   ['Ratio 1:1:1','Transfusión empírica inicial de GR:PFC:PLQ en proporción 1:1:1. Punto de partida hasta que los resultados de laboratorio permiten guiar la reposición individualmente.'],
+   ['Goal-directed','Transfusión guiada por metas de laboratorio (fibrinógeno Clauss, FIBTEM, plaquetas, Hb) en lugar de ratios fijos. Es el objetivo una vez que los labs están disponibles.'],
+   ['FIBTEM A10','Amplitud del coágulo a 10 min en el canal FIBTEM del ROTEM. AUC 0,726 para predecir progresión a hemorragia severa en HPP. Meta ≥12 mm.'],
+   ['Triada letal','Hipotermia + acidosis + hipocalcemia. Cada componente inhibe la coagulación; su corrección es obligatoria en paralelo a la reposición de hemoderivados.'],
+   ['Hipotensión permisiva','Estrategia de mantener PAS 80–90 mmHg hasta el control definitivo de la fuente de sangrado — reduce la dilución de factores y el sangrado por aumento de presión.'],
+   ['Cochrane 2025 (HPP/MTP)','Revisión sistemática de transfusión sanguínea en HPP (n=17.868). Excluye NRSIs con sesgo crítico. Certeza moderada-baja para MTP. La evidencia directa en obstetricia es limitada.'],
+   ['PROPPR trial','RCT en trauma que validó el ratio 1:1:1 vs 1:1:2. Los datos en obstetricia se extrapolan de trauma — diferencias fisiológicas importantes (estado procoagulante del embarazo) limitan la extrapolación.']
+ ]},
+ {c:'ELA / Colapso Peripartum',e:[
+   ['ELA','Embolia de líquido amniótico. Emergencia obstétrica catastrófica por entrada de contenido del líquido amniótico a la circulación materna. Diagnóstico de exclusión: colapso cardiovascular + hipoxia + CID en periparto sin otra causa.'],
+   ['PCR / RCP','Paro cardiorrespiratorio / Reanimación cardiopulmonar. En ELA: ACLS estándar + histerotomía resucitadora T+4 min si EG ≥23 sem y no hay ROSC.'],
+   ['Histerotomía resucitadora','Vaciamiento uterino de emergencia durante PCR con EG ≥23 sem. Objetivo: liberar la compresión de la vena cava inferior para mejorar el gasto cardíaco durante las compresiones torácicas y aumentar la probabilidad de ROSC. El objetivo es la madre, no el feto.'],
+   ['ROSC','Return of spontaneous circulation. Retorno de circulación espontánea.'],
+   ['CID','Coagulopatía intravascular diseminada. Activación sistémica simultánea de la coagulación y la fibrinólisis → consumo de factores + trombosis microvascular.'],
+   ['Hiperfibrinólisis','Activación excesiva del sistema fibrinolítico → degradación de los coágulos formados. Mecanismo dominante de la CID en ELA → el TXA es el tratamiento de elección.'],
+   ['FIBTEM A5','Amplitud del coágulo a 5 minutos en el canal FIBTEM del ROTEM. Refleja la contribución del fibrinógeno. <12 mm = deficiencia significativa de fibrinógeno.'],
+   ['MTP','Massive transfusion protocol. Protocolo de transfusión masiva.'],
+   ['A-OK','Atropina + Ondansetrón + Ketorolaco. Régimen inmunomodulador propuesto para ELA. Solo investigacional — sin ensayo clínico aleatorizado. No es protocolo estándar.'],
+   ['PFC en ELA','4 U de plasma fresco congelado aportan solo ~1 g de fibrinógeno. Insuficiente para corregir la hipofibrinogenemia de la ELA. Preferir concentrado de fibrinógeno 4 g IV como primera línea.']
+ ]},
  {c:'Local (Chile)',e:[
    ['HHHA','Hospital Hernán Henríquez Aravena (Temuco).'],
    ['SSASUR','Servicio de Salud Araucanía Sur.'],
@@ -1293,7 +1869,8 @@ var GLOSARIO=[
 var TEMARIO=[
  {c:'🔴 Código Rojo (HPP)',e:[
    ['Activación y metas del Código Rojo','Protocolo de respuesta a la hemorragia obstétrica: roles, accesos, metas hemodinámicas.',['codigorojo']],
-   ['Ácido tranexámico (TXA) en HPP','Antifibrinolítico que reduce la muerte por sangrado si se da <3 h del parto.',['woman','whotxa']],
+   ['Ácido tranexámico (TXA) en HPP','Antifibrinolítico que reduce la muerte por sangrado si se da <3 h del parto (tratamiento). WHO/FIGO/ICM 2025: en contra del uso profiláctico de rutina.',['woman','whotxa','whoFigoIcm2025']],
+   ['Bundle MOTIVE (E-MOTIVE)','Masaje·Oxitócicos·Tranexámico·IV fluidos·Vaginal exam·Escalar — checklist del primer minuto; ~60% ↓ desenlaces graves vs. atención estándar.',['emotiveTrial','whoFigoIcm2025']],
    ['Uterotónicos escalonados','Oxitocina → ergometrina → carboprost → misoprostol; la comorbilidad reescribe la escalera.',['gt52','acog183','figoPPH']],
    ['Fibrinógeno: predictor y meta','Cae primero; un "normal" de no-embarazada ya es bajo; meta >200 mg/dL.',['charbit','obs2']],
    ['Transfusión masiva: ratio vs goal-directed','1:1:1 como puente; pasar pronto a guiado por fibrinógeno/viscoelastometría.',['esaic','hhhaTransf']],
@@ -1348,6 +1925,37 @@ var TEMARIO=[
    ['Umbrales transfusionales en HPP (Cochrane)','Señal de daño con umbrales liberales.',['williams2025']],
    ['PBM preoperatorio (SSASUR, Chile)','Manejo preop de cirugías de alto riesgo de sangrado, hierro IV obstétrico.',['ssasurPBM']],
    ['Cambios fisiológicos del embarazo','Volemia +45–50%, nadir dilucional, índice de choque.',['somapillay']]
+ ]},
+ {c:'🦠 Sepsis Materna / Shock Séptico',e:[
+   ['Sepsis en el embarazo — SMFM 2023','Criterios diagnósticos, bundle hora-1, vasopresores y control de foco en la gestante y puérpera.',['smfm2023Sep']],
+   ['Surviving Sepsis Campaign 2021','Guía internacional: bundle hora-1 (cultivos → ATB → fluidos → vasopresores → lactato). Cristaloides balanceados, NE primera línea, hidrocortisona condicional.',['ssc2021']],
+   ['RCOG GTG-64 — Sepsis en el embarazo','Prevención, reconocimiento precoz (fiebre, taquicardia, septicemia puerperal) y manejo en el Reino Unido.',['rcog64Sep']],
+   ['GAS y sepsis puerperal','Streptococcus pyogenes: 1/3 progresa a shock tóxico; cobertura empírica desde el inicio.',['smfm2023Sep','yahya2025Mayo']],
+   ['Vasopresores en shock obstétrico','NE primera línea (GRADE 1C SMFM). Vasopresina como 2.° vasopresor. Hidrocortisona si NE ≥0,25 mcg/kg/min ≥4 h.',['smfm2023Sep','ssc2021']],
+   ['Control de foco: evacuación uterina','Foco uterino = el parto/evacuación es el tratamiento causal; sin vaciarlo, los ATB no controlan la fuente.',['smfm2023Sep','rcog64Sep']],
+   ['TEV pospepsis','Profilaxis con HBPM tan pronto el riesgo de sangrado lo permita (GRADE 1B SMFM). Coordinar con intervalos ASRA si hay catéter neuraxial.',['smfm2023Sep','asra5']]
+ ]},
+ {c:'❤️ ACLS Obstétrico / Parada Cardíaca',e:[
+   ['AHA 2020 — ACLS en circunstancias especiales (embarazo)','LUD manual, RH T+4/T+5, intubación precoz, sin dispositivo mecánico, desfibrilación estándar.',['panchal2020']],
+   ['Guía coreana 2025 — parada en embarazo','Actualización 2025: dispositivo mecánico contraindicado; LUD manual obligatorio; confirma ventana RH T+4/T+5.',['kim2026korean']],
+   ['Histerotomía resucitadora en OHCA — revisión sistemática (Leech 2024)','Supervivencia materna 4,5%, neonatal 45%. Evidencia muy baja certeza (series retrospectivas).',['leech2024']],
+   ['Histerotomía resucitadora — meta-análisis timing (Rajendran 2025)','Supervivencia materna hasta T+12 min, neonatal hasta T+10 min. La ventana de 5 min es un objetivo, no contraindicación absoluta.',['rajendran2025']],
+   ['SMFM 2021 — checklist ELA en PCR','Protocolo secuencial: RCP + LUD + RH + TXA + fibrinógeno + soporte VD + HTP. Toda la evidencia es muy baja certeza.',['combs2021']]
+ ]},
+ {c:'⚖️ MTP / Hemorragia Masiva',e:[
+   ['Transfusión en HPP — Cochrane 2025','Revisión sistemática de hemoderivados en HPP (n=17.868). Certeza moderada-baja para MTP; NRSIs con sesgo crítico excluidos.',['williams2025']],
+   ['Nuevos enfoques hemostáticos en HPP (Cox 2026)','PFC no es primera línea para fibrinógeno; concentrado de fibrinógeno y TXA desde el inicio; evidencia sobre PCC y ATIII.',['cox2026']],
+   ['Consenso interdisciplinar HPP peripartum (Cerny 2025)','Stock MTP, trigger fibrinógeno <2 g/L con dosis 4g, hipotensión permisiva PAS 80–90 mmHg, triada letal.',['cerny2025']],
+   ['Productos sanguíneos en HPP — revisión clínica (Eid 2022)','Umbral activación ≥1.500 mL/≥25% volemia; ratio 1:1:1 como punto de partida; transición a goal-directed.',['eid2022']],
+   ['Fibrinógeno y ROTEM como predictores de hemorragia severa (Yurashevich 2023)','FIBTEM A10 AUC 0,726; cada 50 mg/dL de descenso de fibrinógeno OR 1,037 para progresión a hemorragia severa.',['yurashevich2023']],
+   ['Teoría vs. realidad del MTP obstétrico (Salmanian 2021)','El consumo real diverge del 1:1:1 (media: 6,5U GR, 14,8U PFC+crio, 8,3U PLQ); resultados favorables con guía por laboratorio.',['salmanian2021']]
+ ]},
+ {c:'🌊 ELA / Colapso Peripartum',e:[
+   ['ELA — caracterización contemporánea (Registro EUA)','Incidencia, mortalidad, factores de riesgo y fenotipos clínicos del National Inpatient Sample.',['stafford2020Ela']],
+   ['ELA — principios de manejo inicial (Pacheco 2016)','Reconocimiento, RCP obstétrico, histerotomía resucitadora T+4 min, soporte hemodinámico y coagulopatía.',['pacheco2016']],
+   ['Coagulopatía en ELA: hiperfibrinólisis y disfibrinogenemia','La CID en ELA es dominada por hiperfibrinólisis → base del uso de TXA. Clauss vs. método derivado: importancia clínica del método.',['delloyd2023Ela']],
+   ['Soporte hemostático en HPP/ELA — TXA y fibrinógeno (Hofer 2023)','TXA y concentrado de fibrinógeno como primera línea; PFC no es fuente eficiente de fibrinógeno.',['hofer2023Ela']],
+   ['Histerotomía resucitadora en PCR obstétrico','T+4 min del colapso; libera compresión de la VCI; objetivo primario es ROSC materno, no rescate fetal.',['pacheco2016']]
  ]},
  {c:'🏥 Transversal / local',e:[
    ['Transfusión en obstetricia (RCOG GT-47)','Guía de transfusión sanguínea obstétrica: umbrales y productos.',['rcogGt47']],
